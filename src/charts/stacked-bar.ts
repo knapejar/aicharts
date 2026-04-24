@@ -9,6 +9,7 @@ import {
   renderYAxis,
 } from './axes.js';
 import { pickNumberFormatter } from '../formatters/number.js';
+import { smartLabel } from '../formatters/label.js';
 import { niceScale } from '../formatters/tick.js';
 import type { StackedBarConfig, SvgElement, Theme } from '../core/types.js';
 
@@ -236,7 +237,7 @@ export function renderStackedBar(cfg: StackedBarConfig, theme: Theme): SvgElemen
     out.push(
       ...renderLegend({
         items: series.map((key, i) => ({
-          label: key,
+          label: smartLabel(key),
           color: palette.colors[i % palette.colors.length]!,
         })),
         palette,

@@ -10,6 +10,7 @@ import {
 } from './axes.js';
 import { niceScale } from '../formatters/tick.js';
 import { pickNumberFormatter } from '../formatters/number.js';
+import { smartLabel } from '../formatters/label.js';
 import type { ComboConfig, SvgElement, Theme } from '../core/types.js';
 
 function buildPath(points: Array<[number, number]>, interpolation: 'linear' | 'curved' | 'stepped'): string {
@@ -220,11 +221,11 @@ export function renderCombo(cfg: ComboConfig, theme: Theme): SvgElement[] {
 
   const legendItems = [
     ...bars.map((key, i) => ({
-      label: key,
+      label: smartLabel(key),
       color: palette.colors[i % palette.colors.length]!,
     })),
     ...lines.map((key, li) => ({
-      label: key,
+      label: smartLabel(key),
       color: palette.colors[(bars.length + li) % palette.colors.length]!,
       dash: 'solid' as const,
     })),

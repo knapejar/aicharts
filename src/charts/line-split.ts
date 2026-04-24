@@ -2,6 +2,7 @@ import { g, line as svgLine, path, text } from '../core/svg.js';
 import { labelFontSize } from '../core/layout.js';
 import { computeFrame } from '../core/frame.js';
 import { niceScale } from '../formatters/tick.js';
+import { smartLabel } from '../formatters/label.js';
 import { pickNumberFormatter, looksLikeYearSeries } from '../formatters/number.js';
 import type { LineSplitConfig, SvgElement, Theme } from '../core/types.js';
 
@@ -96,7 +97,7 @@ export function renderLineSplit(cfg: LineSplitConfig, theme: Theme): SvgElement[
       plotY + plotH - ((v - yscl.min) / (yscl.max - yscl.min || 1)) * plotH;
 
     out.push(
-      text(s, {
+      text(smartLabel(s), {
         x: cellX,
         y: cellY + labelSize,
         'font-size': labelSize,

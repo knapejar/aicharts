@@ -9,6 +9,7 @@ import {
   renderYAxis,
 } from './axes.js';
 import { pickNumberFormatter } from '../formatters/number.js';
+import { smartLabel } from '../formatters/label.js';
 import type { GroupedBarConfig, SvgElement, Theme } from '../core/types.js';
 
 export function renderGroupedBar(cfg: GroupedBarConfig, theme: Theme): SvgElement[] {
@@ -129,7 +130,7 @@ export function renderGroupedBar(cfg: GroupedBarConfig, theme: Theme): SvgElemen
     out.push(
       ...renderLegend({
         items: series.map((key, i) => ({
-          label: key,
+          label: smartLabel(key),
           color: palette.colors[i % palette.colors.length]!,
         })),
         palette,

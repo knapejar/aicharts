@@ -8,6 +8,7 @@ import {
   renderBandXAxis,
   renderYAxis,
 } from './axes.js';
+import { smartLabel } from '../formatters/label.js';
 import { pickNumberFormatter } from '../formatters/number.js';
 import { niceScale } from '../formatters/tick.js';
 import type { BarConfig, SvgElement, Theme } from '../core/types.js';
@@ -261,7 +262,7 @@ export function renderBar(cfg: BarConfig, theme: Theme): SvgElement[] {
     if (legendFrame.legend) {
       out.push(
         ...renderLegend({
-          items: [{ label: valueKey, color: primaryColor }],
+          items: [{ label: smartLabel(valueKey), color: primaryColor }],
           palette,
           canvas,
           y: legendFrame.legend.y + legendFrame.tokens.ascender,

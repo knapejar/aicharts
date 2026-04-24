@@ -11,6 +11,7 @@ import {
   renderYAxis,
 } from './axes.js';
 import { pickNumberFormatter } from '../formatters/number.js';
+import { smartLabel } from '../formatters/label.js';
 import { toDate } from '../formatters/date.js';
 import type { StackedAreaConfig, SvgElement, Theme } from '../core/types.js';
 
@@ -193,7 +194,7 @@ export function renderStackedArea(cfg: StackedAreaConfig, theme: Theme): SvgElem
     out.push(
       ...renderLegend({
         items: series.map((key, i) => ({
-          label: key,
+          label: smartLabel(key),
           color: palette.colors[i % palette.colors.length]!,
         })),
         palette,

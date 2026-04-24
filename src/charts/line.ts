@@ -11,6 +11,7 @@ import {
   renderYAxis,
 } from './axes.js';
 import { pickNumberFormatter } from '../formatters/number.js';
+import { smartLabel } from '../formatters/label.js';
 import { toDate } from '../formatters/date.js';
 import type { LineConfig, SvgElement, Theme } from '../core/types.js';
 
@@ -266,10 +267,11 @@ export function renderLine(cfg: LineConfig, theme: Theme): SvgElement[] {
     if (!hasLegend && series.length === 1 && points.length > 1 && !valueLabelsOnEndpoint) {
       const lastPoint = points[points.length - 1]!;
       const plotRight = plot.x + plot.width;
-      const labelW = estimateTextWidth(key, labelSize);
+      const inlineLabel = smartLabel(key);
+      const labelW = estimateTextWidth(inlineLabel, labelSize);
       const labelX = Math.min(lastPoint[0] + labelSize * 0.35, plotRight - labelW);
       labelsGroup.push(
-        text(key, {
+        text(inlineLabel, {
           x: labelX,
           y: Math.max(plot.y + labelSize, lastPoint[1] - labelSize * 0.8),
           'font-size': labelSize,
@@ -289,7 +291,7 @@ export function renderLine(cfg: LineConfig, theme: Theme): SvgElement[] {
     out.push(
       ...renderLegend({
         items: series.map((key, i) => ({
-          label: key,
+          label: smartLabel(key),
           color: palette.colors[i % palette.colors.length]!,
           dash: typeof cfg.lineStyle === 'string' ? (cfg.lineStyle as 'solid' | 'dashed' | 'dotted') : 'solid',
         })),

@@ -2,6 +2,7 @@ import { g, line as svgLine, rect, text } from '../core/svg.js';
 import { labelFontSize } from '../core/layout.js';
 import { computeFrame } from '../core/frame.js';
 import { pickNumberFormatter } from '../formatters/number.js';
+import { smartLabel } from '../formatters/label.js';
 import { niceScale } from '../formatters/tick.js';
 import type { BarSplitConfig, SvgElement, Theme } from '../core/types.js';
 
@@ -67,7 +68,7 @@ export function renderBarSplit(cfg: BarSplitConfig, theme: Theme): SvgElement[] 
       plotY + plotH - ((v - scale.min) / (scale.max - scale.min || 1)) * plotH;
 
     out.push(
-      text(s, {
+      text(smartLabel(s), {
         x: cellX,
         y: cellY + labelSize,
         'font-size': labelSize,
