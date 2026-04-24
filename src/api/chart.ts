@@ -19,6 +19,18 @@ function decodeBase64Url(input: string): string {
   return Buffer.from(b64, 'base64').toString('utf-8');
 }
 
+function parseSimpleData(input: string): Array<{ label: string; value: number }> {
+  const rows: Array<{ label: string; value: number }> = [];
+  for (const pair of input.split(',')) {
+    const idx = pair.lastIndexOf(':');
+    if (idx === -1) continue;
+    const label = pair.slice(0, idx).trim();
+    const value = Number(pair.slice(idx + 1).trim());
+    if (label && Number.isFinite(value)) rows.push({ label, value });
+  }
+  return rows;
+}
+
 async function readJsonBody(req: IncomingMessage): Promise<unknown> {
   const chunks: Buffer[] = [];
   for await (const chunk of req) chunks.push(chunk as Buffer);
@@ -53,9 +65,10 @@ export default async function handler(req: IncomingMessage, res: ServerResponse)
       }
       const jParam = url.searchParams.get('j');
       const param = url.searchParams.get('config');
+      const dataParam = url.searchParams.get('data');
       const fmt = url.searchParams.get('format');
       if (fmt === 'svg') format = 'svg';
-      if (!param && !jParam) {
+      if (!param && !jParam && !dataParam) {
         const detection = detectAgent(req.headers['user-agent'], url.search.slice(1));
         if (detection.isAgent) {
           res.statusCode = 200;
@@ -73,19 +86,43 @@ export default async function handler(req: IncomingMessage, res: ServerResponse)
         res.end(
           JSON.stringify({
             error:
-              'Provide the chart config as either ?j=<url-encoded JSON> or ?config=<base64url JSON>. Example: /chart?j=%7B%22chart%22%3A%22bar%22%2C%22data%22%3A%5B%7B%22label%22%3A%22A%22%2C%22value%22%3A12%7D%5D%7D',
-            hint: 'If you are an AI agent, fetch /llm.md or pass ?as=agent to this URL to receive instructions.',
+              'Provide chart parameters. Simplest: /chart?title=Demo&data=A:10,B:20. Advanced: /chart?j=<url-encoded JSON>.',
+            hint: 'If you are an AI agent, fetch /agent-guide for full schema.',
           }),
         );
         return;
       }
       if (jParam) {
         config = JSON.parse(jParam) as ChartConfig;
-      } else {
-        const raw = param!.trim();
+      } else if (param) {
+        const raw = param.trim();
         config = JSON.parse(
           raw.startsWith('{') || raw.startsWith('[') ? raw : decodeBase64Url(raw),
         ) as ChartConfig;
+      } else {
+        const data = parseSimpleData(dataParam!);
+        if (data.length === 0) {
+          res.statusCode = 400;
+          res.setHeader('Content-Type', 'application/json');
+          res.end(
+            JSON.stringify({
+              error: 'invalid data param',
+              hint: 'Use ?data=Label1:Value1,Label2:Value2 with numeric values.',
+            }),
+          );
+          return;
+        }
+        const pickStr = (name: string): string | undefined => {
+          const v = url.searchParams.get(name);
+          return v && v.trim() ? v : undefined;
+        };
+        config = {
+          chart: 'bar',
+          title: pickStr('title'),
+          subtitle: pickStr('subtitle'),
+          source: pickStr('source'),
+          data,
+        } as ChartConfig;
       }
     } else {
       res.statusCode = 405;

@@ -24,48 +24,28 @@ account, no install, no API key.
 **Step 1.** Paste this block as your first message:
 
 ````text
-You can render real charts in our chat by emitting a Markdown image:
+You can render a real bar chart in our chat by emitting a Markdown image
+whose URL points at:
 
-  ![caption](https://mcp-charts.vercel.app/chart?j=URL-ENCODED-JSON)
+  https://mcp-charts.vercel.app/chart?title=TITLE&data=Label1:Value1,Label2:Value2,...
 
-How to respond when I ask for a chart:
-1. Find real data (your knowledge or a web search). Don't invent numbers.
-   Cite the source in the JSON's "source" field.
-2. Build a JSON config (shape below).
-3. URL-encode the JSON with percent-encoding — NOT base64.
-   Cheatsheet: " %22  { %7B  } %7D  : %3A  , %2C  [ %5B  ] %5D  space %20
-4. Reply with a SINGLE Markdown image line. No code block, no commentary.
+Allowed query parameters (anything else is ignored):
+- title     short chart title       (optional)
+- subtitle  one-line caption        (optional)
+- source    data citation           (optional, e.g. FAOSTAT)
+- data      comma-separated Label:Value pairs   (REQUIRED, values are numbers)
 
-JSON shape (only "chart" and "data" are required):
+Rules:
+1. Find real data first (your knowledge or a web search). Don't invent numbers.
+2. Keep every value simple: only letters, digits, spaces, and hyphens.
+3. Use + for spaces. Encode non-ASCII letters (Czech, Chinese, accents) as
+   UTF-8 percent-escapes (e.g. ě -> %C4%9B). Do NOT use backslash escapes.
+4. Reply with ONE Markdown image line and nothing else — no code block,
+   no preamble, no caption underneath.
 
-{ "chart":   "bar"|"line"|"pie"|"donut"|"stacked-area"|"grouped-bar"
-            |"stacked-bar"|"combo"|"bar-split"|"line-split"|"geo",
-  "data":    [{...row...}, ...],
-  "title":   "...",
-  "subtitle":"...",
-  "source":  "...",
-  "palette": "clarity"|"editorial"|"boardroom"|"vibrant"|"carbon"
-            |"viridis"|"earth"|"twilight"|"mono-blue"|"diverging-sunset",
-  "size":    "square"  (default - 1200x1200)
-            |"share"   (landscape - 1200x675)
-            |"poster"  (portrait - 1600x2000) }
+Example you should literally pattern-match:
 
-Row shape per chart:
-- bar / pie / donut: {"label":"...","value":number}
-- line / stacked-area / line-split / grouped-bar / stacked-bar / bar-split:
-    add "x" (one column name) and "y" (one name, or array of names for
-    multiple series). Rows are wide - one column per series.
-- combo: add "x","bars","lines".
-- geo: add "basemap" (one of: world, europe, africa, asia, north-america,
-    south-america, oceania, usa, germany, france, united-kingdom),
-    "code" (column with the region code), and "value" (column with the
-    number). Codes: ISO3 for continent/world maps (DEU, USA, CHN);
-    two-letter for usa/germany state maps (CA, BY); full county names
-    for united-kingdom ("Greater London", "Cornwall").
-
-Worked example - bar chart of A=10, B=20:
-  JSON: {"chart":"bar","title":"Demo","data":[{"label":"A","value":10},{"label":"B","value":20}]}
-  URL:  https://mcp-charts.vercel.app/chart?j=%7B%22chart%22%3A%22bar%22%2C%22title%22%3A%22Demo%22%2C%22data%22%3A%5B%7B%22label%22%3A%22A%22%2C%22value%22%3A10%7D%2C%7B%22label%22%3A%22B%22%2C%22value%22%3A20%7D%5D%7D
+  ![Top potato eaters per capita](https://mcp-charts.vercel.app/chart?title=Top+potato+eaters+per+capita&subtitle=kg+per+year&source=FAOSTAT&data=Belarus:155,Ukraine:139,Latvia:103,Poland:100,United+Kingdom:94)
 ````
 
 **Step 2.** Send any chart request, in plain English:
@@ -103,7 +83,7 @@ Every chart is a URL that returns a PNG. That means any tool that renders
 Markdown images also renders aicharts:
 
 ```md
-![Quarterly revenue](https://mcp-charts.vercel.app/chart?j=%7B%22chart%22%3A%22bar%22%2C%22title%22%3A%22Quarterly%20revenue%22%2C%22data%22%3A%5B%7B%22label%22%3A%22Q1%22%2C%22value%22%3A42%7D%2C%7B%22label%22%3A%22Q2%22%2C%22value%22%3A58%7D%2C%7B%22label%22%3A%22Q3%22%2C%22value%22%3A71%7D%2C%7B%22label%22%3A%22Q4%22%2C%22value%22%3A89%7D%5D%7D)
+![Quarterly revenue](https://mcp-charts.vercel.app/chart?title=Quarterly+revenue&source=Company+filings&data=Q1:42,Q2:58,Q3:71,Q4:89)
 ```
 
 GitHub READMEs, Notion, Obsidian, Slack unfurls, GitBook, Docusaurus,
@@ -112,6 +92,19 @@ Slidev, Marp, email — anywhere images render.
 ## Advanced
 
 Only useful if you outgrow copy-paste.
+
+**Full JSON mode** for everything beyond a single bar chart — line, pie,
+donut, stacked-area, geo maps, multi-series, palette/size overrides:
+
+```
+GET /chart?j=<URL-encoded JSON ChartConfig>
+POST /chart   (Content-Type: application/json, body = ChartConfig)
+```
+
+Schema and per-chart field rules: [FOR-DEVELOPERS.md](./FOR-DEVELOPERS.md).
+Capable agents (Cursor, Claude Code, ChatGPT with Browse) can fetch
+[/agent-guide](https://mcp-charts.vercel.app/agent-guide) for the full
+spec at runtime.
 
 **MCP server** for Claude Desktop, Cursor, Windsurf, etc.
 
