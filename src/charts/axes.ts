@@ -110,7 +110,7 @@ export function renderBandXAxis(opts: XAxisBandOptions): {
   const pi = opts.paddingInner ?? 0.2;
   const po = opts.paddingOuter ?? 0.1;
   const n = categories.length;
-  const step = n > 0 ? plot.width / (n + 2 * po + (n - 1) * pi - pi) : plot.width;
+  const step = n > 0 ? plot.width / Math.max(1, n - pi + 2 * po) : plot.width;
   const bandWidth = Math.max(2, step * (1 - pi));
   const bandStart = (i: number) => plot.x + po * step + i * step;
   const size = axisFontSize({ width: plot.width + 100, height: plot.height } as Canvas);

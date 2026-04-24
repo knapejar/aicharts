@@ -15,6 +15,10 @@ export function snapshotCases() {
   const co2 = fixture('co2-emissions.json');
   const stocks = fixture('stock-prices.json');
   const negatives = fixture('edge-negative.json');
+  const revenueRegions = fixture('revenue-regions.json');
+  const internet = fixture('internet-usage.json');
+  const marketing = fixture('marketing-channels.json');
+  const election = fixture('election-results.json');
 
   const cases = [];
 
@@ -131,6 +135,142 @@ export function snapshotCases() {
       source: 'Test fixture',
     },
   });
+
+  cases.push({
+    name: 'bar-vertical',
+    config: {
+      chart: 'bar',
+      data: [
+        { label: 'Q1', value: 120 },
+        { label: 'Q2', value: 180 },
+        { label: 'Q3', value: 160 },
+        { label: 'Q4', value: 220 },
+      ],
+      title: 'Quarterly revenue',
+      subtitle: 'Millions USD',
+      source: 'Company filings',
+    },
+  });
+
+  cases.push({
+    name: 'bar-horizontal-sorted',
+    config: {
+      chart: 'bar',
+      data: internet.slice(0, 20),
+      label: 'country',
+      value: 'usage',
+      orientation: 'horizontal',
+      sort: 'desc',
+      title: 'Internet usage by country',
+      subtitle: 'Percent of population, top 20 of selected sample',
+      source: 'World Bank',
+      palette: 'boardroom',
+    },
+  });
+
+  cases.push({
+    name: 'bar-negatives',
+    config: {
+      chart: 'bar',
+      data: negatives,
+      label: 'month',
+      value: 'profit',
+      title: 'Monthly profit and loss',
+      subtitle: 'Thousands of USD',
+      source: 'Internal',
+      palette: 'diverging-sunset',
+    },
+  });
+
+  cases.push({
+    name: 'grouped-bar-basic',
+    config: {
+      chart: 'grouped-bar',
+      data: revenueRegions,
+      x: 'region',
+      y: ['q1', 'q2', 'q3', 'q4'],
+      title: 'Quarterly revenue by region',
+      subtitle: 'Millions USD',
+      source: 'Internal',
+      showValueLabels: false,
+    },
+  });
+
+  cases.push({
+    name: 'grouped-bar-palette-vibrant',
+    config: {
+      chart: 'grouped-bar',
+      data: revenueRegions,
+      x: 'region',
+      y: ['q1', 'q4'],
+      title: 'Regional growth Q1 to Q4',
+      subtitle: 'Millions USD',
+      source: 'Internal',
+      palette: 'vibrant',
+      showValueLabels: true,
+    },
+  });
+
+  cases.push({
+    name: 'stacked-bar-vertical',
+    config: {
+      chart: 'stacked-bar',
+      data: marketing,
+      x: 'quarter',
+      y: ['organic', 'paid', 'email', 'referral'],
+      title: 'Marketing channel contribution',
+      subtitle: 'Share of leads',
+      source: 'Analytics',
+      showTotals: true,
+    },
+  });
+
+  cases.push({
+    name: 'stacked-bar-normalized',
+    config: {
+      chart: 'stacked-bar',
+      data: marketing,
+      x: 'quarter',
+      y: ['organic', 'paid', 'email', 'referral'],
+      title: 'Marketing channel mix',
+      subtitle: 'Normalized to 100% per quarter',
+      source: 'Analytics',
+      normalize: true,
+      palette: 'carbon',
+    },
+  });
+
+  cases.push({
+    name: 'stacked-bar-horizontal',
+    config: {
+      chart: 'stacked-bar',
+      data: revenueRegions,
+      x: 'region',
+      y: ['q1', 'q2', 'q3', 'q4'],
+      orientation: 'horizontal',
+      title: 'Revenue by region',
+      subtitle: 'Quarterly stacks, millions USD',
+      source: 'Internal',
+      palette: 'editorial',
+    },
+  });
+
+  cases.push({
+    name: 'bar-split-marketing',
+    config: {
+      chart: 'bar-split',
+      data: marketing,
+      x: 'quarter',
+      y: ['organic', 'paid', 'email', 'referral'],
+      columns: 2,
+      title: 'Marketing channels over time',
+      subtitle: 'Small multiples, one panel per channel',
+      source: 'Analytics',
+    },
+  });
+
+  void election;
+  void temperature;
 
   return cases;
 }
