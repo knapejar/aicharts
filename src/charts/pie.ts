@@ -1,8 +1,23 @@
-import { ellipsize, estimateTextWidth, g, path, text } from '../core/svg.js';
+import { ellipsize, ellipsizeMiddle, estimateTextWidth, g, path, text } from '../core/svg.js';
 import { labelFontSize, renderLegend } from '../core/layout.js';
 import { computeFrame } from '../core/frame.js';
 import { formatPercent } from '../formatters/percent.js';
 import type { DonutConfig, PieConfig, SvgElement, Theme } from '../core/types.js';
+
+function renderLegendLabel(fullLabel: string, fontSize: number, maxWidth: number): string {
+  if (estimateTextWidth(fullLabel, fontSize) <= maxWidth) return fullLabel;
+  const sepIdx = fullLabel.lastIndexOf(' · ');
+  if (sepIdx > 0) {
+    const name = fullLabel.slice(0, sepIdx);
+    const suffix = fullLabel.slice(sepIdx);
+    const suffixW = estimateTextWidth(suffix, fontSize);
+    const nameBudget = maxWidth - suffixW;
+    if (nameBudget >= fontSize * 2) {
+      return ellipsize(name, fontSize, nameBudget) + suffix;
+    }
+  }
+  return ellipsizeMiddle(fullLabel, fontSize, maxWidth, 6);
+}
 
 export interface PreparedSlice {
   label: string;
@@ -313,7 +328,7 @@ export function renderPieLike(
           rx: 2,
         },
       });
-      const clippedLabel = ellipsize(it.label, legendSize, legendWidthAvail);
+      const clippedLabel = renderLegendLabel(it.label, legendSize, legendWidthAvail);
       out.push(
         text(clippedLabel, {
           x: legendX + legendSize * 1.7,

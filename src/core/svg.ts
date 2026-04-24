@@ -138,3 +138,50 @@ export function ellipsize(value: string, fontSize: number, maxWidth: number): st
   }
   return value.slice(0, lo).trimEnd() + ellipsis;
 }
+
+export function ellipsizeMiddle(
+  value: string,
+  fontSize: number,
+  maxWidth: number,
+  minTailChars = 1,
+): string {
+  if (estimateTextWidth(value, fontSize) <= maxWidth) return value;
+  const ellipsis = '…';
+  const ellipsisW = estimateTextWidth(ellipsis, fontSize);
+  if (ellipsisW > maxWidth) return ellipsis;
+  let bestL = 0;
+  let bestR = 0;
+  for (let l = 1; l <= value.length / 2; l++) {
+    for (let r = Math.max(1, minTailChars); l + r <= value.length; r++) {
+      const head = value.slice(0, l);
+      const tail = value.slice(value.length - r);
+      const trial = head + ellipsis + tail;
+      if (estimateTextWidth(trial, fontSize) <= maxWidth) {
+        if (l + r > bestL + bestR) {
+          bestL = l;
+          bestR = r;
+        }
+      } else {
+        break;
+      }
+    }
+  }
+  if (bestL === 0 || bestR === 0) return ellipsize(value, fontSize, maxWidth);
+  return value.slice(0, bestL).trimEnd() + ellipsis + value.slice(value.length - bestR).trimStart();
+}
+
+export function ellipsizeUniqueLabels(
+  values: string[],
+  fontSize: number,
+  maxWidth: number,
+): string[] {
+  const ends = values.map((v) => ellipsize(v, fontSize, maxWidth));
+  const counts = new Map<string, number>();
+  for (const e of ends) counts.set(e, (counts.get(e) ?? 0) + 1);
+  return ends.map((e, i) => {
+    if (counts.get(e)! > 1 && estimateTextWidth(values[i]!, fontSize) > maxWidth) {
+      return ellipsizeMiddle(values[i]!, fontSize, maxWidth);
+    }
+    return e;
+  });
+}

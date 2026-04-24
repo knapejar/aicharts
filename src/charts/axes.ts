@@ -150,7 +150,9 @@ export function renderYAxis(opts: YAxisOptions): {
   const footerTop = canvas.height - canvas.padding.bottom;
   const sortedAsc = [...ticks].sort((a, b) => a - b);
   const lowestValue = sortedAsc[0];
-  const shouldSkipBottom = opts.skipBottomLabel !== false && ticks.length >= 3;
+  const lowestIsPositiveOrZero = lowestValue !== undefined && lowestValue >= 0;
+  const shouldSkipBottom =
+    opts.skipBottomLabel !== false && ticks.length >= 3 && lowestIsPositiveOrZero;
 
   for (let i = 0; i < ticks.length; i++) {
     const t = ticks[i]!;

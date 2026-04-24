@@ -53,8 +53,21 @@ export function renderBarSplit(cfg: BarSplitConfig, theme: Theme): SvgElement[] 
   const estimatedPlotW = cellW - innerPadLeft;
   const bandPlan = planBandXAxis(canvas, categories, Math.max(60, estimatedPlotW), 0.2, 0.05);
   const xAxisBandBase = Math.round(labelSize * 1.4);
-  const innerPadBottom = Math.max(xAxisBandBase + Math.round(labelSize * 0.6), bandPlan.bandHeight + Math.round(labelSize * 0.6));
   const cellH = (gridH - cellGapY * (rows - 1)) / rows;
+  const minPlotH = Math.round(labelSize * 3.0);
+  const fullPadBottom = Math.max(xAxisBandBase + Math.round(labelSize * 0.6), bandPlan.bandHeight + Math.round(labelSize * 0.6));
+  const tightPadBottom = xAxisBandBase + Math.round(labelSize * 0.3);
+  const minimalPadBottom = Math.round(labelSize * 0.6);
+  let innerPadBottom = fullPadBottom;
+  let xAxisMode: 'full' | 'sparse' | 'none' = 'full';
+  if (cellH - innerPadTop - innerPadBottom < minPlotH) {
+    innerPadBottom = tightPadBottom;
+    xAxisMode = 'sparse';
+  }
+  if (cellH - innerPadTop - innerPadBottom < minPlotH) {
+    innerPadBottom = minimalPadBottom;
+    xAxisMode = 'none';
+  }
 
   let allValues: number[] = [];
   if (cfg.sharedScale !== false) {
@@ -98,8 +111,11 @@ export function renderBarSplit(cfg: BarSplitConfig, theme: Theme): SvgElement[] 
 
     const fmt = pickNumberFormatter(localAll);
     const sortedTicks = [...scale.ticks].sort((a, b) => a - b);
-    const lowestTick = sortedTicks[0];
-    const skipBottomTick = scale.ticks.length >= 3;
+    const lowestTick = sortedTicks[0]!;
+    const localDataMin = localAll.length > 0 ? Math.min(...localAll) : 0;
+    const isPaddingOnlyBottom = lowestTick < localDataMin - 1e-9;
+    const skipBottomTick =
+      scale.ticks.length >= 3 && isPaddingOnlyBottom && lowestTick >= -1 && lowestTick <= 1;
     for (const t of scale.ticks) {
       const y = yScale(t);
       out.push(
@@ -153,28 +169,31 @@ export function renderBarSplit(cfg: BarSplitConfig, theme: Theme): SvgElement[] 
       }),
     );
 
-    const axisSize = labelSize;
-    const axisPlan = planBandXAxis(canvas, categories, plotW, 0.2, 0.05);
-    const ellipsizeTo = axisPlan.rotate && axisPlan.ellipsizedWidth != null ? axisPlan.ellipsizedWidth : null;
-    const rotate = axisPlan.rotate;
-    const angle = axisPlan.angle;
-    const labelY = plotY + plotH + (rotate ? labelSize * 0.9 : labelSize * 1.35);
-    for (let i = 0; i < n; i++) {
-      const raw = categories[i]!;
-      const cat = ellipsizeTo != null ? ellipsize(raw, axisSize, ellipsizeTo) : raw;
-      const cx = plotX + i * bandW + bandW / 2;
-      const attrs: Record<string, string | number> = {
-        x: cx,
-        y: labelY,
-        'font-size': axisSize,
-        'font-family': palette.fontBody,
-        fill: palette.textMuted,
-        'text-anchor': rotate ? 'end' : 'middle',
-      };
-      if (rotate) {
-        attrs['transform'] = `rotate(-${angle} ${cx} ${labelY})`;
+    if (xAxisMode !== 'none') {
+      const axisSize = labelSize;
+      const axisPlan = planBandXAxis(canvas, categories, plotW, 0.2, 0.05);
+      const useRotation = xAxisMode === 'full' && axisPlan.rotate;
+      const ellipsizeTo = useRotation && axisPlan.ellipsizedWidth != null ? axisPlan.ellipsizedWidth : null;
+      const angle = axisPlan.angle;
+      const labelY = plotY + plotH + (useRotation ? labelSize * 0.9 : labelSize * 1.35);
+      const indices = xAxisMode === 'sparse' && n > 2 ? [0, n - 1] : [...Array(n).keys()];
+      for (const i of indices) {
+        const raw = categories[i]!;
+        const cat = ellipsizeTo != null ? ellipsize(raw, axisSize, ellipsizeTo) : raw;
+        const cx = plotX + i * bandW + bandW / 2;
+        const attrs: Record<string, string | number> = {
+          x: cx,
+          y: labelY,
+          'font-size': axisSize,
+          'font-family': palette.fontBody,
+          fill: palette.textMuted,
+          'text-anchor': useRotation ? 'end' : i === 0 ? 'start' : i === n - 1 ? 'end' : 'middle',
+        };
+        if (useRotation) {
+          attrs['transform'] = `rotate(-${angle} ${cx} ${labelY})`;
+        }
+        out.push(text(cat, attrs));
       }
-      out.push(text(cat, attrs));
     }
   }
 

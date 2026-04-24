@@ -179,11 +179,11 @@ function buildPalette(baseColors: string[], accent: string, scale: GeoConfig['sc
     return firstL > lastL ? baseColors : [...baseColors].reverse();
   }
   return [
-    lighten(accent, 0.85),
-    lighten(accent, 0.6),
-    lighten(accent, 0.35),
+    lighten(accent, 0.7),
+    lighten(accent, 0.5),
+    lighten(accent, 0.25),
     accent,
-    darken(accent, 0.25),
+    darken(accent, 0.3),
   ];
 }
 
@@ -246,7 +246,7 @@ export function renderGeo(cfg: GeoConfig, theme: Theme): SvgElement[] {
 
   const paletteColors = buildPalette(palette.colors, palette.accent, cfg.scale);
   const steps = cfg.steps ?? 0;
-  const missingColor = cfg.missingColor ?? palette.grid;
+  const missingColor = cfg.missingColor ?? lighten(palette.textMuted, 0.78);
 
   const regionObj = content.objects['regions'] ?? Object.values(content.objects)[0];
   if (!regionObj) return out;

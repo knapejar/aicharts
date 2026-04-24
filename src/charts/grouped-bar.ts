@@ -151,27 +151,49 @@ export function renderGroupedBar(cfg: GroupedBarConfig, theme: Theme): SvgElemen
         widestValueLabel = Math.max(widestValueLabel, estimateTextWidth(fmt(v), labelSize));
       }
     }
-    const labelsFit = widestValueLabel <= barWidth * 1.05;
-    if (labelsFit) {
+    const labelsFitHorizontal = widestValueLabel <= barWidth * 1.05;
+    const useSmaller = !labelsFitHorizontal;
+    const valueLabelSize = useSmaller ? Math.max(Math.round(labelSize * 0.75), 14) : labelSize;
+    const widestSmaller = widestValueLabel * (valueLabelSize / labelSize);
+    const fitsAfterShrink = widestSmaller <= barWidth * 1.1;
+    const useRotated = useSmaller && !fitsAfterShrink;
+    if (labelsFitHorizontal || fitsAfterShrink || useRotated) {
       const labels: SvgElement[] = [];
       for (let i = 0; i < categories.length; i++) {
         const groupX = bandStart(i);
         for (let s = 0; s < series.length; s++) {
           const key = series[s]!;
           const v = Number(cfg.data[i]![key] ?? 0);
+          if (!Number.isFinite(v)) continue;
           const cx = groupX + s * (barWidth + barGap) + barWidth / 2;
-          const cy = v >= 0 ? yScale(v) - 6 : yScale(v) + labelSize + 4;
-          labels.push(
-            text(fmt(v), {
-              x: cx,
-              y: cy,
-              'font-size': labelSize,
-              'font-weight': 600,
-              'font-family': palette.fontBody,
-              fill: palette.text,
-              'text-anchor': 'middle',
-            }),
-          );
+          if (useRotated) {
+            const ty = v >= 0 ? yScale(v) - valueLabelSize * 0.4 : yScale(v) + valueLabelSize * 1.2;
+            labels.push(
+              text(fmt(v), {
+                x: cx,
+                y: ty,
+                'font-size': valueLabelSize,
+                'font-weight': 600,
+                'font-family': palette.fontBody,
+                fill: palette.text,
+                'text-anchor': 'end',
+                transform: `rotate(-90 ${cx} ${ty})`,
+              }),
+            );
+          } else {
+            const cy = v >= 0 ? yScale(v) - 6 : yScale(v) + valueLabelSize + 4;
+            labels.push(
+              text(fmt(v), {
+                x: cx,
+                y: cy,
+                'font-size': valueLabelSize,
+                'font-weight': 600,
+                'font-family': palette.fontBody,
+                fill: palette.text,
+                'text-anchor': 'middle',
+              }),
+            );
+          }
         }
       }
       out.push(g({}, labels));

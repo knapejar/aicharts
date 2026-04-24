@@ -118,10 +118,11 @@ export function renderStackedArea(cfg: StackedAreaConfig, theme: Theme): SvgElem
   const { elements: yElems, scale: yScale } = renderYAxis({
     canvas,
     min: 0,
-    max: yMax * 1.05,
+    max: cfg.normalize ? yMax : yMax * 1.05,
     palette,
     plot,
     format: fmt,
+    maxTicks: cfg.normalize ? 5 : undefined,
   });
   out.push(...yElems);
 

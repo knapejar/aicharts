@@ -281,17 +281,24 @@ export function renderLine(cfg: LineConfig, theme: Theme): SvgElement[] {
       const plotRight = plot.x + plot.width;
       const inlineLabel = smartLabel(key);
       const labelW = estimateTextWidth(inlineLabel, labelSize);
-      const labelX = Math.min(lastPoint[0] + labelSize * 0.35, plotRight - labelW);
+      const symbolMargin = Math.max(6, lineWidth + 4);
+      const desiredX = lastPoint[0] + symbolMargin;
+      const fitsRight = desiredX + labelW <= plotRight;
+      const labelX = fitsRight ? desiredX : lastPoint[0] - labelW - symbolMargin;
+      const anchor: 'start' | 'end' = fitsRight ? 'start' : 'end';
+      const labelY = Math.max(plot.y + labelSize, lastPoint[1] - labelSize * 0.8);
       labelsGroup.push(
         text(inlineLabel, {
-          x: labelX,
-          y: Math.max(plot.y + labelSize, lastPoint[1] - labelSize * 0.8),
+          x: fitsRight ? desiredX : lastPoint[0] - symbolMargin,
+          y: labelY,
           'font-size': labelSize,
           'font-weight': 600,
           'font-family': palette.fontBody,
           fill: color,
+          'text-anchor': anchor,
         }),
       );
+      void labelX;
     }
   }
 

@@ -1,4 +1,4 @@
-import { ellipsize, estimateTextWidth, g, line as svgLine, rect, text } from '../core/svg.js';
+import { ellipsize, ellipsizeUniqueLabels, estimateTextWidth, g, line as svgLine, rect, text } from '../core/svg.js';
 import { labelFontSize, renderLegend } from '../core/layout.js';
 import { computeFrame } from '../core/frame.js';
 import {
@@ -206,6 +206,11 @@ export function renderBar(cfg: BarConfig, theme: Theme): SvgElement[] {
     }
 
     const labelBudget = yTickWidth - labelSize * 0.8;
+    const ellipsizedCategoryLabels = ellipsizeUniqueLabels(
+      rows.map((r) => r.label),
+      labelSize,
+      labelBudget,
+    );
     for (let i = 0; i < rows.length; i++) {
       const row = rows[i]!;
       const by = horizPlot.y + po * step + i * step;
@@ -223,7 +228,7 @@ export function renderBar(cfg: BarConfig, theme: Theme): SvgElement[] {
           rx: 1,
         }),
       );
-      const labelText = ellipsize(row.label, labelSize, labelBudget);
+      const labelText = ellipsizedCategoryLabels[i]!;
       out.push(
         text(labelText, {
           x: horizPlot.x - 10,
