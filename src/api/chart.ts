@@ -1,6 +1,8 @@
 import type { IncomingMessage, ServerResponse } from 'node:http';
 import { render } from '../render/index.js';
 import { _debugFontState } from '../render/svg-to-png.js';
+import { detectAgent } from './agent-detect.js';
+import { AGENT_GUIDE } from './agent-guide-content.js';
 import type { ChartConfig } from '../core/types.js';
 
 const PNG_SIGNATURE = Buffer.from([0x89, 0x50, 0x4e, 0x47, 0x0d, 0x0a, 0x1a, 0x0a]);
@@ -54,12 +56,25 @@ export default async function handler(req: IncomingMessage, res: ServerResponse)
       const fmt = url.searchParams.get('format');
       if (fmt === 'svg') format = 'svg';
       if (!param && !jParam) {
+        const detection = detectAgent(req.headers['user-agent'], url.search.slice(1));
+        if (detection.isAgent) {
+          res.statusCode = 200;
+          res.setHeader('Content-Type', 'text/markdown; charset=utf-8');
+          res.setHeader('Cache-Control', 'public, max-age=3600');
+          res.setHeader(
+            'X-AIcharts-Served',
+            `agent-guide:${detection.reason}:${detection.label ?? 'unknown'}`,
+          );
+          res.end(AGENT_GUIDE);
+          return;
+        }
         res.statusCode = 400;
         res.setHeader('Content-Type', 'application/json');
         res.end(
           JSON.stringify({
             error:
               'Provide the chart config as either ?j=<url-encoded JSON> or ?config=<base64url JSON>. Example: /chart?j=%7B%22chart%22%3A%22bar%22%2C%22data%22%3A%5B%7B%22label%22%3A%22A%22%2C%22value%22%3A12%7D%5D%7D',
+            hint: 'If you are an AI agent, fetch /llm.md or pass ?as=agent to this URL to receive instructions.',
           }),
         );
         return;

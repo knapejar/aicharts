@@ -13,11 +13,19 @@
       "memory": 1024,
       "maxDuration": 60,
       "includeFiles": "basemaps/**"
+    },
+    "api/agent-guide.ts": {
+      "memory": 256,
+      "maxDuration": 10
     }
   },
   "rewrites": [
     { "source": "/chart", "destination": "/api/chart" },
-    { "source": "/mcp", "destination": "/api/mcp" }
+    { "source": "/mcp", "destination": "/api/mcp" },
+    { "source": "/llm.md", "destination": "/api/agent-guide" },
+    { "source": "/agents", "destination": "/api/agent-guide" },
+    { "source": "/agent-guide", "destination": "/api/agent-guide" },
+    { "source": "/ai", "destination": "/api/agent-guide" }
   ],
   "headers": [
     {
@@ -35,6 +43,14 @@
         { "key": "Access-Control-Allow-Origin", "value": "*" },
         { "key": "Access-Control-Allow-Methods", "value": "GET, POST, DELETE, OPTIONS" },
         { "key": "Access-Control-Allow-Headers", "value": "Content-Type, Mcp-Session-Id" }
+      ]
+    },
+    {
+      "source": "/(llm.md|agents|agent-guide|ai)",
+      "headers": [
+        { "key": "Access-Control-Allow-Origin", "value": "*" },
+        { "key": "Access-Control-Allow-Methods", "value": "GET, OPTIONS" },
+        { "key": "Cache-Control", "value": "public, max-age=3600" }
       ]
     }
   ]

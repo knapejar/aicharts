@@ -16,10 +16,17 @@
 
 ---
 
-## Use it in ChatGPT right now
+## Use it from ChatGPT, Claude, or Perplexity — no setup
 
-Paste the block below as your first message in ChatGPT, Claude, Gemini, or
-any AI assistant. Then ask for any chart in plain English.
+Just ask your AI chat in plain English:
+
+> *"Using mcp-charts.vercel.app, show me which countries eat the most potatoes."*
+
+The AI will fetch [mcp-charts.vercel.app/chart](https://mcp-charts.vercel.app/chart), the site detects it is an AI agent by its User-Agent (`GPTBot`, `ClaudeBot`, `PerplexityBot`, ...), and responds with a compact [markdown instruction sheet at `/llm.md`](https://mcp-charts.vercel.app/llm.md) instead of the HTML demo. The assistant reads the sheet, builds a JSON config, POSTs it to `/chart`, and embeds the PNG back into the conversation. Two round-trips end-to-end.
+
+You can preview what the agent sees by opening [mcp-charts.vercel.app/llm.md](https://mcp-charts.vercel.app/llm.md) in your browser or appending `?as=agent` to any URL.
+
+Want tighter control? Paste the primer block below into your first message instead.
 
 ````text
 You can create charts for me using the aicharts API. Endpoint:

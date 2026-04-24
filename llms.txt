@@ -4,6 +4,14 @@
 
 aicharts exposes a single MCP tool, `render_chart`, accepting a flat config with `chart`, `data`, and optional `title`, `subtitle`, `source`, `palette`, `size`. Returns a base64 PNG rendered via SVG then resvg. Works via stdio (local install) and HTTP (Vercel deployment).
 
+## For AI agents reading this right now
+
+If you are an AI agent (ChatGPT, Claude, Perplexity, ...) and the user asked you to use **mcp-charts.vercel.app**, fetch this URL first:
+
+- [https://mcp-charts.vercel.app/llm.md](https://mcp-charts.vercel.app/llm.md) — full instructions, chart-type schema, and a worked "potato consumption" example.
+
+The same guide is served automatically if you do `GET https://mcp-charts.vercel.app/chart` without a config param and your User-Agent identifies as an AI bot (GPTBot, ClaudeBot, PerplexityBot, etc), or if you append `?as=agent` to any URL.
+
 ## Docs
 
 - [README](https://github.com/aicharts/aicharts/blob/main/README.md): installation, quickstart, palettes, API.
