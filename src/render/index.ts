@@ -46,6 +46,7 @@ export async function render(config: ChartConfig, opts: RenderOptions = {}): Pro
   const theme = resolveTheme(config.palette, config.size, config.width, config.height);
   return svgToPng(svg, {
     width: theme.canvas.width,
+    height: theme.canvas.height,
     background: config.background ?? theme.palette.background,
     dpr: opts.dpr ?? 2,
     defaultFontFamily: theme.palette.fontHeadline,

@@ -2,6 +2,11 @@ import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import { render } from '../../dist/index.js';
 
+function pngDims(png) {
+  const buf = Buffer.from(png.buffer, png.byteOffset, png.byteLength);
+  return { width: buf.readUInt32BE(16), height: buf.readUInt32BE(20) };
+}
+
 test('renders line chart to PNG', async () => {
   const png = await render({
     chart: 'line',
@@ -92,6 +97,31 @@ test('custom palette overrides', async () => {
     title: 'Custom',
   });
   assert.ok(png.byteLength > 500);
+});
+
+test('PNG dimensions stay under Anthropic 2000px multi-image limit for every preset', async () => {
+  const data = [
+    { x: 1, y: 10 },
+    { x: 2, y: 20 },
+  ];
+  const base = { chart: 'line', data, x: 'x', y: 'y', title: 'Limit' };
+  for (const size of ['inline', 'share', 'poster']) {
+    const png = await render({ ...base, size });
+    const { width, height } = pngDims(png);
+    assert.ok(
+      Math.max(width, height) < 2000,
+      `${size} produced ${width}x${height}, exceeds 2000px`,
+    );
+  }
+});
+
+test('PNG dimensions stay under limit even when caller requests dpr=3', async () => {
+  const png = await render(
+    { chart: 'line', data: [{ x: 1, y: 1 }], x: 'x', y: 'y', size: 'share' },
+    { dpr: 3 },
+  );
+  const { width, height } = pngDims(png);
+  assert.ok(Math.max(width, height) < 2000, `got ${width}x${height}`);
 });
 
 test('all chart types render without error', async () => {

@@ -10,6 +10,7 @@ dist/
 
 tests/snapshots/__diff__/
 tests/snapshots/__actual__/
+tests/scenarios/output/
 coverage/
 *.log
 npm-debug.log*
