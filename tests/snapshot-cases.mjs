@@ -407,7 +407,12 @@ export function snapshotCases() {
     name: 'donut-carbon',
     config: {
       chart: 'donut',
-      data: marketing[0],
+      data: [
+        { channel: 'organic', share: 42 },
+        { channel: 'paid', share: 28 },
+        { channel: 'email', share: 18 },
+        { channel: 'referral', share: 12 },
+      ],
       label: 'channel',
       value: 'share',
       title: 'Marketing share Q1 2024',
@@ -415,12 +420,35 @@ export function snapshotCases() {
       source: 'Analytics',
       palette: 'carbon',
       innerRadius: 'thin',
-      data: [
-        { channel: 'organic', share: 42 },
-        { channel: 'paid', share: 28 },
-        { channel: 'email', share: 18 },
-        { channel: 'referral', share: 12 },
-      ],
+    },
+  });
+
+  cases.push({
+    name: 'geo-world-internet',
+    config: {
+      chart: 'geo',
+      data: internet,
+      code: 'code',
+      value: 'usage',
+      basemap: 'world',
+      title: 'Internet usage worldwide',
+      subtitle: 'Percent of population with internet access',
+      source: 'World Bank',
+    },
+  });
+
+  cases.push({
+    name: 'geo-europe-internet',
+    config: {
+      chart: 'geo',
+      data: internet,
+      code: 'code',
+      value: 'usage',
+      basemap: 'europe',
+      title: 'Internet usage across Europe',
+      subtitle: 'Percent of population',
+      source: 'World Bank',
+      palette: 'mono-blue',
     },
   });
 
