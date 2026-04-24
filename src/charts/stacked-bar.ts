@@ -1,4 +1,4 @@
-import { g, line as svgLine, rect, text } from '../core/svg.js';
+import { estimateTextWidth, g, line as svgLine, rect, text } from '../core/svg.js';
 import { labelFontSize, renderLegend } from '../core/layout.js';
 import {
   computePlotArea,
@@ -119,8 +119,11 @@ export function renderStackedBar(cfg: StackedBarConfig, theme: Theme): SvgElemen
       }),
     );
   } else {
-    const maxLabelLen = Math.max(...categories.map((c) => c.length));
-    const yTickWidth = Math.min(240, 8 + Math.max(64, maxLabelLen * labelSize * 0.55));
+    const widestCat = Math.max(...categories.map((c) => estimateTextWidth(c, labelSize)));
+    const yTickWidth = Math.min(
+      Math.round(canvas.width * 0.34),
+      Math.ceil(widestCat + labelSize * 0.8),
+    );
     const horizPlot = computePlotArea(canvas, {
       hasTitle: !!cfg.title,
       hasSubtitle: !!cfg.subtitle,
@@ -128,6 +131,7 @@ export function renderStackedBar(cfg: StackedBarConfig, theme: Theme): SvgElemen
       subtitle: cfg.subtitle,
       hasLegend: true,
       yTickWidth,
+      rightGutter: Math.round(labelSize * 0.8),
     });
     const n = categories.length;
     const po = 0.15;

@@ -25,6 +25,8 @@ export function computePlotArea(
     yTickWidth?: number;
     xTickHeight?: number;
     extraTop?: number;
+    extraBottom?: number;
+    rightGutter?: number;
   } = {},
 ): PlotArea {
   const font = smallFontSize(canvas);
@@ -35,18 +37,20 @@ export function computePlotArea(
     opts.title,
     opts.subtitle,
   );
-  const footerH = Math.max(canvas.padding.bottom, Math.round(font * 3.0));
+  const footerH = Math.max(canvas.padding.bottom, Math.round(font * 3.2));
   const legendH = opts.hasLegend ? (opts.legendHeight ?? font * 2.4) : 0;
   const yTickW = opts.yTickWidth ?? Math.round(font * 3.2);
+  const rightGutter = opts.rightGutter ?? Math.round(yTickW * 0.5);
   const xTickH = opts.xTickHeight ?? Math.round(font * 2.2);
   const extraTop = opts.extraTop ?? Math.round(font * 1.6);
+  const extraBottom = opts.extraBottom ?? Math.round(font * 1.5);
 
   const topY = header + (legendH > 0 ? LEGEND_GAP + legendH : 0) + extraTop;
-  const bottomY = canvas.height - footerH - xTickH;
+  const bottomY = canvas.height - footerH - xTickH - extraBottom;
   return {
     x: canvas.padding.left + yTickW,
     y: topY,
-    width: canvas.width - canvas.padding.right - (canvas.padding.left + yTickW),
+    width: canvas.width - canvas.padding.right - rightGutter - (canvas.padding.left + yTickW),
     height: Math.max(60, bottomY - topY),
   };
 }
@@ -76,6 +80,7 @@ export interface YAxisOptions {
   showGrid?: boolean;
   showAxisLine?: boolean;
   label?: string;
+  skipBottomLabel?: boolean;
 }
 
 export function renderYAxis(opts: YAxisOptions): {
@@ -90,6 +95,9 @@ export function renderYAxis(opts: YAxisOptions): {
   const size = smallFontSize(canvas);
   const format = opts.format ?? pickNumberFormatter(ticks);
   const footerTop = canvas.height - canvas.padding.bottom;
+  const sortedAsc = [...ticks].sort((a, b) => a - b);
+  const lowestValue = sortedAsc[0];
+  const shouldSkipBottom = opts.skipBottomLabel !== false && ticks.length >= 3;
 
   for (let i = 0; i < ticks.length; i++) {
     const t = ticks[i]!;
@@ -104,8 +112,9 @@ export function renderYAxis(opts: YAxisOptions): {
       );
     }
     const textBaseline = y + size * 0.35;
-    const collidesWithFooter = textBaseline > footerTop - size * 0.6;
-    if (!collidesWithFooter) {
+    const collidesWithFooter = textBaseline > footerTop - size * 1.4;
+    const isBottomMost = shouldSkipBottom && t === lowestValue;
+    if (!collidesWithFooter && !isBottomMost) {
       out.push(
         text(format(t), {
           x: plot.x - 10,

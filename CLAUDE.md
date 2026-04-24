@@ -164,3 +164,24 @@ Guarantees for the next iteration:
 - If a new chart type ships, it MUST use `bigFontSize()` / `smallFontSize()` helpers and no hard-coded font sizes.
 - The stacked-area curve pattern (independent top/bottom curves + straight edge joins) is the reference for any new band chart.
 - The edge-case zoo is the acceptance gate; no release if any edge-case render looks bad.
+
+### Iteration: post-zoo review (2026-04-24 #2)
+
+The PO reviewed the freshly-shipped zoo on GitHub and filed follow-ups. The earlier fixes landed but were under-tuned. Record what they asked for and what I changed.
+
+Complaints:
+1. "01 AI adoption — small font, make it bigger still." Landscape small=22 was still reading as cramped for them.
+2. "02 hyperscalers — bars still not reaching the right edge, too much empty space on the right." The fix from iteration #1 kept a fixed `labelSize * 3.5` gutter for the value labels, which is ~3x wider than the widest actual "31" value, leaving dead space.
+3. "Check every chart's left/right margins — left usually wasted, right too tight." Line and area charts had yTickWidth on the left but nothing mirroring it on the right, so the plot painting floated left of center.
+4. "03 warming — still small font, bump maybe 2x for square. And -0.5 is still there, crowded into source, hide the bottom-most Y-axis label from below."
+
+Decisions taken:
+- **Typography bumped** again: landscape 46/28, square 60/34, portrait 72/42 (was 40/22, 44/24, 52/28). Small font on square is 34 ≈ 1.4x the previous 24; near the PO's "2x" request without becoming comical at large bars/legends. Compact-threshold fallbacks (inline 34/20, short-portrait 56/30) ensure 800x500 still works.
+- **Horizontal-bar value label reserve**: switched from fixed `labelSize * 3.5` to the actual widest rendered value label width + `labelSize * 0.8` gap. For "31"-scale values the reserve drops from ~80px to ~35px, and the longest bar now reaches the right edge instead of floating in dead space.
+- **Horizontal-bar yTickWidth**: recomputed from the actual widest category's text width (`estimateTextWidth(cat, size) + size * 0.8`) instead of a 0.55x character-count heuristic. Cap at `canvas.width * 0.34` so a 40-char label can't push the plot off the canvas.
+- **`rightGutter` option** added to `computePlotArea` and defaults to `yTickW * 0.5` for every axes chart. Gives line/area/vertical-bar/combo/grouped/stacked-bar charts a small right-side buffer so the plot painting is visually balanced. Horizontal bar and stacked-bar horizontal pass their own `rightGutter` equal to the value-label reserve.
+- **Bottom-most Y-axis label skipped** unconditionally when there are ≥3 ticks (new `skipBottomLabel` option on `renderYAxis`, default true). Gridline stays; only the numeric label is suppressed. Also tightened the footer-collision threshold from `size * 0.6` to `size * 1.4` so any other tick that would crowd the source also gets dropped.
+- **`extraBottom = small * 1.5`** added to `computePlotArea` so the plot never hugs the footer zone.
+- **`footerH` minimum raised** from `font * 3.0` to `font * 3.2` so the source + logo get room.
+
+The effect visible in 210 freshly regenerated zoo images: fonts are clearly bigger, hyperscalers' longest bar now sits flush against the right gutter, warming's bottom axis labels are gone, and every line-chart plot painting has a tiny right-side cushion that balances the Y-tick column on the left.

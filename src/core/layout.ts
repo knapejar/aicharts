@@ -45,9 +45,9 @@ export interface LegendOptions {
 }
 
 const TYPOGRAPHY: Record<AspectClass, { big: number; small: number }> = {
-  landscape: { big: 40, small: 22 },
-  square: { big: 44, small: 24 },
-  portrait: { big: 52, small: 28 },
+  landscape: { big: 46, small: 28 },
+  square: { big: 60, small: 34 },
+  portrait: { big: 72, small: 42 },
 };
 
 const LANDSCAPE_COMPACT_THRESHOLD = 900;
@@ -59,16 +59,16 @@ function canvasAspect(canvas: Canvas): AspectClass {
 export function bigFontSize(canvas: Canvas): number {
   const aspect = canvasAspect(canvas);
   const base = TYPOGRAPHY[aspect].big;
-  if (aspect === 'landscape' && canvas.width < LANDSCAPE_COMPACT_THRESHOLD) return 30;
-  if (aspect === 'portrait' && canvas.height < 1200) return 44;
+  if (aspect === 'landscape' && canvas.width < LANDSCAPE_COMPACT_THRESHOLD) return 34;
+  if (aspect === 'portrait' && canvas.height < 1200) return 56;
   return base;
 }
 
 export function smallFontSize(canvas: Canvas): number {
   const aspect = canvasAspect(canvas);
   const base = TYPOGRAPHY[aspect].small;
-  if (aspect === 'landscape' && canvas.width < LANDSCAPE_COMPACT_THRESHOLD) return 18;
-  if (aspect === 'portrait' && canvas.height < 1200) return 24;
+  if (aspect === 'landscape' && canvas.width < LANDSCAPE_COMPACT_THRESHOLD) return 20;
+  if (aspect === 'portrait' && canvas.height < 1200) return 30;
   return base;
 }
 

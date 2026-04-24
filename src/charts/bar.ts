@@ -126,19 +126,26 @@ export function renderBar(cfg: BarConfig, theme: Theme): SvgElement[] {
     );
   } else {
     const categories = rows.map((r) => r.label);
-    const maxLabelLen = Math.max(...categories.map((c) => c.length));
-    const valueLabelReserve =
-      cfg.showValueLabels !== false ? Math.round(labelSize * 3.5) : Math.round(labelSize * 0.8);
+    const widestCat = Math.max(...categories.map((c) => estimateTextWidth(c, labelSize)));
+    const widestValue = cfg.showValueLabels !== false
+      ? Math.max(...rows.map((r) => estimateTextWidth(fmt(r.value), labelSize)))
+      : 0;
+    const valueLabelReserve = cfg.showValueLabels !== false
+      ? Math.ceil(widestValue + labelSize * 0.8)
+      : Math.round(labelSize * 0.4);
     const yTickWidth = Math.min(
-      Math.round(canvas.width * 0.3),
-      Math.round(labelSize * 0.6) + Math.max(Math.round(labelSize * 4), maxLabelLen * labelSize * 0.6),
+      Math.round(canvas.width * 0.34),
+      Math.ceil(widestCat + labelSize * 0.8),
     );
     const horizPlot = computePlotArea(canvas, {
       hasTitle: !!cfg.title,
       hasSubtitle: !!cfg.subtitle,
+      title: cfg.title,
+      subtitle: cfg.subtitle,
       yTickWidth,
+      rightGutter: valueLabelReserve,
     });
-    const usableWidth = Math.max(60, horizPlot.width - valueLabelReserve);
+    const usableWidth = horizPlot.width;
     const n = rows.length;
     const po = barPad * 0.7;
     const step = horizPlot.height / Math.max(1, n - barPad + 2 * po);
