@@ -132,6 +132,26 @@ vercel deploy         # api/*, demo/ served at mcp-charts.vercel.app
 - `.plan/RESEARCH.md` for architectural decisions, competitive analysis, chart design.
 - `.plan/MASTER-PLAN.md` for the phase-by-phase implementation plan.
 
+## Workflow non-negotiables (PO standing orders)
+
+- **Always push after every iteration.** PO reviews on GitHub and needs
+  the latest commit visible before they can look at it. Sequence every
+  iteration ends with: `git commit` → `git push origin master`. Do not
+  wait for "please push" — it's already granted.
+- **GitHub auth quirk**: `gh auth status` shows two accounts — active is
+  `helgilibrary` (no push rights to this repo) and inactive is `knapejar`
+  (owner). Before pushing, run `gh auth switch -u knapejar`; then
+  `git push origin master` works over HTTPS with the stored token.
+- **Git identity**: user hasn't set `user.email`/`user.name` globally, so
+  use inline overrides per commit: `git -c user.email=jak3679@gmail.com
+  -c user.name="Jarda Knap" commit ...`. Do not write these into
+  `.git/config` or the global config.
+- **Pre-commit hook** at `.githooks/pre-commit` regenerates zoos when
+  `src/` or `examples/specs.json` changes, but it is opt-in via
+  `git config core.hooksPath .githooks` and the PO has NOT activated it.
+  Always run `npm run zoo:all` manually before committing render-affecting
+  changes.
+
 ## Product-owner complaint log (kept private, never surfaced to user)
 
 The PO reviews the example zoo after each milestone and files complaints. Log them here with the shipped fix so the next iteration does not regress.
