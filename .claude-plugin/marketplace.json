@@ -6,5 +6,5 @@
   "category": "visualization",
   "tags": ["chart", "mcp", "png", "svg", "dataviz", "ai"],
   "repository": "https://github.com/aicharts/aicharts",
-  "homepage": "https://aicharts.dev"
+  "homepage": "https://mcp-charts.vercel.app"
 }

@@ -51,10 +51,10 @@
             <pre><code>claude mcp add aicharts -- npx -y aicharts</code></pre>
             <h3 style="margin-top: 20px">ChatGPT</h3>
             <p>Settings &rarr; Connectors &rarr; Developer Mode &rarr; Add HTTP URL:</p>
-            <pre><code>https://api.aicharts.dev/mcp</code></pre>
+            <pre><code>https://mcp-charts.vercel.app/mcp</code></pre>
           </div>
         </div>
-        <p class="hint">Or just call the HTTP API: <code>POST https://api.aicharts.dev/chart</code> with a JSON body.</p>
+        <p class="hint">Or just call the HTTP API: <code>POST https://mcp-charts.vercel.app/chart</code> with a JSON body.</p>
       </section>
 
       <section id="playground">
@@ -106,7 +106,7 @@
           </div>
           <div class="card">
             <h3>Or call the HTTP API yourself</h3>
-            <pre><code>curl -X POST https://api.aicharts.dev/chart \
+            <pre><code>curl -X POST https://mcp-charts.vercel.app/chart \
   -H "Content-Type: application/json" \
   -d '{"chart":"bar","data":[{"label":"Q1","value":120},{"label":"Q2","value":180}],"title":"Revenue"}' \
   --output chart.png</code></pre>

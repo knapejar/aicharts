@@ -45,7 +45,7 @@ Why SVG-first (not canvas): crisper text, better font rendering on Vercel server
 **Install commands**:
 - Claude Desktop: `npx -y aicharts` via `claude_desktop_config.json`
 - Claude Code: `claude mcp add aicharts -- npx -y aicharts`
-- Remote: `claude mcp add --transport http aicharts https://api.aicharts.dev/mcp`
+- Remote: `claude mcp add --transport http aicharts https://mcp-charts.vercel.app/mcp`
 - ChatGPT: Settings → Connectors → Developer Mode → add HTTP URL
 
 ## 4. Repo polish files (inspired by caveman)

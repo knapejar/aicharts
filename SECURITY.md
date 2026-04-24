@@ -2,7 +2,9 @@
 
 ## Reporting a vulnerability
 
-Email security@aicharts.dev with details and a reproduction. We aim to acknowledge within 72 hours.
+Please open a private security advisory at
+https://github.com/knapejar/aicharts/security/advisories/new with details and a
+reproduction. We aim to acknowledge within 72 hours.
 
 Please do not open public GitHub issues for security problems.
 

@@ -3,7 +3,7 @@
   "name": "aicharts",
   "version": "0.1.0",
   "description": "Professional charts for AI agents — one tool, any chart, beautiful defaults.",
-  "homepage": "https://aicharts.dev",
+  "homepage": "https://mcp-charts.vercel.app",
   "repository": "https://github.com/aicharts/aicharts",
   "license": "MIT",
   "mcpServers": {

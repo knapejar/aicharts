@@ -12,9 +12,9 @@ aicharts exposes a single MCP tool, `render_chart`, accepting a flat config with
 
 ## API
 
-- `POST https://api.aicharts.dev/chart` with JSON body, returns image/png.
-- `GET https://api.aicharts.dev/chart?config=<base64url-json>` same schema.
-- `POST https://api.aicharts.dev/mcp` Streamable HTTP MCP endpoint.
+- `POST https://mcp-charts.vercel.app/chart` with JSON body, returns image/png.
+- `GET https://mcp-charts.vercel.app/chart?config=<base64url-json>` same schema.
+- `POST https://mcp-charts.vercel.app/mcp` Streamable HTTP MCP endpoint.
 
 ## Install as MCP server
 

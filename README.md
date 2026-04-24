@@ -1,58 +1,80 @@
-<div align="center">
-<img src="./assets/logo.svg" width="120" />
-<h1>aicharts</h1>
-<b>Professional charts for AI agents — one tool, any chart, beautiful defaults.</b>
-<p>
-<img alt="npm" src="https://img.shields.io/npm/v/aicharts?color=blue">
-<img alt="license" src="https://img.shields.io/npm/l/aicharts">
-<img alt="downloads" src="https://img.shields.io/npm/dm/aicharts">
-<img alt="build" src="https://img.shields.io/github/actions/workflow/status/aicharts/aicharts/ci.yml">
+# aicharts
+
+Professional chart PNGs for AI agents. Paste a URL, get a chart.
+
+<p align="center">
+  <img src="docs/gallery/hero-1.png" width="32%" alt="Europe GDP growth choropleth" />
+  <img src="docs/gallery/hero-2.png" width="32%" alt="Central bank policy rates" />
+  <img src="docs/gallery/hero-3.png" width="32%" alt="EV share of new car sales" />
 </p>
-<p>
-<a href="#install">Install</a> · <a href="#quickstart">Quickstart</a> · <a href="#charts">Charts</a> · <a href="#palettes">Palettes</a> · <a href="#api">API</a> · <a href="#mcp">MCP</a>
+
+## Try it in 30 seconds
+
+Open this URL in a browser, paste it to ChatGPT or Claude, or pipe it through
+curl — all three work:
+
+```
+https://mcp-charts.vercel.app/chart?config=eyJjaGFydCI6ImJhciIsInRpdGxlIjoiUXVhcnRlcmx5IHJldmVudWUiLCJzdWJ0aXRsZSI6IkZZMjAyNSwgbWlsbGlvbnMgVVNEIiwiZGF0YSI6W3sibGFiZWwiOiJRMSIsInZhbHVlIjo0Mn0seyJsYWJlbCI6IlEyIiwidmFsdWUiOjU4fSx7ImxhYmVsIjoiUTMiLCJ2YWx1ZSI6NzF9LHsibGFiZWwiOiJRNCIsInZhbHVlIjo4OX1dfQ
+```
+
+The query string is base64url-encoded JSON. The config in that URL is a
+four-bar chart titled _Quarterly revenue_. Change the data, rebuild the URL,
+share the link. That is the whole API.
+
+## In ChatGPT, Claude, or any AI chat
+
+Paste a prompt like this and the agent will fetch the image inline:
+
+> Fetch this URL and show the image:
+>
+> `https://mcp-charts.vercel.app/chart?config=...`
+
+Agents can also generate their own URLs on the fly — the schema is small (one
+flat JSON config) and fully documented in
+[CHATGPT-EXAMPLES.md](./CHATGPT-EXAMPLES.md). Try asking: "create a map of
+Europe for 2025 showing how much CO2 each European country emits per capita."
+A capable model will produce something like the URL below — which is a real,
+working link you can click right now:
+
+```
+https://mcp-charts.vercel.app/chart?config=eyJjaGFydCI6ImdlbyIsInRpdGxlIjoiRXVyb3BlIENPMiBlbWlzc2lvbnMgcGVyIGNhcGl0YSwgMjAyNSIsInN1YnRpdGxlIjoiVG9ubmVzIG9mIENPMiBwZXIgcGVyc29uLCBlc3RpbWF0ZSIsInNvdXJjZSI6Ik91ciBXb3JsZCBpbiBEYXRhLCBFdXJvc3RhdCAoMjAyNSBlc3QuKSIsInBhbGV0dGUiOiJkaXZlcmdpbmctc3Vuc2V0IiwiYmFzZW1hcCI6ImV1cm9wZSIsImNvZGUiOiJjb2RlIiwidmFsdWUiOiJlbWlzc2lvbnMiLCJzY2FsZSI6InN0ZXBwZWQiLCJzdGVwcyI6NiwiZGF0YSI6W3siY29kZSI6IkxVWCIsImVtaXNzaW9ucyI6MTMuMn0seyJjb2RlIjoiQ1pFIiwiZW1pc3Npb25zIjo5LjF9LHsiY29kZSI6IkVTVCIsImVtaXNzaW9ucyI6OC45fSx7ImNvZGUiOiJERVUiLCJlbWlzc2lvbnMiOjcuN30seyJjb2RlIjoiUE9MIiwiZW1pc3Npb25zIjo3Ljl9LHsiY29kZSI6Ik5MRCIsImVtaXNzaW9ucyI6Ny4zfSx7ImNvZGUiOiJCRUwiLCJlbWlzc2lvbnMiOjcuMX0seyJjb2RlIjoiSVJMIiwiZW1pc3Npb25zIjo2Ljh9LHsiY29kZSI6IkZJTiIsImVtaXNzaW9ucyI6Ny40fSx7ImNvZGUiOiJBVVQiLCJlbWlzc2lvbnMiOjYuNX0seyJjb2RlIjoiQ1lQIiwiZW1pc3Npb25zIjo2LjB9LHsiY29kZSI6IkdSQyIsImVtaXNzaW9ucyI6NS42fSx7ImNvZGUiOiJJVEEiLCJlbWlzc2lvbnMiOjUuMn0seyJjb2RlIjoiU1ZLIiwiZW1pc3Npb25zIjo1LjR9LHsiY29kZSI6IlNWTiIsImVtaXNzaW9ucyI6NS4zfSx7ImNvZGUiOiJCR1IiLCJlbWlzc2lvbnMiOjUuOH0seyJjb2RlIjoiRE5LIiwiZW1pc3Npb25zIjo0Ljh9LHsiY29kZSI6IkxUVSIsImVtaXNzaW9ucyI6NC42fSx7ImNvZGUiOiJFU1AiLCJlbWlzc2lvbnMiOjQuOH0seyJjb2RlIjoiSFVOIiwiZW1pc3Npb25zIjo0LjV9LHsiY29kZSI6IkdCUiIsImVtaXNzaW9ucyI6NC40fSx7ImNvZGUiOiJGUkEiLCJlbWlzc2lvbnMiOjQuMX0seyJjb2RlIjoiSFJWIiwiZW1pc3Npb25zIjo0LjF9LHsiY29kZSI6IkxWQSIsImVtaXNzaW9ucyI6My45fSx7ImNvZGUiOiJST1UiLCJlbWlzc2lvbnMiOjMuOH0seyJjb2RlIjoiUFJUIiwiZW1pc3Npb25zIjozLjh9LHsiY29kZSI6IlNXRSIsImVtaXNzaW9ucyI6My4yfSx7ImNvZGUiOiJNTFQiLCJlbWlzc2lvbnMiOjMuM30seyJjb2RlIjoiQ0hFIiwiZW1pc3Npb25zIjozLjd9LHsiY29kZSI6Ik5PUiIsImVtaXNzaW9ucyI6Ni43fSx7ImNvZGUiOiJJU0wiLCJlbWlzc2lvbnMiOjguN31dfQ
+```
+
+## What it renders
+
+11 chart types, 10 palettes, 11 basemaps, 3 sizes (`inline` 800x500,
+`share` 1200x675, `poster` 1600x2000).
+
+| Chart type   | Use when                                        |
+| ------------ | ----------------------------------------------- |
+| line         | a trend over time, one or a few series          |
+| line-split   | many series, each worth its own panel           |
+| bar          | compare a single metric across categories       |
+| grouped-bar  | compare two or three metrics across categories  |
+| stacked-bar  | parts of a whole across categories              |
+| bar-split    | same categories, one panel per metric           |
+| stacked-area | composition over time                           |
+| combo        | bars and a line on one plot (e.g. rate + count) |
+| pie          | parts of a whole, few slices                    |
+| donut        | parts of a whole with a center value            |
+| geo          | choropleth on a country, region, or world map   |
+
+## More examples
+
+<p align="center">
+  <img src="docs/gallery/01-ai-adoption.png" width="48%" alt="AI adoption curve" />
+  <img src="docs/gallery/11-cloud-market.png" width="48%" alt="Cloud market share" />
 </p>
-</div>
+<p align="center">
+  <img src="docs/gallery/13-housing-affordability.png" width="48%" alt="Housing affordability" />
+  <img src="docs/gallery/19-ai-model-costs.png" width="48%" alt="AI model cost per million tokens" />
+</p>
 
-## Why aicharts?
+AI adoption by sector (bars). Cloud market share over time (stacked area).
+Housing affordability index across metros (line-split). Falling cost per
+million tokens across major AI models (line).
 
-- **One tool, not 26.** A single `render_chart` tool with a discriminated `chart` field. Your agent's context stays lean.
-- **Real PNGs, not URLs.** Rendered locally via SVG → resvg. No third-party proxy, no network dependency at call time, no privacy leak.
-- **Beautiful defaults.** Editorial typography, curated palettes, opinionated layout. Not Chart.js defaults.
-
-## Install
-
-### As an MCP server (Claude Desktop)
-
-Edit `claude_desktop_config.json` (or run `claude mcp add`):
-
-```json
-{
-  "mcpServers": {
-    "aicharts": { "command": "npx", "args": ["-y", "aicharts"] }
-  }
-}
-```
-
-### As an MCP server (Claude Code / Cursor / any MCP client)
-
-```
-claude mcp add aicharts -- npx -y aicharts
-```
-
-### As a remote MCP server (ChatGPT, hosted Claude)
-
-Settings → Connectors → Developer Mode → Add `https://api.aicharts.dev/mcp`.
-
-### As a Vercel API (no install)
-
-```
-curl -X POST https://api.aicharts.dev/chart \
-  -H "Content-Type: application/json" \
-  -d '{"chart":"bar","data":[{"label":"A","value":12},{"label":"B","value":18}],"title":"Hello"}' \
-  --output chart.png
-```
-
-### As a Node.js library
+## Use from code
 
 ```
 npm install aicharts
@@ -71,139 +93,28 @@ const png = await render({
 });
 ```
 
-## Quickstart
+`render()` returns a `Uint8Array` containing a PNG.
 
-```ts
-// Bar
-render({
-  chart: 'bar',
-  data: [{ label: 'Q1', value: 120 }, { label: 'Q2', value: 180 }],
-  title: 'Revenue',
-});
+## MCP server
 
-// Line
-render({
-  chart: 'line',
-  data: [{ year: 2020, revenue: 12 }, { year: 2021, revenue: 18 }],
-  x: 'year',
-  y: 'revenue',
-  title: 'Revenue growth',
-});
-
-// Pie
-render({
-  chart: 'pie',
-  data: [{ label: 'Mobile', value: 62 }, { label: 'Desktop', value: 38 }],
-  title: 'Traffic share',
-});
-```
-
-## Charts
-
-| Chart        | Legend | Multi-series | Stacking | Custom palette | Sizes          |
-| ------------ | ------ | ------------ | -------- | -------------- | -------------- |
-| line         | yes    | yes          | no       | yes            | inline / share / poster |
-| line-split   | yes    | yes          | no       | yes            | inline / share / poster |
-| bar          | auto   | no           | no       | yes            | inline / share / poster |
-| grouped-bar  | yes    | yes          | no       | yes            | inline / share / poster |
-| stacked-bar  | yes    | yes          | yes      | yes            | inline / share / poster |
-| bar-split    | yes    | yes          | no       | yes            | inline / share / poster |
-| stacked-area | yes    | yes          | yes      | yes            | inline / share / poster |
-| combo        | yes    | yes          | no       | yes            | inline / share / poster |
-| pie          | auto   | no           | no       | yes            | inline / share / poster |
-| donut        | auto   | no           | no       | yes            | inline / share / poster |
-| geo          | auto   | no           | no       | yes            | inline / share / poster |
-
-## Palettes
-
-Ten curated palettes, each with matching typography. Default is `clarity`.
-
-| Palette            | Use                              | Typeface                   |
-| ------------------ | -------------------------------- | -------------------------- |
-| clarity            | default, balanced categorical    | Inter                      |
-| boardroom          | corporate                        | Source Serif / Source Sans |
-| editorial          | FT / Economist look              | Playfair + Source Sans     |
-| vibrant            | marketing                        | Poppins                    |
-| carbon             | IBM-style, accessible            | IBM Plex Sans              |
-| viridis            | sequential scientific            | IBM Plex Sans              |
-| earth              | warm editorial                   | Libre Franklin             |
-| twilight           | dark mode                        | Inter                      |
-| mono-blue          | single-series emphasis           | Source Serif / Source Sans |
-| diverging-sunset   | signed data                      | Merriweather + Lato        |
-
-Override with a custom palette:
-
-```json
-{ "palette": { "colors": ["#0f172a", "#2563eb", "#f97316"], "font": "Inter", "background": "#ffffff", "text": "#0f172a" } }
-```
-
-## API
-
-### POST /chart
-
-Body:
-
-```json
-{
-  "chart": "bar",
-  "data": [{ "label": "A", "value": 12 }],
-  "title": "Hello",
-  "subtitle": "optional",
-  "source": "optional",
-  "palette": "clarity",
-  "size": "share"
-}
-```
-
-Returns: `image/png` body.
-
-### GET /chart?config=\<base64\>
-
-Same schema, `config` is base64url-encoded JSON. Useful for embedding in Markdown:
-
-```md
-![chart](https://api.aicharts.dev/chart?config=eyJjaGFydCI6ImJhciIsImRhdGEiOlt7ImxhYmVsIjoiQSIsInZhbHVlIjoxMn1dfQ)
-```
-
-## MCP
-
-Tool: `render_chart`
-
-Input (summary):
+aicharts ships as an MCP server so Claude, Cursor, and any MCP-capable agent
+can call `render_chart` directly. Local install:
 
 ```
-chart: 'line' | 'bar' | 'grouped-bar' | 'stacked-bar' | 'bar-split'
-       | 'stacked-area' | 'combo' | 'line-split' | 'pie' | 'donut' | 'geo'
-data: object[]
-title?, subtitle?, source?: string
-x?, y?: string               // column names for tabular inputs
-palette?: string | PaletteObject
-size?: 'inline' | 'share' | 'poster'
+claude mcp add aicharts -- npx -y aicharts
 ```
 
-Output: `ImageContent` block with base64 PNG. Enforces a 900 KB safety margin below the 1 MB MCP cap.
+Remote (ChatGPT custom connector, hosted Claude, or any HTTP MCP client):
+point at `https://mcp-charts.vercel.app/mcp`.
 
-Example call from an agent:
+## Links
 
-```json
-{
-  "name": "render_chart",
-  "arguments": {
-    "chart": "bar",
-    "data": [{ "label": "A", "value": 12 }, { "label": "B", "value": 18 }],
-    "title": "Hello"
-  }
-}
-```
-
-## Contributing
-
-See [CONTRIBUTING.md](./CONTRIBUTING.md). New charts ship with a snapshot PNG and at least one edge-case test.
+- [CHATGPT-EXAMPLES.md](./CHATGPT-EXAMPLES.md) — 20+ ready-to-paste prompts.
+- [FOR-DEVELOPERS.md](./FOR-DEVELOPERS.md) — architecture, palette reference,
+  contributing guide.
+- Live demo and playground: [mcp-charts.vercel.app](https://mcp-charts.vercel.app)
+- Source: [github.com/knapejar/aicharts](https://github.com/knapejar/aicharts)
 
 ## License
 
-MIT — see [LICENSE](./LICENSE).
-
-## Sponsor
-
-Funding links in [.github/FUNDING.yml](./.github/FUNDING.yml).
+MIT.

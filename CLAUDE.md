@@ -122,7 +122,7 @@ Unit tests: `node --test tests/unit/**/*.test.mjs`. Snapshots: deterministic PNG
 ```
 npm run build         # esbuild + tsc --emitDeclarationOnly
 npm publish           # triggered via release.yml on v* tag
-vercel deploy         # api/*, demo/ served at aicharts.dev
+vercel deploy         # api/*, demo/ served at mcp-charts.vercel.app
 ```
 
 `bin` exposes `aicharts` → `dist/mcp/stdio.js` with shebang, marked executable by build.
