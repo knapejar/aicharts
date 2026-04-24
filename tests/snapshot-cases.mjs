@@ -269,6 +269,70 @@ export function snapshotCases() {
     },
   });
 
+  cases.push({
+    name: 'stacked-area-co2',
+    config: {
+      chart: 'stacked-area',
+      data: co2,
+      x: 'year',
+      y: ['coal', 'oil', 'gas', 'other'],
+      title: 'Global CO2 emissions by fuel',
+      subtitle: 'Millions of tonnes, 1950-2021',
+      source: 'Global Carbon Project',
+    },
+  });
+
+  cases.push({
+    name: 'stacked-area-normalized',
+    config: {
+      chart: 'stacked-area',
+      data: co2,
+      x: 'year',
+      y: ['coal', 'oil', 'gas', 'other'],
+      normalize: true,
+      title: 'Share of CO2 emissions by fuel',
+      subtitle: 'Normalized to 100% per year',
+      source: 'Global Carbon Project',
+      palette: 'earth',
+    },
+  });
+
+  cases.push({
+    name: 'combo-revenue-vs-margin',
+    config: {
+      chart: 'combo',
+      data: [
+        { quarter: 'Q1', revenue: 120, margin: 0.18 },
+        { quarter: 'Q2', revenue: 150, margin: 0.21 },
+        { quarter: 'Q3', revenue: 180, margin: 0.19 },
+        { quarter: 'Q4', revenue: 220, margin: 0.24 },
+        { quarter: 'Q1 Y2', revenue: 240, margin: 0.26 },
+        { quarter: 'Q2 Y2', revenue: 275, margin: 0.29 },
+      ],
+      x: 'quarter',
+      bars: 'revenue',
+      lines: 'margin',
+      title: 'Revenue and margin',
+      subtitle: 'Bars: revenue in MUSD. Line: margin ratio.',
+      source: 'Internal',
+    },
+  });
+
+  cases.push({
+    name: 'line-split-birth-rate',
+    config: {
+      chart: 'line-split',
+      data: birthRate,
+      x: 'year',
+      y: ['czechia', 'germany', 'france', 'italy', 'poland'],
+      columns: 3,
+      title: 'Birth rate over time',
+      subtitle: 'Small multiples, shared y scale',
+      source: 'Eurostat',
+      interpolation: 'curved',
+    },
+  });
+
   void election;
   void temperature;
 
