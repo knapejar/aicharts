@@ -440,6 +440,81 @@ export function snapshotCases() {
   });
 
   cases.push({
+    name: 'geo-world-internet-clarity',
+    config: {
+      chart: 'geo',
+      data: internet,
+      code: 'code',
+      value: 'usage',
+      basemap: 'world',
+      title: 'Internet usage worldwide',
+      subtitle: 'Percent of population with internet access',
+      source: 'World Bank',
+      palette: 'clarity',
+    },
+  });
+
+  cases.push({
+    name: 'geo-world-internet-viridis',
+    config: {
+      chart: 'geo',
+      data: internet,
+      code: 'code',
+      value: 'usage',
+      basemap: 'world',
+      title: 'Internet usage worldwide',
+      subtitle: 'Percent of population with internet access',
+      source: 'World Bank',
+      palette: 'viridis',
+    },
+  });
+
+  cases.push({
+    name: 'line-basic-poster',
+    config: {
+      chart: 'line',
+      data: temperature,
+      x: 'year',
+      y: 'anomaly',
+      title: 'Global temperature anomaly',
+      subtitle: 'Relative to 1951-1980 average, degrees Celsius',
+      source: 'NASA GISS',
+      size: 'poster',
+    },
+  });
+
+  cases.push({
+    name: 'line-basic-inline',
+    config: {
+      chart: 'line',
+      data: temperature,
+      x: 'year',
+      y: 'anomaly',
+      title: 'Global temperature anomaly',
+      subtitle: 'Relative to 1951-1980 average, degrees Celsius',
+      source: 'NASA GISS',
+      size: 'inline',
+    },
+  });
+
+  cases.push({
+    name: 'bar-vertical-poster',
+    config: {
+      chart: 'bar',
+      data: [
+        { label: 'Q1', value: 120 },
+        { label: 'Q2', value: 180 },
+        { label: 'Q3', value: 160 },
+        { label: 'Q4', value: 220 },
+      ],
+      title: 'Quarterly revenue',
+      subtitle: 'Millions USD',
+      source: 'Company filings',
+      size: 'poster',
+    },
+  });
+
+  cases.push({
     name: 'geo-europe-internet',
     config: {
       chart: 'geo',

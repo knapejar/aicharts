@@ -194,13 +194,16 @@ test('formatPercent honours explicit decimals arg', () => {
   assert.equal(formatPercent(0.5, 0), '50%');
 });
 
-test('formatPercent on very small fractions', { skip: 'impl rounds tiny fractions to 0% — reported to manager' }, () => {
-  // TODO: impl bug — reported to manager
-  // formatPercent(0.00012) currently returns '0%' because the decimal-
-  // auto-detect picks 1 decimal place (since 0.012 is non-integer) and then
-  // formatNumber trims trailing zeros after toFixed(1). Ideal behavior would
-  // keep precision so the tiny fraction is not silently erased.
+test('formatPercent on very small non-zero fractions keeps precision instead of collapsing to "0%"', () => {
+  // Avoids lying about tiny but non-zero magnitudes. Zero stays zero.
+  // For percent magnitude in [0.01%, 0.1%) we bump precision to 2 decimals.
+  // For percent magnitude below 0.01% we render "<0.01%" (or ">-0.01%" for
+  // tiny negatives) rather than the misleading "0%".
+  assert.equal(formatPercent(0.00012), '0.01%');
+  assert.equal(formatPercent(0.000005), '<0.01%');
+  assert.equal(formatPercent(-0.000005), '>-0.01%');
   assert.notEqual(formatPercent(0.00012), '0%');
+  assert.equal(formatPercent(0), '0%');
 });
 
 // ---------- currency ----------

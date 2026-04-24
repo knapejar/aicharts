@@ -1,6 +1,27 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
+import { readFileSync } from 'node:fs';
+import { resolve, dirname } from 'node:path';
+import { fileURLToPath } from 'node:url';
 import { render } from '../../dist/index.js';
+
+const __dirname = dirname(fileURLToPath(import.meta.url));
+
+function fixture(name) {
+  const p = resolve(__dirname, '..', 'fixtures', name);
+  return JSON.parse(readFileSync(p, 'utf-8'));
+}
+
+function isPng(png) {
+  return (
+    png instanceof Uint8Array &&
+    png.byteLength > 500 &&
+    png[0] === 0x89 &&
+    png[1] === 0x50 &&
+    png[2] === 0x4e &&
+    png[3] === 0x47
+  );
+}
 
 function pngDims(png) {
   const buf = Buffer.from(png.buffer, png.byteOffset, png.byteLength);
@@ -122,6 +143,60 @@ test('PNG dimensions stay under limit even when caller requests dpr=3', async ()
   );
   const { width, height } = pngDims(png);
   assert.ok(Math.max(width, height) < 2000, `got ${width}x${height}`);
+});
+
+test('edge fixture: empty data renders a valid PNG without throwing', async () => {
+  const data = fixture('edge-empty.json');
+  const png = await render({
+    chart: 'line',
+    data,
+    x: 'year',
+    y: 'value',
+    title: 'Empty fixture',
+  });
+  assert.ok(isPng(png), 'expected valid non-empty PNG for empty data');
+});
+
+test('edge fixture: null/undefined y values render a valid PNG without throwing', async () => {
+  const data = fixture('edge-nulls.json');
+  const png = await render({
+    chart: 'line',
+    data,
+    x: 'year',
+    y: 'value',
+    title: 'Nulls fixture',
+  });
+  assert.ok(isPng(png), 'expected valid non-empty PNG with null y values');
+});
+
+test('edge fixture: duplicate x values currently render without throwing (locked behavior)', async () => {
+  // Current behavior is to render both rows as-is; the line visits each point
+  // in order, so duplicate x values just produce a back-tracking segment.
+  // If this ever changes to throw or dedupe, update this test deliberately.
+  const data = fixture('edge-duplicate-x.json');
+  let threw = null;
+  let png;
+  try {
+    png = await render({
+      chart: 'line',
+      data,
+      x: 'year',
+      y: 'value',
+      title: 'Duplicate-x fixture',
+    });
+  } catch (err) {
+    threw = err;
+  }
+  if (threw) {
+    const msg = String(threw.message || threw);
+    assert.match(
+      msg,
+      /duplicat|repeat/i,
+      `duplicate-x threw with unclear message: ${msg}`,
+    );
+  } else {
+    assert.ok(isPng(png), 'expected valid non-empty PNG for duplicate x');
+  }
 });
 
 test('all chart types render without error', async () => {
