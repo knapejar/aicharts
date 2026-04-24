@@ -26,9 +26,9 @@ test('contrastRatio is symmetric', () => {
   assert.ok(Math.abs(contrastRatio('#123456', '#abcdef') - contrastRatio('#abcdef', '#123456')) < 1e-9);
 });
 
-test('contrastRatio of #777 and #888 is below 4.5', () => {
+test('contrastRatio of #777 and #888 is near 1 (very low contrast)', () => {
   const ratio = contrastRatio('#777', '#888');
-  assert.ok(ratio < 4.5, `expected below 4.5, got ${ratio}`);
+  assert.ok(ratio > 1 && ratio < 1.3, `expected in (1, 1.3), got ${ratio}`);
 });
 
 test('ensureReadable darkens light fg against white background', () => {

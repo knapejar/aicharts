@@ -7,20 +7,23 @@ import { render } from '../../dist/index.js';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 
+const PNG_MAGIC = [0x89, 0x50, 0x4e, 0x47, 0x0d, 0x0a, 0x1a, 0x0a];
+
 function fixture(name) {
   const p = resolve(__dirname, '..', 'fixtures', name);
   return JSON.parse(readFileSync(p, 'utf-8'));
 }
 
-function isPng(png) {
-  return (
-    png instanceof Uint8Array &&
-    png.byteLength > 500 &&
-    png[0] === 0x89 &&
-    png[1] === 0x50 &&
-    png[2] === 0x4e &&
-    png[3] === 0x47
-  );
+function assertIsPng(bytes, label) {
+  assert.ok(bytes instanceof Uint8Array, `${label}: not a Uint8Array`);
+  assert.ok(bytes.byteLength > 500, `${label}: PNG byteLength ${bytes.byteLength} <= 500`);
+  for (let i = 0; i < PNG_MAGIC.length; i++) {
+    assert.equal(
+      bytes[i],
+      PNG_MAGIC[i],
+      `${label}: byte ${i} is 0x${(bytes[i] ?? 0).toString(16)}, expected 0x${PNG_MAGIC[i].toString(16)}`,
+    );
+  }
 }
 
 function pngDims(png) {
@@ -40,12 +43,8 @@ test('renders line chart to PNG', async () => {
     y: 'value',
     title: 'Test',
   });
-  assert.ok(png instanceof Uint8Array);
+  assertIsPng(png, 'line');
   assert.ok(png.byteLength > 1000);
-  assert.equal(png[0], 0x89);
-  assert.equal(png[1], 0x50);
-  assert.equal(png[2], 0x4e);
-  assert.equal(png[3], 0x47);
 });
 
 test('renders empty data gracefully', async () => {
@@ -56,7 +55,7 @@ test('renders empty data gracefully', async () => {
     y: 'y',
     title: 'Empty',
   });
-  assert.ok(png.byteLength > 500);
+  assertIsPng(png, 'empty-line');
 });
 
 test('renders bar chart', async () => {
@@ -68,7 +67,7 @@ test('renders bar chart', async () => {
     ],
     title: 'Bar test',
   });
-  assert.ok(png.byteLength > 500);
+  assertIsPng(png, 'bar');
 });
 
 test('renders pie chart', async () => {
@@ -80,7 +79,7 @@ test('renders pie chart', async () => {
     ],
     title: 'Pie test',
   });
-  assert.ok(png.byteLength > 500);
+  assertIsPng(png, 'pie');
 });
 
 test('renders SVG format', async () => {
@@ -98,26 +97,45 @@ test('renders SVG format', async () => {
     { format: 'svg' },
   );
   const str = new TextDecoder().decode(svg);
-  assert.ok(str.startsWith('<svg'));
-  assert.ok(str.includes('SVG'));
+  assert.ok(str.trimStart().startsWith('<svg'), 'output must start with <svg root');
+  assert.ok(
+    str.includes('<rect') || str.includes('<g '),
+    'output must contain non-trivial SVG children (<rect> or <g>)',
+  );
 });
 
-test('custom palette overrides', async () => {
-  const png = await render({
-    chart: 'bar',
-    data: [{ label: 'X', value: 5 }],
-    palette: {
-      colors: ['#ff0000', '#00ff00'],
-      background: '#fffef9',
-      text: '#111',
-      textMuted: '#666',
-      grid: '#eee',
-      axis: '#999',
-      accent: '#ff0000',
+test('custom palette overrides reach the SVG', async () => {
+  const unique = '#ff00aa';
+  const defaultClarityAccent = '#4269d0';
+  const svg = await render(
+    {
+      chart: 'bar',
+      data: [
+        { label: 'X', value: 5 },
+        { label: 'Y', value: 9 },
+      ],
+      palette: {
+        colors: [unique, '#00ff00'],
+        background: '#fffef9',
+        text: '#111',
+        textMuted: '#666',
+        grid: '#eee',
+        axis: '#999',
+        accent: unique,
+        fontHeadline: 'TestFont123',
+        fontBody: 'TestFont123',
+      },
+      title: 'Custom',
     },
-    title: 'Custom',
-  });
-  assert.ok(png.byteLength > 500);
+    { format: 'svg' },
+  );
+  const str = new TextDecoder().decode(svg);
+  assert.ok(str.includes(unique), `SVG must contain custom color ${unique}`);
+  assert.ok(
+    !str.includes(defaultClarityAccent),
+    `SVG must not contain default clarity color ${defaultClarityAccent} after override`,
+  );
+  assert.ok(str.includes('TestFont123'), 'SVG must contain custom fontHeadline');
 });
 
 test('PNG dimensions stay under Anthropic 2000px multi-image limit for every preset', async () => {
@@ -154,7 +172,7 @@ test('edge fixture: empty data renders a valid PNG without throwing', async () =
     y: 'value',
     title: 'Empty fixture',
   });
-  assert.ok(isPng(png), 'expected valid non-empty PNG for empty data');
+  assertIsPng(png, 'edge-empty');
 });
 
 test('edge fixture: null/undefined y values render a valid PNG without throwing', async () => {
@@ -166,7 +184,7 @@ test('edge fixture: null/undefined y values render a valid PNG without throwing'
     y: 'value',
     title: 'Nulls fixture',
   });
-  assert.ok(isPng(png), 'expected valid non-empty PNG with null y values');
+  assertIsPng(png, 'edge-nulls');
 });
 
 test('edge fixture: duplicate x values currently render without throwing (locked behavior)', async () => {
@@ -195,7 +213,7 @@ test('edge fixture: duplicate x values currently render without throwing (locked
       `duplicate-x threw with unclear message: ${msg}`,
     );
   } else {
-    assert.ok(isPng(png), 'expected valid non-empty PNG for duplicate x');
+    assertIsPng(png, 'edge-duplicate-x');
   }
 });
 
@@ -211,38 +229,63 @@ test('all chart types render without error', async () => {
     'line-split',
     'pie',
     'donut',
+    'geo',
   ];
   for (const chart of types) {
-    const config =
-      chart === 'combo'
-        ? {
-            chart,
-            data: [
-              { x: 'A', bar: 10, line: 5 },
-              { x: 'B', bar: 20, line: 8 },
-            ],
-            x: 'x',
-            bars: 'bar',
-            lines: 'line',
-          }
-        : chart === 'pie' || chart === 'donut'
-          ? {
-              chart,
-              data: [
-                { label: 'A', value: 30 },
-                { label: 'B', value: 70 },
-              ],
-            }
-          : {
-              chart,
-              data: [
-                { x: 1, a: 10, b: 5 },
-                { x: 2, a: 20, b: 8 },
-              ],
-              x: 'x',
-              y: ['a', 'b'],
-            };
+    let config;
+    if (chart === 'combo') {
+      config = {
+        chart,
+        data: [
+          { x: 'A', bar: 10, line: 5 },
+          { x: 'B', bar: 20, line: 8 },
+        ],
+        x: 'x',
+        bars: 'bar',
+        lines: 'line',
+      };
+    } else if (chart === 'pie' || chart === 'donut') {
+      config = {
+        chart,
+        data: [
+          { label: 'A', value: 30 },
+          { label: 'B', value: 70 },
+        ],
+      };
+    } else if (chart === 'bar') {
+      config = {
+        chart: 'bar',
+        data: [
+          { label: 'A', value: 10 },
+          { label: 'B', value: 20 },
+        ],
+        x: 'label',
+        y: 'value',
+      };
+    } else if (chart === 'geo') {
+      config = {
+        chart: 'geo',
+        data: [
+          { code: 'USA', value: 10 },
+          { code: 'CHN', value: 20 },
+          { code: 'DEU', value: 15 },
+        ],
+        basemap: 'world',
+        code: 'code',
+        value: 'value',
+      };
+    } else {
+      config = {
+        chart,
+        data: [
+          { x: 1, a: 10, b: 5 },
+          { x: 2, a: 20, b: 8 },
+        ],
+        x: 'x',
+        y: ['a', 'b'],
+      };
+    }
     const png = await render(config);
-    assert.ok(png.byteLength > 500, `${chart} failed to render`);
+    assertIsPng(png, chart);
   }
 });
