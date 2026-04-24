@@ -4,6 +4,7 @@ import { computeFrame } from '../core/frame.js';
 import {
   emptyPlotHint,
   estimateBandXAxisHeight,
+  estimateYTickBandWidth,
   renderBandXAxis,
   renderYAxis,
 } from './axes.js';
@@ -52,8 +53,14 @@ export function renderStackedBar(cfg: StackedBarConfig, theme: Theme): SvgElemen
       categories,
       canvas.width * 0.85,
     );
+    const yTickBandWidth = estimateYTickBandWidth(
+      canvas,
+      cfg.normalize ? [0, 1] : totals,
+      fmt,
+    );
     const frame = computeFrame(canvas, {
       xTickBandHeight,
+      yTickBandWidth,
       title: cfg.title,
       subtitle: cfg.subtitle,
       hasLegend: true,
@@ -168,7 +175,9 @@ export function renderStackedBar(cfg: StackedBarConfig, theme: Theme): SvgElemen
     const xScale = (v: number) =>
       horizPlot.x + ((v - niceX.min) / (niceX.max - niceX.min || 1)) * horizPlot.width;
 
-    for (const t of niceX.ticks) {
+    for (let ti = 0; ti < niceX.ticks.length; ti++) {
+      const t = niceX.ticks[ti]!;
+      const anchor = ti === 0 ? 'start' : ti === niceX.ticks.length - 1 ? 'end' : 'middle';
       out.push(
         svgLine(xScale(t), horizPlot.y, xScale(t), horizPlot.y + horizPlot.height, {
           stroke: palette.grid,
@@ -183,7 +192,7 @@ export function renderStackedBar(cfg: StackedBarConfig, theme: Theme): SvgElemen
           'font-size': labelSize,
           'font-family': palette.fontBody,
           fill: palette.textMuted,
-          'text-anchor': 'middle',
+          'text-anchor': anchor,
         }),
       );
     }

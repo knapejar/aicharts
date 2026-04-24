@@ -4,6 +4,7 @@ import { computeFrame } from '../core/frame.js';
 import {
   emptyPlotHint,
   estimateBandXAxisHeight,
+  estimateYTickBandWidth,
   renderBandXAxis,
   renderYAxis,
 } from './axes.js';
@@ -20,6 +21,14 @@ export function renderGroupedBar(cfg: GroupedBarConfig, theme: Theme): SvgElemen
     categoriesForHeight,
     canvas.width * 0.85,
   );
+  const yValuesUpfront: number[] = [];
+  for (const s of series) {
+    for (const r of cfg.data ?? []) {
+      const v = Number(r[s] ?? NaN);
+      if (Number.isFinite(v)) yValuesUpfront.push(v);
+    }
+  }
+  const yTickBandWidth = estimateYTickBandWidth(canvas, yValuesUpfront);
   const frame = computeFrame(canvas, {
     title: cfg.title,
     subtitle: cfg.subtitle,
@@ -28,6 +37,7 @@ export function renderGroupedBar(cfg: GroupedBarConfig, theme: Theme): SvgElemen
     source: cfg.source,
     logo: cfg.logo ?? 'default',
     xTickBandHeight,
+    yTickBandWidth,
   });
   const plot = frame.plot;
   const out: SvgElement[] = [];

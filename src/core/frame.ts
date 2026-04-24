@@ -61,6 +61,7 @@ export interface FrameOptions {
   logo?: 'default' | 'none' | string;
   yTickBandWidth?: number;
   xTickBandHeight?: number;
+  rightGutter?: number;
   hasXAxis?: boolean;
   hasYAxis?: boolean;
 }
@@ -240,6 +241,7 @@ export function computeFrame(canvas: Canvas, opts: FrameOptions = {}): Frame {
 
   const xTickBandH = hasXAxis ? (opts.xTickBandHeight ?? Math.round(small * 1.8)) : 0;
   const yTickBandW = hasYAxis ? (opts.yTickBandWidth ?? Math.round(small * 3.0)) : 0;
+  const rightGutter = opts.rightGutter ?? 0;
 
   const plotTop = cursor;
   const plotBottom = footerY - (hasSource || hasLogo ? gapXTicksToFooter : 0) - xTickBandH - (hasXAxis ? gapPlotToXTicks : 0);
@@ -250,7 +252,7 @@ export function computeFrame(canvas: Canvas, opts: FrameOptions = {}): Frame {
   const plotH = Math.max(plotMinHeight, plotBottom - plotTop);
   const plotX = innerX + yTickBandW;
   const plotY = plotTop;
-  const plotW = Math.max(plotMinWidth, innerW - yTickBandW);
+  const plotW = Math.max(plotMinWidth, innerW - yTickBandW - rightGutter);
 
   const plot: BBox = { x: plotX, y: plotY, width: plotW, height: plotH };
   const yTickBand: BBox = { x: innerX, y: plotY, width: yTickBandW, height: plotH };

@@ -3,6 +3,7 @@ import { renderLegend, labelFontSize } from '../core/layout.js';
 import { computeFrame } from '../core/frame.js';
 import {
   emptyPlotHint,
+  estimateYTickBandWidth,
   pickXAxisKind,
   renderBandXAxis,
   renderDateXAxis,
@@ -72,6 +73,14 @@ export function renderLine(cfg: LineConfig, theme: Theme): SvgElement[] {
   const { palette, canvas } = theme;
   const series = Array.isArray(cfg.y) ? cfg.y : [cfg.y];
   const hasLegend = series.length > 1;
+  const allYUpfront: number[] = [];
+  for (const s of series) {
+    for (const r of cfg.data ?? []) {
+      const v = Number(r[s] ?? NaN);
+      if (Number.isFinite(v)) allYUpfront.push(v);
+    }
+  }
+  const yTickBandWidth = estimateYTickBandWidth(canvas, allYUpfront, cfg.yFormat ? undefined : undefined);
   const frame = computeFrame(canvas, {
     title: cfg.title,
     subtitle: cfg.subtitle,
@@ -79,6 +88,7 @@ export function renderLine(cfg: LineConfig, theme: Theme): SvgElement[] {
     legendLabels: hasLegend ? series : undefined,
     source: cfg.source,
     logo: cfg.logo ?? 'default',
+    yTickBandWidth,
   });
   const plot = frame.plot;
   const out: SvgElement[] = [];
@@ -232,6 +242,7 @@ export function renderLine(cfg: LineConfig, theme: Theme): SvgElement[] {
         void realIdx;
         if (showAll || (showFL && (isFirst || isLast)) || (showLast && isLast)) {
           const valueNum = ys.filter(Number.isFinite)[showAll ? i : showLast || isLast ? ys.filter(Number.isFinite).length - 1 : 0]!;
+          const anchor = isLast ? 'end' : isFirst ? 'start' : 'middle';
           labelsGroup.push(
             text(fmt(valueNum), {
               x: px,
@@ -240,7 +251,7 @@ export function renderLine(cfg: LineConfig, theme: Theme): SvgElement[] {
               'font-weight': 600,
               'font-family': palette.fontBody,
               fill: palette.text,
-              'text-anchor': 'middle',
+              'text-anchor': anchor,
             }),
           );
         }

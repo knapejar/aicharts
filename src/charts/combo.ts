@@ -1,9 +1,10 @@
-import { circle, g, line as svgLine, path, rect, text } from '../core/svg.js';
+import { circle, estimateTextWidth, g, line as svgLine, path, rect, text } from '../core/svg.js';
 import { labelFontSize, renderLegend } from '../core/layout.js';
 import { computeFrame } from '../core/frame.js';
 import {
   emptyPlotHint,
   estimateBandXAxisHeight,
+  estimateYTickBandWidth,
   renderBandXAxis,
   renderYAxis,
 } from './axes.js';
@@ -53,24 +54,10 @@ export function renderCombo(cfg: ComboConfig, theme: Theme): SvgElement[] {
     categoriesForHeight,
     canvas.width * 0.85,
   );
-  const frame = computeFrame(canvas, {
-    xTickBandHeight,
-    title: cfg.title,
-    subtitle: cfg.subtitle,
-    hasLegend: true,
-    legendLabels,
-    source: cfg.source,
-    logo: cfg.logo ?? 'default',
-  });
-  const plot = frame.plot;
-  if (!cfg.data || cfg.data.length === 0) {
-    out.push(emptyPlotHint(plot, palette, 'No data'));
-    return out;
-  }
 
   const barValues: number[] = [];
   const lineValues: number[] = [];
-  for (const r of cfg.data) {
+  for (const r of cfg.data ?? []) {
     for (const b of bars) {
       const v = Number(r[b] ?? 0);
       if (Number.isFinite(v)) barValues.push(v);
@@ -85,14 +72,44 @@ export function renderCombo(cfg: ComboConfig, theme: Theme): SvgElement[] {
     lineValues.length > 0 &&
     Math.max(...lineValues) < Math.max(...barValues) * 0.2;
 
-  const barMin = Math.min(0, ...barValues);
-  const barMax = Math.max(...barValues);
-  const barScale = niceScale(barMin, barMax * 1.08, 5);
   const lineMin = lineValues.length ? Math.min(...lineValues) : 0;
   const lineMax = lineValues.length ? Math.max(...lineValues) : 1;
   const lineScale = niceScale(lineMin, lineMax * 1.08, 5);
-  const barFmt = pickNumberFormatter(barValues, cfg.yFormat);
   const lineFmt = pickNumberFormatter(lineValues, cfg.yFormat);
+
+  let rightGutter = 0;
+  if (separateAxis) {
+    const labelSize = labelFontSize(canvas);
+    const widest = Math.max(
+      ...lineScale.ticks.map((t) => estimateTextWidth(lineFmt(t), labelSize)),
+      20,
+    );
+    rightGutter = Math.round(widest + labelSize * 0.8);
+  }
+
+  const yTickBandWidth = estimateYTickBandWidth(canvas, barValues.length ? barValues : [0, 1]);
+
+  const frame = computeFrame(canvas, {
+    xTickBandHeight,
+    rightGutter,
+    yTickBandWidth,
+    title: cfg.title,
+    subtitle: cfg.subtitle,
+    hasLegend: true,
+    legendLabels,
+    source: cfg.source,
+    logo: cfg.logo ?? 'default',
+  });
+  const plot = frame.plot;
+  if (!cfg.data || cfg.data.length === 0) {
+    out.push(emptyPlotHint(plot, palette, 'No data'));
+    return out;
+  }
+
+  const barMin = Math.min(0, ...barValues);
+  const barMax = Math.max(...barValues);
+  const barScale = niceScale(barMin, barMax * 1.08, 5);
+  const barFmt = pickNumberFormatter(barValues, cfg.yFormat);
 
   const { elements: yElems, scale: yBarScale } = renderYAxis({
     canvas,

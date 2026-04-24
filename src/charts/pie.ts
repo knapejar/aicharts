@@ -1,4 +1,4 @@
-import { g, path, text } from '../core/svg.js';
+import { ellipsize, estimateTextWidth, g, path, text } from '../core/svg.js';
 import { labelFontSize, renderLegend } from '../core/layout.js';
 import { computeFrame } from '../core/frame.js';
 import { formatPercent } from '../formatters/percent.js';
@@ -221,11 +221,20 @@ export function renderPieLike(
 
   if (showLegend) {
     const legendX = chartArea.x + chartArea.w + 20;
-    const legendYBase = chartArea.y + 20;
     const legendSize = labelFontSize(canvas);
-    for (let i = 0; i < legendItems.length; i++) {
+    const legendRightEdge = frame.inner.x + frame.inner.width;
+    const legendWidthAvail = Math.max(80, legendRightEdge - (legendX + legendSize * 1.7));
+    const legendBottomLimit = frame.plot.y + frame.plot.height;
+    const lineHeight = legendSize * 2.0;
+    const visibleCount = Math.max(
+      1,
+      Math.min(legendItems.length, Math.floor((legendBottomLimit - chartArea.y - legendSize * 0.3) / lineHeight)),
+    );
+    const legendYBase =
+      chartArea.y + Math.max(legendSize * 0.8, (chartArea.h - visibleCount * lineHeight) / 2 + legendSize);
+    for (let i = 0; i < visibleCount; i++) {
       const it = legendItems[i]!;
-      const yLine = legendYBase + i * legendSize * 2.0;
+      const yLine = legendYBase + i * lineHeight;
       out.push({
         tag: 'rect',
         attrs: {
@@ -237,8 +246,9 @@ export function renderPieLike(
           rx: 2,
         },
       });
+      const clippedLabel = ellipsize(it.label, legendSize, legendWidthAvail);
       out.push(
-        text(it.label, {
+        text(clippedLabel, {
           x: legendX + legendSize * 1.7,
           y: yLine,
           'font-size': legendSize,

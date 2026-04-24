@@ -1,7 +1,7 @@
 import { classifyAspect } from './size.js';
 import { computeFrame, outerMargin } from './frame.js';
 import type { Frame } from './frame.js';
-import { estimateTextWidth, g, line, rect, text, wrapText } from './svg.js';
+import { ellipsize, estimateTextWidth, g, line, rect, text, wrapText } from './svg.js';
 import type { AspectClass, Canvas, Palette, SvgElement } from './types.js';
 
 function headerMaxWidth(canvas: Canvas): number {
@@ -141,8 +141,10 @@ export function renderFooter(opts: FooterOptions): SvgElement[] {
   const size = frame.tokens.smallFont;
   if (source && frame.source) {
     const baseline = frame.source.y + Math.round(size * 0.82);
+    const full = source.startsWith('Source') ? source : `Source: ${source}`;
+    const clipped = ellipsize(full, size, frame.source.width);
     out.push(
-      text(source.startsWith('Source') ? source : `Source: ${source}`, {
+      text(clipped, {
         x: frame.source.x,
         y: baseline,
         'font-size': size,

@@ -160,6 +160,21 @@ export function estimateBandXAxisHeight(
   return Math.min(rotatedHeight, Math.round(canvas.height * 0.22));
 }
 
+export function estimateYTickBandWidth(canvas: Canvas, values: number[], format?: (v: number) => string): number {
+  const size = smallFontSize(canvas);
+  if (values.length === 0) return Math.round(size * 3.0);
+  const dataMin = Math.min(0, ...values);
+  const dataMax = Math.max(0, ...values);
+  const pad = (dataMax - dataMin) * 0.1 || 1;
+  const { ticks } = niceScale(dataMin, dataMax + pad, 5);
+  const fmt = format ?? pickNumberFormatter(values.length ? values : ticks);
+  let widest = 0;
+  for (const t of ticks) {
+    widest = Math.max(widest, estimateTextWidth(fmt(t), size));
+  }
+  return Math.round(widest + size * 0.9);
+}
+
 export function renderBandXAxis(opts: XAxisBandOptions): {
   elements: SvgElement[];
   bandStart: (i: number) => number;

@@ -4,6 +4,7 @@ import { computeFrame } from '../core/frame.js';
 import {
   emptyPlotHint,
   estimateBandXAxisHeight,
+  estimateYTickBandWidth,
   renderBandXAxis,
   renderYAxis,
 } from './axes.js';
@@ -63,12 +64,14 @@ export function renderBar(cfg: BarConfig, theme: Theme): SvgElement[] {
       categoriesForHeight,
       canvas.width * 0.85,
     );
+    const yTickBandWidth = estimateYTickBandWidth(canvas, values);
     const frame = computeFrame(canvas, {
       title: cfg.title,
       subtitle: cfg.subtitle,
       source: cfg.source,
       logo: cfg.logo ?? 'default',
       xTickBandHeight,
+      yTickBandWidth,
     });
     const plot = frame.plot;
     const { elements: yElems, scale: yScale } = renderYAxis({
@@ -177,7 +180,9 @@ export function renderBar(cfg: BarConfig, theme: Theme): SvgElement[] {
       (t) => t >= xMin - 1e-9 && t <= xMax + xMax * 0.02 + 1e-9,
     );
 
-    for (const t of niceTicks) {
+    for (let ti = 0; ti < niceTicks.length; ti++) {
+      const t = niceTicks[ti]!;
+      const anchor = ti === 0 ? 'start' : ti === niceTicks.length - 1 ? 'end' : 'middle';
       out.push(
         svgLine(xScale(t), horizPlot.y, xScale(t), horizPlot.y + horizPlot.height, {
           stroke: palette.grid,
@@ -192,7 +197,7 @@ export function renderBar(cfg: BarConfig, theme: Theme): SvgElement[] {
           'font-size': labelSize,
           'font-family': palette.fontBody,
           fill: palette.textMuted,
-          'text-anchor': 'middle',
+          'text-anchor': anchor,
         }),
       );
     }

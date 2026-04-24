@@ -3,6 +3,7 @@ import { labelFontSize, renderLegend } from '../core/layout.js';
 import { computeFrame } from '../core/frame.js';
 import {
   emptyPlotHint,
+  estimateYTickBandWidth,
   pickXAxisKind,
   renderDateXAxis,
   renderLinearXAxis,
@@ -77,6 +78,13 @@ export function renderStackedArea(cfg: StackedAreaConfig, theme: Theme): SvgElem
   const { palette, canvas } = theme;
   const series = cfg.y;
   const out: SvgElement[] = [];
+  const totalsUpfront: number[] = [];
+  for (const r of cfg.data ?? []) {
+    let t = 0;
+    for (const s of series) t += Number(r[s] ?? 0);
+    totalsUpfront.push(t);
+  }
+  const yTickBandWidth = estimateYTickBandWidth(canvas, totalsUpfront);
   const frame = computeFrame(canvas, {
     title: cfg.title,
     subtitle: cfg.subtitle,
@@ -84,6 +92,7 @@ export function renderStackedArea(cfg: StackedAreaConfig, theme: Theme): SvgElem
     legendLabels: series,
     source: cfg.source,
     logo: cfg.logo ?? 'default',
+    yTickBandWidth,
   });
   const plot = frame.plot;
   if (!cfg.data || cfg.data.length === 0 || series.length === 0) {
