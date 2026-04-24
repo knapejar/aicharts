@@ -24,6 +24,7 @@ const entries = [
   { in: 'src/mcp/http.ts', out: 'dist/mcp/http.js' },
   { in: 'src/api/chart.ts', out: 'dist/api/chart.js' },
   { in: 'src/api/mcp.ts', out: 'dist/api/mcp.js' },
+  { in: 'src/api/agent-guide.ts', out: 'dist/api/agent-guide.js' },
 ];
 
 async function buildEntry(entry) {
