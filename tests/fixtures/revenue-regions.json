@@ -1,0 +1,7 @@
+[
+  { "region": "North America", "q1": 48, "q2": 56, "q3": 61, "q4": 72 },
+  { "region": "Europe", "q1": 34, "q2": 38, "q3": 42, "q4": 51 },
+  { "region": "Asia Pacific", "q1": 28, "q2": 32, "q3": 40, "q4": 49 },
+  { "region": "Latin America", "q1": 12, "q2": 14, "q3": 15, "q4": 18 },
+  { "region": "Middle East & Africa", "q1": 8, "q2": 9, "q3": 11, "q4": 13 }
+]

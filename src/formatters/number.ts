@@ -37,7 +37,8 @@ export function formatNumber(value: number, opts: NumberFormatOptions = {}): str
   const fixed = value.toFixed(decimals);
   const [intPart, decPart] = fixed.split('.');
   const intWithSep = addThousands(intPart!, thousandsSep);
-  const num = decPart ? `${intWithSep}${decimalSep}${decPart}` : intWithSep;
+  const trimmedDec = decPart ? decPart.replace(/0+$/, '') : '';
+  const num = trimmedDec ? `${intWithSep}${decimalSep}${trimmedDec}` : intWithSep;
   return sign + num;
 }
 

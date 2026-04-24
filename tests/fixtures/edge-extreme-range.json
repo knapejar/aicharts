@@ -1,0 +1,8 @@
+[
+  { "label": "tiny", "value": 0.0001 },
+  { "label": "small", "value": 1.5 },
+  { "label": "medium", "value": 2500 },
+  { "label": "large", "value": 1200000 },
+  { "label": "huge", "value": 1500000000 },
+  { "label": "extreme", "value": 1200000000000 }
+]

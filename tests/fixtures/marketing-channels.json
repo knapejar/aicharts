@@ -1,0 +1,7 @@
+[
+  { "quarter": "Q1 2024", "organic": 42, "paid": 28, "email": 18, "referral": 12 },
+  { "quarter": "Q2 2024", "organic": 45, "paid": 30, "email": 16, "referral": 9 },
+  { "quarter": "Q3 2024", "organic": 48, "paid": 25, "email": 17, "referral": 10 },
+  { "quarter": "Q4 2024", "organic": 52, "paid": 22, "email": 16, "referral": 10 },
+  { "quarter": "Q1 2025", "organic": 55, "paid": 20, "email": 15, "referral": 10 }
+]

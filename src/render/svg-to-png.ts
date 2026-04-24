@@ -45,7 +45,7 @@ export async function svgToPng(svg: string, opts: SvgToPngOptions = {}): Promise
     fitTo: opts.width ? { mode: 'width', value: opts.width * (opts.dpr ?? 2) } : undefined,
     font: {
       fontFiles,
-      loadSystemFonts: fontFiles.length === 0,
+      loadSystemFonts: true,
       defaultFontFamily: opts.defaultFontFamily ?? 'Inter',
     },
   });

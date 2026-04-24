@@ -1,0 +1,14 @@
+[
+  { "month": "Jan", "profit": -12 },
+  { "month": "Feb", "profit": -5 },
+  { "month": "Mar", "profit": 3 },
+  { "month": "Apr", "profit": 18 },
+  { "month": "May", "profit": 25 },
+  { "month": "Jun", "profit": -8 },
+  { "month": "Jul", "profit": -22 },
+  { "month": "Aug", "profit": 14 },
+  { "month": "Sep", "profit": 32 },
+  { "month": "Oct", "profit": 28 },
+  { "month": "Nov", "profit": 5 },
+  { "month": "Dec", "profit": -15 }
+]

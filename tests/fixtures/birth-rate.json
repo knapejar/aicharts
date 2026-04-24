@@ -1,0 +1,12 @@
+[
+  { "year": 2000, "czechia": 8.9, "germany": 9.3, "france": 13.2, "italy": 9.5, "poland": 9.8 },
+  { "year": 2005, "czechia": 10.0, "germany": 8.3, "france": 12.9, "italy": 9.4, "poland": 9.5 },
+  { "year": 2010, "czechia": 11.2, "germany": 8.2, "france": 13.0, "italy": 9.3, "poland": 10.7 },
+  { "year": 2015, "czechia": 10.5, "germany": 9.0, "france": 12.0, "italy": 8.0, "poland": 9.7 },
+  { "year": 2018, "czechia": 10.7, "germany": 9.5, "france": 11.3, "italy": 7.3, "poland": 10.1 },
+  { "year": 2019, "czechia": 10.6, "germany": 9.4, "france": 11.2, "italy": 7.0, "poland": 9.8 },
+  { "year": 2020, "czechia": 10.3, "germany": 9.3, "france": 10.9, "italy": 6.8, "poland": 9.3 },
+  { "year": 2021, "czechia": 10.8, "germany": 9.6, "france": 10.9, "italy": 6.8, "poland": 9.3 },
+  { "year": 2022, "czechia": 9.3, "germany": 8.7, "france": 10.7, "italy": 6.7, "poland": 8.5 },
+  { "year": 2023, "czechia": 8.4, "germany": 8.5, "france": 10.0, "italy": 6.4, "poland": 7.7 }
+]

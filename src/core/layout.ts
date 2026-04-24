@@ -214,3 +214,12 @@ export function reservedHeaderHeight(canvas: Canvas, hasTitle: boolean, hasSubti
   if (hasSubtitle) h += Math.round(s * 1.8);
   return h;
 }
+
+export function headerBottomY(canvas: Canvas, hasTitle: boolean, hasSubtitle: boolean): number {
+  const t = titleFontSize(canvas);
+  const s = subtitleFontSize(canvas);
+  let y = 0;
+  if (hasTitle) y = Math.round(t * 1.5) + Math.round(s * 1.0);
+  if (hasSubtitle) y = (hasTitle ? y : 0) + Math.round(s * 1.0);
+  return y;
+}
