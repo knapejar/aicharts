@@ -53,19 +53,19 @@ function curvedAreaPath(
   }
 
   if (interpolation === 'stepped') {
-    let d = `M ${top[0]![0]} ${top[0]![1]}`;
-    for (let i = 1; i < top.length; i++) {
-      const prev = top[i - 1]!;
-      const cur = top[i]!;
-      d += ` L ${cur[0]} ${prev[1]} L ${cur[0]} ${cur[1]}`;
+    const parts: string[] = [];
+    const n = top.length;
+    for (let i = 0; i < n; i++) {
+      const [xi, ty] = top[i]!;
+      const [, by] = bottom[i]!;
+      const xLeft =
+        i === 0 ? xi : (top[i - 1]![0] + xi) / 2;
+      const xRight =
+        i === n - 1 ? xi : (xi + top[i + 1]![0]) / 2;
+      if (xRight === xLeft) continue;
+      parts.push(`M ${xLeft} ${ty} L ${xRight} ${ty} L ${xRight} ${by} L ${xLeft} ${by} Z`);
     }
-    d += ` L ${rev[0]![0]} ${rev[0]![1]}`;
-    for (let i = 1; i < rev.length; i++) {
-      const prev = rev[i - 1]!;
-      const cur = rev[i]!;
-      d += ` L ${cur[0]} ${prev[1]} L ${cur[0]} ${cur[1]}`;
-    }
-    return d + ' Z';
+    return parts.join(' ');
   }
 
   let d = `M ${top[0]![0]} ${top[0]![1]}`;

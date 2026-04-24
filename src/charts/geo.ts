@@ -11,6 +11,7 @@ const __dirname = dirname(fileURLToPath(import.meta.url));
 
 function findBasemapsDir(): string | null {
   const candidates = [
+    resolve(__dirname, '..', 'basemaps'),
     resolve(__dirname, '..', '..', 'basemaps'),
     resolve(__dirname, '..', '..', '..', 'basemaps'),
     resolve(process.cwd(), 'basemaps'),
@@ -315,9 +316,12 @@ export function renderGeo(cfg: GeoConfig, theme: Theme): SvgElement[] {
 
   if (cfg.showLegend !== false && values.length > 0) {
     const legendSize = labelFontSize(canvas);
-    const legendW = Math.min(360, width * 0.3);
+    const mapDrawLeft = offsetX + bbox[0] * scaleFactor;
+    const mapDrawWidth = bboxW * scaleFactor;
+    const mapDrawCenter = mapDrawLeft + mapDrawWidth / 2;
+    const legendW = Math.min(360, Math.max(160, mapDrawWidth * 0.75));
     const legendH = 12;
-    const legendX = frame.plot.x;
+    const legendX = Math.max(frame.plot.x, Math.min(frame.plot.x + frame.plot.width - legendW, mapDrawCenter - legendW / 2));
     const legendY = frame.plot.y + frame.plot.height - legendSize * 2.2;
     const steps2 = steps > 0 ? steps : 60;
     const gradient: SvgElement[] = [];

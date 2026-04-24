@@ -53,6 +53,8 @@ export function renderStackedBar(cfg: StackedBarConfig, theme: Theme): SvgElemen
       canvas,
       categories,
       canvas.width * 0.85,
+      0.3,
+      0.15,
     );
     const yTickBandWidth = estimateYTickBandWidth(
       canvas,

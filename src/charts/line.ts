@@ -3,6 +3,7 @@ import { renderLegend, labelFontSize } from '../core/layout.js';
 import { computeFrame } from '../core/frame.js';
 import {
   emptyPlotHint,
+  estimateBandXAxisHeight,
   estimateYTickBandWidth,
   pickXAxisKind,
   renderBandXAxis,
@@ -82,6 +83,16 @@ export function renderLine(cfg: LineConfig, theme: Theme): SvgElement[] {
     }
   }
   const yTickBandWidth = estimateYTickBandWidth(canvas, allYUpfront, cfg.yFormat ? undefined : undefined);
+  const xRawForHeight = (cfg.data ?? []).map((r) => r[cfg.x] ?? null);
+  const xKindForHeight = pickXAxisKind(xRawForHeight);
+  const xTickBandHeight =
+    xKindForHeight === 'band'
+      ? estimateBandXAxisHeight(
+          canvas,
+          (cfg.data ?? []).map((r) => String(r[cfg.x] ?? '')),
+          canvas.width * 0.85,
+        )
+      : undefined;
   const frame = computeFrame(canvas, {
     title: cfg.title,
     subtitle: cfg.subtitle,
@@ -90,6 +101,7 @@ export function renderLine(cfg: LineConfig, theme: Theme): SvgElement[] {
     source: cfg.source,
     logo: cfg.logo ?? 'default',
     yTickBandWidth,
+    xTickBandHeight,
   });
   const plot = frame.plot;
   const out: SvgElement[] = [];

@@ -1,9 +1,10 @@
-import { g, line as svgLine, rect, text } from '../core/svg.js';
+import { ellipsize, estimateTextWidth, g, line as svgLine, rect, text } from '../core/svg.js';
 import { labelFontSize } from '../core/layout.js';
 import { computeFrame } from '../core/frame.js';
 import { pickNumberFormatter } from '../formatters/number.js';
 import { smartLabel } from '../formatters/label.js';
 import { niceScale } from '../formatters/tick.js';
+import { planBandXAxis } from './axes.js';
 import type { BarSplitConfig, SvgElement, Theme } from '../core/types.js';
 
 export function renderBarSplit(cfg: BarSplitConfig, theme: Theme): SvgElement[] {
@@ -33,10 +34,27 @@ export function renderBarSplit(cfg: BarSplitConfig, theme: Theme): SvgElement[] 
   const cellGapX = Math.round(labelSize * 0.9);
   const cellGapY = Math.round(labelSize * 1.3);
   const cellW = (gridW - cellGapX * (columns - 1)) / columns;
-  const cellH = (gridH - cellGapY * (rows - 1)) / rows;
-  const innerPadLeft = Math.round(labelSize * 2.0);
-  const innerPadBottom = Math.round(labelSize * 1.8);
+
+  let allUpfront: number[] = [];
+  for (const s of series) {
+    for (const r of cfg.data) {
+      const v = Number(r[s] ?? NaN);
+      if (Number.isFinite(v)) allUpfront.push(v);
+    }
+  }
+  const previewScale = niceScale(Math.min(0, ...allUpfront), Math.max(0, ...allUpfront), 4);
+  const previewFmt = pickNumberFormatter(allUpfront);
+  let widestTickLabel = 0;
+  for (const t of previewScale.ticks) {
+    widestTickLabel = Math.max(widestTickLabel, estimateTextWidth(previewFmt(t), labelSize));
+  }
+  const innerPadLeft = Math.max(Math.round(labelSize * 2.0), Math.ceil(widestTickLabel + labelSize * 0.7));
   const innerPadTop = Math.round(labelSize * 1.6);
+  const estimatedPlotW = cellW - innerPadLeft;
+  const bandPlan = planBandXAxis(canvas, categories, Math.max(60, estimatedPlotW), 0.2, 0.05);
+  const xAxisBandBase = Math.round(labelSize * 1.4);
+  const innerPadBottom = Math.max(xAxisBandBase + Math.round(labelSize * 0.6), bandPlan.bandHeight + Math.round(labelSize * 0.6));
+  const cellH = (gridH - cellGapY * (rows - 1)) / rows;
 
   let allValues: number[] = [];
   if (cfg.sharedScale !== false) {
@@ -79,6 +97,9 @@ export function renderBarSplit(cfg: BarSplitConfig, theme: Theme): SvgElement[] 
     );
 
     const fmt = pickNumberFormatter(localAll);
+    const sortedTicks = [...scale.ticks].sort((a, b) => a - b);
+    const lowestTick = sortedTicks[0];
+    const skipBottomTick = scale.ticks.length >= 3;
     for (const t of scale.ticks) {
       const y = yScale(t);
       out.push(
@@ -88,11 +109,12 @@ export function renderBarSplit(cfg: BarSplitConfig, theme: Theme): SvgElement[] 
           'shape-rendering': 'crispEdges',
         }),
       );
+      if (skipBottomTick && t === lowestTick) continue;
       out.push(
         text(fmt(t), {
           x: plotX - 6,
-          y: y + labelSize * 0.35,
-          'font-size': labelSize * 0.85,
+          y: y + labelSize * 0.32,
+          'font-size': labelSize,
           'font-family': palette.fontBody,
           fill: palette.textMuted,
           'text-anchor': 'end',
@@ -131,18 +153,28 @@ export function renderBarSplit(cfg: BarSplitConfig, theme: Theme): SvgElement[] 
       }),
     );
 
-    const labelStride = Math.max(1, Math.ceil(n / 5));
-    for (let i = 0; i < n; i += labelStride) {
-      out.push(
-        text(categories[i]!, {
-          x: plotX + i * bandW + bandW / 2,
-          y: plotY + plotH + labelSize * 1.4,
-          'font-size': labelSize * 0.8,
-          'font-family': palette.fontBody,
-          fill: palette.textMuted,
-          'text-anchor': 'middle',
-        }),
-      );
+    const axisSize = labelSize;
+    const axisPlan = planBandXAxis(canvas, categories, plotW, 0.2, 0.05);
+    const ellipsizeTo = axisPlan.rotate && axisPlan.ellipsizedWidth != null ? axisPlan.ellipsizedWidth : null;
+    const rotate = axisPlan.rotate;
+    const angle = axisPlan.angle;
+    const labelY = plotY + plotH + (rotate ? labelSize * 0.9 : labelSize * 1.35);
+    for (let i = 0; i < n; i++) {
+      const raw = categories[i]!;
+      const cat = ellipsizeTo != null ? ellipsize(raw, axisSize, ellipsizeTo) : raw;
+      const cx = plotX + i * bandW + bandW / 2;
+      const attrs: Record<string, string | number> = {
+        x: cx,
+        y: labelY,
+        'font-size': axisSize,
+        'font-family': palette.fontBody,
+        fill: palette.textMuted,
+        'text-anchor': rotate ? 'end' : 'middle',
+      };
+      if (rotate) {
+        attrs['transform'] = `rotate(-${angle} ${cx} ${labelY})`;
+      }
+      out.push(text(cat, attrs));
     }
   }
 

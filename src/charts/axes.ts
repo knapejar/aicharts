@@ -1,10 +1,63 @@
-import { estimateTextWidth, g, line, rect, text } from '../core/svg.js';
+import { ellipsize, estimateTextWidth, g, line, rect, text } from '../core/svg.js';
 import { reservedHeaderHeight, smallFontSize } from '../core/layout.js';
 export const LEGEND_GAP = 16;
 import { niceScale } from '../formatters/tick.js';
 import { pickNumberFormatter } from '../formatters/number.js';
 import { pickDateFormatter, toDate } from '../formatters/date.js';
 import type { Canvas, Palette, SvgElement } from '../core/types.js';
+
+export interface BandAxisPlan {
+  rotate: boolean;
+  angle: number;
+  bandHeight: number;
+  maxCatWidth: number;
+  step: number;
+  bandW: number;
+  ellipsizedWidth: number | null;
+}
+
+export function planBandXAxis(
+  canvas: Canvas,
+  categories: string[],
+  availableWidth: number,
+  paddingInner = 0.2,
+  paddingOuter = 0.1,
+): BandAxisPlan {
+  const size = smallFontSize(canvas);
+  const n = Math.max(1, categories.length);
+  const step = availableWidth / Math.max(1, n - paddingInner + 2 * paddingOuter);
+  const bandW = Math.max(1, step * (1 - paddingInner));
+  let maxCatWidth = 0;
+  for (const cat of categories) {
+    maxCatWidth = Math.max(maxCatWidth, estimateTextWidth(cat, size));
+  }
+  if (categories.length === 0 || maxCatWidth === 0) {
+    return { rotate: false, angle: 0, bandHeight: Math.round(size * 1.8), maxCatWidth, step, bandW, ellipsizedWidth: null };
+  }
+  if (maxCatWidth <= bandW * 1.05) {
+    return { rotate: false, angle: 0, bandHeight: Math.round(size * 1.8), maxCatWidth, step, bandW, ellipsizedWidth: null };
+  }
+  const tryAngles = [40, 55, 70, 90];
+  let chosen = 90;
+  for (const a of tryAngles) {
+    const rad = (a * Math.PI) / 180;
+    if (maxCatWidth * Math.cos(rad) <= step * 1.05) {
+      chosen = a;
+      break;
+    }
+  }
+  const rad = (chosen * Math.PI) / 180;
+  const maxBandHeight = Math.max(Math.round(size * 3), Math.round(canvas.height * 0.25));
+  const rawHeight = Math.ceil(maxCatWidth * Math.sin(rad) + size * 1.0);
+  let ellipsizedWidth: number | null = null;
+  let bandHeight = rawHeight;
+  if (rawHeight > maxBandHeight) {
+    bandHeight = maxBandHeight;
+    const maxTextLen = Math.floor((bandHeight - size * 1.0) / Math.max(0.5, Math.sin(rad)));
+    ellipsizedWidth = Math.max(Math.round(size * 3), maxTextLen);
+  }
+  return { rotate: true, angle: chosen, bandHeight, maxCatWidth, step, bandW, ellipsizedWidth };
+}
 
 export interface PlotArea {
   x: number;
@@ -145,19 +198,9 @@ export function estimateBandXAxisHeight(
   categories: string[],
   availableWidth: number,
   paddingInner = 0.2,
+  paddingOuter = 0.1,
 ): number {
-  const size = smallFontSize(canvas);
-  if (categories.length === 0) return Math.round(size * 1.8);
-  const n = categories.length;
-  const step = availableWidth / Math.max(1, n);
-  let maxCatWidth = 0;
-  for (const cat of categories) {
-    maxCatWidth = Math.max(maxCatWidth, estimateTextWidth(cat, size));
-  }
-  const willRotate = maxCatWidth > step * (1 - paddingInner) * 1.2;
-  if (!willRotate) return Math.round(size * 1.8);
-  const rotatedHeight = Math.round(maxCatWidth * 0.7 + size * 0.8);
-  return Math.min(rotatedHeight, Math.round(canvas.height * 0.22));
+  return planBandXAxis(canvas, categories, availableWidth, paddingInner, paddingOuter).bandHeight;
 }
 
 export function estimateYTickBandWidth(canvas: Canvas, values: number[], format?: (v: number) => string): number {
@@ -188,24 +231,17 @@ export function renderBandXAxis(opts: XAxisBandOptions): {
   const bandWidth = Math.max(2, step * (1 - pi));
   const bandStart = (i: number) => plot.x + po * step + i * step;
   const size = smallFontSize(canvas);
-  const labelY = plot.y + plot.height + size * 1.4;
   const out: SvgElement[] = [];
 
-  let maxCatWidth = 0;
-  for (const cat of categories) maxCatWidth = Math.max(maxCatWidth, estimateTextWidth(cat, size));
-  let rotate = opts.rotate ?? false;
-  if (!rotate && maxCatWidth > step * (1 - pi) * 1.2) rotate = true;
-  const rotatedSlot = size * 1.4;
-  const horizontalSlot = step * (1 - pi) * 1.05;
-  const slotWidth = rotate ? rotatedSlot : horizontalSlot;
-  let strideForLabels = 1;
-  while (strideForLabels * slotWidth < maxCatWidth && strideForLabels < categories.length) {
-    strideForLabels += 1;
-  }
+  const plan = planBandXAxis(canvas, categories, plot.width, pi, po);
+  const rotate = opts.rotate ?? plan.rotate;
+  const angle = rotate ? (opts.rotate ? 40 : plan.angle) : 0;
+  const ellipsizeTo = rotate && plan.ellipsizedWidth != null ? plan.ellipsizedWidth : null;
+  const labelY = plot.y + plot.height + (rotate ? size * 1.0 : size * 1.4);
 
   for (let i = 0; i < categories.length; i++) {
-    if (strideForLabels > 1 && i % strideForLabels !== 0 && i !== categories.length - 1) continue;
-    const cat = categories[i]!;
+    const raw = categories[i]!;
+    const cat = ellipsizeTo != null ? ellipsize(raw, size, ellipsizeTo) : raw;
     const cx = bandStart(i) + bandWidth / 2;
     const attrs: Record<string, string | number> = {
       x: cx,
@@ -216,7 +252,7 @@ export function renderBandXAxis(opts: XAxisBandOptions): {
       'text-anchor': rotate ? 'end' : 'middle',
     };
     if (rotate) {
-      attrs['transform'] = `rotate(-40 ${cx} ${labelY})`;
+      attrs['transform'] = `rotate(-${angle} ${cx} ${labelY})`;
     }
     out.push(text(cat, attrs));
   }

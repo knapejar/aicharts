@@ -1,4 +1,4 @@
-import { g, line as svgLine, rect, text } from '../core/svg.js';
+import { estimateTextWidth, g, line as svgLine, rect, text } from '../core/svg.js';
 import { labelFontSize, renderLegend } from '../core/layout.js';
 import { computeFrame } from '../core/frame.js';
 import {
@@ -21,6 +21,8 @@ export function renderGroupedBar(cfg: GroupedBarConfig, theme: Theme): SvgElemen
     canvas,
     categoriesForHeight,
     canvas.width * 0.85,
+    0.3,
+    0.1,
   );
   const yValuesUpfront: number[] = [];
   for (const s of series) {
@@ -141,28 +143,39 @@ export function renderGroupedBar(cfg: GroupedBarConfig, theme: Theme): SvgElemen
   }
 
   if (cfg.showValueLabels) {
-    const labels: SvgElement[] = [];
-    for (let i = 0; i < categories.length; i++) {
-      const groupX = bandStart(i);
-      for (let s = 0; s < series.length; s++) {
-        const key = series[s]!;
-        const v = Number(cfg.data[i]![key] ?? 0);
-        const cx = groupX + s * (barWidth + barGap) + barWidth / 2;
-        const cy = v >= 0 ? yScale(v) - 6 : yScale(v) + labelSize + 4;
-        labels.push(
-          text(fmt(v), {
-            x: cx,
-            y: cy,
-            'font-size': labelSize,
-            'font-weight': 600,
-            'font-family': palette.fontBody,
-            fill: palette.text,
-            'text-anchor': 'middle',
-          }),
-        );
+    let widestValueLabel = 0;
+    for (const s of series) {
+      for (const r of cfg.data) {
+        const v = Number(r[s] ?? 0);
+        if (!Number.isFinite(v)) continue;
+        widestValueLabel = Math.max(widestValueLabel, estimateTextWidth(fmt(v), labelSize));
       }
     }
-    out.push(g({}, labels));
+    const labelsFit = widestValueLabel <= barWidth * 1.05;
+    if (labelsFit) {
+      const labels: SvgElement[] = [];
+      for (let i = 0; i < categories.length; i++) {
+        const groupX = bandStart(i);
+        for (let s = 0; s < series.length; s++) {
+          const key = series[s]!;
+          const v = Number(cfg.data[i]![key] ?? 0);
+          const cx = groupX + s * (barWidth + barGap) + barWidth / 2;
+          const cy = v >= 0 ? yScale(v) - 6 : yScale(v) + labelSize + 4;
+          labels.push(
+            text(fmt(v), {
+              x: cx,
+              y: cy,
+              'font-size': labelSize,
+              'font-weight': 600,
+              'font-family': palette.fontBody,
+              fill: palette.text,
+              'text-anchor': 'middle',
+            }),
+          );
+        }
+      }
+      out.push(g({}, labels));
+    }
   }
 
   return out;

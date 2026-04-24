@@ -1,4 +1,4 @@
-import { g, line as svgLine, path, text } from '../core/svg.js';
+import { estimateTextWidth, g, line as svgLine, path, text } from '../core/svg.js';
 import { labelFontSize } from '../core/layout.js';
 import { computeFrame } from '../core/frame.js';
 import { niceScale } from '../formatters/tick.js';
@@ -60,9 +60,6 @@ export function renderLineSplit(cfg: LineSplitConfig, theme: Theme): SvgElement[
   const cellGapY = Math.round(labelSize * 1.4);
   const cellW = (gridW - cellGapX * (columns - 1)) / columns;
   const cellH = (gridH - cellGapY * (rows - 1)) / rows;
-  const innerPadLeft = Math.round(labelSize * 2.2);
-  const innerPadBottom = Math.round(labelSize * 1.9);
-  const innerPadTop = Math.round(labelSize * 1.7);
 
   const xIsYear = looksLikeYearSeries(cfg.data.map((r) => Number(r[cfg.x])));
   const xRawNumbers = cfg.data.map((r) => Number(r[cfg.x]));
@@ -76,6 +73,16 @@ export function renderLineSplit(cfg: LineSplitConfig, theme: Theme): SvgElement[
       }
     }
   }
+  const previewAll = allValues.length > 0 ? allValues : cfg.data.flatMap((r) => series.map((s) => Number(r[s] ?? NaN)).filter(Number.isFinite));
+  const previewScale = niceScale(Math.min(0, ...previewAll), Math.max(...previewAll), 3);
+  const previewFmt = pickNumberFormatter(previewAll);
+  let widestTickLabel = 0;
+  for (const t of previewScale.ticks) {
+    widestTickLabel = Math.max(widestTickLabel, estimateTextWidth(previewFmt(t), labelSize));
+  }
+  const innerPadLeft = Math.max(Math.round(labelSize * 2.0), Math.ceil(widestTickLabel + labelSize * 0.7));
+  const innerPadBottom = Math.round(labelSize * 2.3);
+  const innerPadTop = Math.round(labelSize * 2.0);
 
   for (let si = 0; si < series.length; si++) {
     const s = series[si]!;
@@ -108,6 +115,9 @@ export function renderLineSplit(cfg: LineSplitConfig, theme: Theme): SvgElement[
     );
 
     const fmt = pickNumberFormatter(localAll);
+    const sortedTicks = [...yscl.ticks].sort((a, b) => a - b);
+    const lowestTick = sortedTicks[0];
+    const skipBottomTick = yscl.ticks.length >= 3;
     for (const t of yscl.ticks) {
       const y = yScale(t);
       out.push(
@@ -117,11 +127,12 @@ export function renderLineSplit(cfg: LineSplitConfig, theme: Theme): SvgElement[
           'shape-rendering': 'crispEdges',
         }),
       );
+      if (skipBottomTick && t === lowestTick) continue;
       out.push(
         text(fmt(t), {
           x: plotX - 6,
-          y: y + labelSize * 0.35,
-          'font-size': labelSize * 0.85,
+          y: y + labelSize * 0.32,
+          'font-size': labelSize,
           'font-family': palette.fontBody,
           fill: palette.textMuted,
           'text-anchor': 'end',
@@ -165,8 +176,8 @@ export function renderLineSplit(cfg: LineSplitConfig, theme: Theme): SvgElement[
       out.push(
         text(String(first), {
           x: plotX,
-          y: plotY + plotH + labelSize * 1.4,
-          'font-size': labelSize * 0.8,
+          y: plotY + plotH + labelSize * 1.35,
+          'font-size': labelSize,
           'font-family': palette.fontBody,
           fill: palette.textMuted,
           'text-anchor': 'start',
@@ -175,8 +186,8 @@ export function renderLineSplit(cfg: LineSplitConfig, theme: Theme): SvgElement[
       out.push(
         text(String(last), {
           x: plotX + plotW,
-          y: plotY + plotH + labelSize * 1.4,
-          'font-size': labelSize * 0.8,
+          y: plotY + plotH + labelSize * 1.35,
+          'font-size': labelSize,
           'font-family': palette.fontBody,
           fill: palette.textMuted,
           'text-anchor': 'end',
@@ -188,8 +199,8 @@ export function renderLineSplit(cfg: LineSplitConfig, theme: Theme): SvgElement[
       out.push(
         text(firstLabel, {
           x: plotX,
-          y: plotY + plotH + labelSize * 1.4,
-          'font-size': labelSize * 0.8,
+          y: plotY + plotH + labelSize * 1.35,
+          'font-size': labelSize,
           'font-family': palette.fontBody,
           fill: palette.textMuted,
           'text-anchor': 'start',
@@ -198,8 +209,8 @@ export function renderLineSplit(cfg: LineSplitConfig, theme: Theme): SvgElement[
       out.push(
         text(lastLabel, {
           x: plotX + plotW,
-          y: plotY + plotH + labelSize * 1.4,
-          'font-size': labelSize * 0.8,
+          y: plotY + plotH + labelSize * 1.35,
+          'font-size': labelSize,
           'font-family': palette.fontBody,
           fill: palette.textMuted,
           'text-anchor': 'end',

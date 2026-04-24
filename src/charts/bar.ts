@@ -64,6 +64,8 @@ export function renderBar(cfg: BarConfig, theme: Theme): SvgElement[] {
       canvas,
       categoriesForHeight,
       canvas.width * 0.85,
+      barPad,
+      barPad * 0.7,
     );
     const yTickBandWidth = estimateYTickBandWidth(canvas, values);
     const frame = computeFrame(canvas, {
@@ -101,7 +103,7 @@ export function renderBar(cfg: BarConfig, theme: Theme): SvgElement[] {
     const bandW = bandWidth();
     const widestLabel = Math.max(...rows.map((r) => estimateTextWidth(fmt(r.value), labelSize)));
     const labelsFit = widestLabel <= bandW * 1.1;
-    const showLabels = cfg.showValueLabels === true || (cfg.showValueLabels !== false && labelsFit);
+    const showLabels = cfg.showValueLabels !== false && labelsFit;
     for (let i = 0; i < rows.length; i++) {
       const row = rows[i]!;
       const bx = bandStart(i);

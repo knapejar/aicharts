@@ -54,6 +54,8 @@ export function renderCombo(cfg: ComboConfig, theme: Theme): SvgElement[] {
     canvas,
     categoriesForHeight,
     canvas.width * 0.85,
+    0.3,
+    0.15,
   );
 
   const barValues: number[] = [];
@@ -71,7 +73,8 @@ export function renderCombo(cfg: ComboConfig, theme: Theme): SvgElement[] {
 
   const separateAxis =
     lineValues.length > 0 &&
-    Math.max(...lineValues) < Math.max(...barValues) * 0.2;
+    barValues.length > 0 &&
+    Math.max(...lineValues) < Math.max(...barValues) * 0.5;
 
   const lineMin = lineValues.length ? Math.min(...lineValues) : 0;
   const lineMax = lineValues.length ? Math.max(...lineValues) : 1;

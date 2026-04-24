@@ -90,3 +90,11 @@ export async function loadFrame() {
   const text = await bundleEntry(entry);
   return importBundle(text);
 }
+
+export async function loadAxes() {
+  const entry = [
+    "export { planBandXAxis, estimateBandXAxisHeight, estimateYTickBandWidth } from '" + repoRoot + "/src/charts/axes.ts';",
+  ].join('\n');
+  const text = await bundleEntry(entry);
+  return importBundle(text);
+}

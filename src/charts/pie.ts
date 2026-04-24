@@ -28,9 +28,8 @@ export function prepareSlices(
   if (total <= 0) return { slices: [], total: 0 };
 
   let sorted = [...raw];
-  if (cfg.sort !== 'none') {
-    sorted.sort((a, b) => (cfg.sort === 'asc' ? a.value - b.value : b.value - a.value));
-  }
+  sorted.sort((a, b) => b.value - a.value);
+  const MAX_SLICES = 8;
   if (threshold > 0) {
     const main: typeof sorted = [];
     let otherSum = 0;
@@ -43,6 +42,25 @@ export function prepareSlices(
     }
     if (otherSum > 0) main.push({ label: 'Other', value: otherSum });
     sorted = main;
+  }
+  if (sorted.length > MAX_SLICES) {
+    const kept = sorted.slice(0, MAX_SLICES - 1);
+    const rest = sorted.slice(MAX_SLICES - 1);
+    const otherSum = rest.reduce((a, b) => a + b.value, 0);
+    const existingOther = kept.find((s) => s.label === 'Other');
+    if (existingOther) existingOther.value += otherSum;
+    else kept.push({ label: 'Other', value: otherSum });
+    sorted = kept;
+  }
+  if (cfg.sort === 'asc') {
+    sorted.sort((a, b) => (a.label === 'Other' ? 1 : b.label === 'Other' ? -1 : a.value - b.value));
+  } else if (cfg.sort === 'none') {
+    const order = new Map(raw.map((r, i) => [r.label, i]));
+    sorted.sort((a, b) => {
+      if (a.label === 'Other') return 1;
+      if (b.label === 'Other') return -1;
+      return (order.get(a.label) ?? 0) - (order.get(b.label) ?? 0);
+    });
   }
 
   let cursor = -Math.PI / 2;
@@ -113,11 +131,17 @@ export function renderPieLike(
     label: `${s.label} · ${formatPercent(s.fraction, s.fraction >= 0.1 ? 0 : 1)}`,
     color: s.color,
   }));
-  const showLegend = slices.length > 4 || cfg.legendPosition === 'right' || cfg.legendPosition === 'bottom';
+  const explicitLegendPosition = cfg.legendPosition === 'right' || cfg.legendPosition === 'bottom';
+  const placementAlreadyCarriesLabels =
+    cfg.labelPlacement === 'inside' || cfg.labelPlacement === 'outside';
+  const showLegend = explicitLegendPosition || (slices.length > 4 && !placementAlreadyCarriesLabels);
+  const useTopLegend = !showLegend && cfg.labelPlacement === 'none';
 
   const frame = computeFrame(canvas, {
     title: cfg.title,
     subtitle: cfg.subtitle,
+    hasLegend: useTopLegend,
+    legendLabels: useTopLegend ? legendItems.map((it) => it.label) : undefined,
     source: cfg.source,
     logo: cfg.logo ?? 'default',
     hasXAxis: false,
@@ -164,28 +188,71 @@ export function renderPieLike(
         const lr = rInner > 0 ? (rInner + rOuter) / 2 : rOuter * 0.65;
         const lx = cx + lr * Math.cos(mid);
         const ly = cy + lr * Math.sin(mid);
-        out.push(
-          text(formatPercent(s.fraction, s.fraction >= 0.1 ? 0 : 1), {
-            x: lx,
-            y: ly + labelSize * 0.35,
-            'font-size': labelSize,
-            'font-weight': 700,
-            'font-family': palette.fontBody,
-            fill: '#ffffff',
-            'text-anchor': 'middle',
-          }),
-        );
+        const pctStr = formatPercent(s.fraction, s.fraction >= 0.1 ? 0 : 1);
+        const sliceChord = 2 * (rOuter - rInner) * Math.min(1, Math.abs(Math.tan((s.endAngle - s.startAngle) / 2)));
+        const widthAtMid = 2 * lr * Math.sin(Math.min(Math.PI / 2, (s.endAngle - s.startAngle) / 2));
+        const labelBudget = Math.max(16, Math.min(widthAtMid, (rOuter - rInner) * 1.6));
+        const labelFits =
+          !showLegend &&
+          estimateTextWidth(s.label, labelSize * 0.8) <= labelBudget &&
+          s.fraction >= 0.08 &&
+          sliceChord > 1;
+        if (labelFits) {
+          out.push(
+            text(s.label, {
+              x: lx,
+              y: ly - labelSize * 0.2,
+              'font-size': labelSize * 0.8,
+              'font-weight': 600,
+              'font-family': palette.fontBody,
+              fill: '#ffffff',
+              'text-anchor': 'middle',
+            }),
+          );
+          out.push(
+            text(pctStr, {
+              x: lx,
+              y: ly + labelSize * 0.95,
+              'font-size': labelSize,
+              'font-weight': 700,
+              'font-family': palette.fontBody,
+              fill: '#ffffff',
+              'text-anchor': 'middle',
+            }),
+          );
+        } else {
+          out.push(
+            text(pctStr, {
+              x: lx,
+              y: ly + labelSize * 0.35,
+              'font-size': labelSize,
+              'font-weight': 700,
+              'font-family': palette.fontBody,
+              fill: '#ffffff',
+              'text-anchor': 'middle',
+            }),
+          );
+        }
       } else {
         const lx = cx + (rOuter + 14) * Math.cos(mid);
         const ly = cy + (rOuter + 14) * Math.sin(mid);
+        const anchor: 'start' | 'end' = mid > Math.PI / 2 && mid < (Math.PI * 3) / 2 ? 'end' : 'start';
+        const labelText = `${s.label} ${formatPercent(s.fraction, 0)}`;
+        const textW = estimateTextWidth(labelText, labelSize);
+        const marginX = frame.inner.x;
+        const marginRight = frame.inner.x + frame.inner.width;
+        const availLeft = (anchor === 'end' ? lx - marginX : Infinity);
+        const availRight = (anchor === 'start' ? marginRight - lx : Infinity);
+        const maxTextWidth = Math.max(labelSize * 3, anchor === 'end' ? availLeft : availRight);
+        const rendered = textW > maxTextWidth ? ellipsize(labelText, labelSize, maxTextWidth) : labelText;
         out.push(
-          text(`${s.label} ${formatPercent(s.fraction, 0)}`, {
+          text(rendered, {
             x: lx,
             y: ly + labelSize * 0.35,
             'font-size': labelSize,
             'font-family': palette.fontBody,
             fill: palette.text,
-            'text-anchor': mid > Math.PI / 2 && mid < (Math.PI * 3) / 2 ? 'end' : 'start',
+            'text-anchor': anchor,
           }),
         );
       }
@@ -257,14 +324,13 @@ export function renderPieLike(
         }),
       );
     }
-  } else if (cfg.labelPlacement === 'none') {
-    const legendSize = labelFontSize(canvas);
+  } else if (cfg.labelPlacement === 'none' && frame.legend) {
     out.push(
       ...renderLegend({
         items: legendItems,
         palette,
         canvas,
-        y: frame.plot.y + frame.plot.height - legendSize * 0.4,
+        y: frame.legend.y + frame.tokens.ascender,
       }),
     );
   }
