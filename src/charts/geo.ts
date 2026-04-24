@@ -253,6 +253,7 @@ export function renderGeo(cfg: GeoConfig, theme: Theme): SvgElement[] {
       props['ISO_3'],
       props['ISO_3_SOV'],
       props['ISO_A3'],
+      props['ADM0_A3'],
       props['ISO'],
       props['iso3'],
       props['ISO_2'],
@@ -263,7 +264,9 @@ export function renderGeo(cfg: GeoConfig, theme: Theme): SvgElement[] {
       props['NAME_SHORT'],
       props['NAME'],
       props['NAME_SOV'],
+      props['ADMIN'],
       props['name'],
+      props['id'],
       props['code'],
     ]
       .filter((v) => typeof v === 'string' || typeof v === 'number')

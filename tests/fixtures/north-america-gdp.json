@@ -1,0 +1,14 @@
+[
+  { "code": "USA", "country": "United States", "gdp": 81632 },
+  { "code": "CAN", "country": "Canada", "gdp": 53431 },
+  { "code": "MEX", "country": "Mexico", "gdp": 13804 },
+  { "code": "GTM", "country": "Guatemala", "gdp": 5541 },
+  { "code": "CUB", "country": "Cuba", "gdp": 9477 },
+  { "code": "DOM", "country": "Dominican Republic", "gdp": 11292 },
+  { "code": "HTI", "country": "Haiti", "gdp": 1715 },
+  { "code": "HND", "country": "Honduras", "gdp": 3039 },
+  { "code": "NIC", "country": "Nicaragua", "gdp": 2255 },
+  { "code": "CRI", "country": "Costa Rica", "gdp": 16922 },
+  { "code": "PAN", "country": "Panama", "gdp": 18744 },
+  { "code": "SLV", "country": "El Salvador", "gdp": 5400 }
+]

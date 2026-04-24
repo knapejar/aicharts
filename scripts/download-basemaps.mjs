@@ -12,13 +12,13 @@ const BASEMAPS = [
   { id: 'europe', url: 'https://app.datawrapper.de/api/v3/basemaps/europe-sovereign-states' },
   { id: 'africa', url: 'https://app.datawrapper.de/api/v3/basemaps/africa' },
   { id: 'asia', url: 'https://app.datawrapper.de/api/v3/basemaps/asia' },
-  { id: 'north-america', url: 'https://app.datawrapper.de/api/v3/basemaps/north-america' },
-  { id: 'south-america', url: 'https://app.datawrapper.de/api/v3/basemaps/south-america' },
+  { id: 'north-america', url: 'https://app.datawrapper.de/api/v3/basemaps/na' },
+  { id: 'south-america', url: 'https://app.datawrapper.de/api/v3/basemaps/south-america-2021' },
   { id: 'oceania', url: 'https://app.datawrapper.de/api/v3/basemaps/oceania' },
-  { id: 'usa-states', url: 'https://app.datawrapper.de/api/v3/basemaps/usa-states' },
+  { id: 'usa-states', url: 'https://app.datawrapper.de/api/v3/basemaps/us-states' },
   { id: 'germany-states', url: 'https://app.datawrapper.de/api/v3/basemaps/germany-states' },
-  { id: 'uk-counties', url: 'https://app.datawrapper.de/api/v3/basemaps/uk-counties' },
-  { id: 'france-regions', url: 'https://app.datawrapper.de/api/v3/basemaps/france-regions' },
+  { id: 'uk-counties', url: 'https://app.datawrapper.de/api/v3/basemaps/uk-ceremonial-counties' },
+  { id: 'france-regions', url: 'https://app.datawrapper.de/api/v3/basemaps/france-regions-2018' },
 ];
 
 async function fetchJson(url) {

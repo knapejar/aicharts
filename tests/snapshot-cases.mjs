@@ -19,6 +19,8 @@ export function snapshotCases() {
   const internet = fixture('internet-usage.json');
   const marketing = fixture('marketing-channels.json');
   const election = fixture('election-results.json');
+  const usaUnemployment = fixture('usa-unemployment.json');
+  const northAmericaGdp = fixture('north-america-gdp.json');
 
   const cases = [];
 
@@ -449,6 +451,36 @@ export function snapshotCases() {
       subtitle: 'Percent of population',
       source: 'World Bank',
       palette: 'mono-blue',
+    },
+  });
+
+  cases.push({
+    name: 'geo-usa-unemployment',
+    config: {
+      chart: 'geo',
+      data: usaUnemployment,
+      code: 'code',
+      value: 'rate',
+      basemap: 'usa-states',
+      title: 'Unemployment rate by state',
+      subtitle: 'Selected US states, percent of labor force',
+      source: 'Bureau of Labor Statistics (sample data)',
+      palette: 'diverging-sunset',
+    },
+  });
+
+  cases.push({
+    name: 'geo-north-america-gdp',
+    config: {
+      chart: 'geo',
+      data: northAmericaGdp,
+      code: 'code',
+      value: 'gdp',
+      basemap: 'north-america',
+      title: 'GDP per capita across North America',
+      subtitle: 'Current USD, selected countries',
+      source: 'IMF (sample data)',
+      palette: 'earth',
     },
   });
 

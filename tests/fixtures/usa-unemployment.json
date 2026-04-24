@@ -1,0 +1,12 @@
+[
+  { "code": "CA", "state": "California", "rate": 5.3 },
+  { "code": "TX", "state": "Texas", "rate": 4.0 },
+  { "code": "NY", "state": "New York", "rate": 4.2 },
+  { "code": "FL", "state": "Florida", "rate": 3.4 },
+  { "code": "IL", "state": "Illinois", "rate": 4.8 },
+  { "code": "WA", "state": "Washington", "rate": 4.6 },
+  { "code": "MI", "state": "Michigan", "rate": 4.4 },
+  { "code": "OH", "state": "Ohio", "rate": 3.9 },
+  { "code": "NV", "state": "Nevada", "rate": 5.7 },
+  { "code": "MA", "state": "Massachusetts", "rate": 3.7 }
+]
