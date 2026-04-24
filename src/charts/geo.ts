@@ -40,10 +40,23 @@ interface DwTopo {
   meta: { label: string; keys: Array<{ value: string; label: string }> };
 }
 
+const BASEMAP_ALIASES: Record<string, string> = {
+  usa: 'usa-states',
+  'united-states': 'usa-states',
+  us: 'usa-states',
+  germany: 'germany-states',
+  deutschland: 'germany-states',
+  france: 'france-regions',
+  'united-kingdom': 'uk-counties',
+  uk: 'uk-counties',
+  britain: 'uk-counties',
+};
+
 function loadBasemap(id: string): DwTopo | null {
   const dir = findBasemapsDir();
   if (!dir) return null;
-  const p = join(dir, `${id}.json`);
+  const canonical = BASEMAP_ALIASES[id] ?? id;
+  const p = join(dir, `${canonical}.json`);
   if (!existsSync(p)) return null;
   try {
     return JSON.parse(readFileSync(p, 'utf-8')) as DwTopo;

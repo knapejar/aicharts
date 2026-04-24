@@ -1,0 +1,3613 @@
+[
+  {
+    "_slug": "01-ai-adoption",
+    "chart": "line",
+    "title": "Generative AI has gone mainstream",
+    "subtitle": "Share of US knowledge workers using AI at work (percent)",
+    "source": "McKinsey Global Survey on AI, 2018-2025",
+    "palette": "editorial",
+    "size": "share",
+    "x": "year",
+    "y": "share",
+    "interpolation": "curved",
+    "areaFill": true,
+    "showSymbols": "last",
+    "showValueLabels": "last",
+    "yFormat": "percent",
+    "data": [
+      {
+        "year": 2018,
+        "share": 3
+      },
+      {
+        "year": 2020,
+        "share": 8
+      },
+      {
+        "year": 2022,
+        "share": 23
+      },
+      {
+        "year": 2023,
+        "share": 42
+      },
+      {
+        "year": 2024,
+        "share": 58
+      },
+      {
+        "year": 2025,
+        "share": 74
+      }
+    ]
+  },
+  {
+    "_slug": "02-hyperscalers",
+    "chart": "bar",
+    "title": "Three hyperscalers, the long tail",
+    "subtitle": "Global cloud infrastructure market share, Q4 2024 (percent)",
+    "source": "Synergy Research Group",
+    "palette": "clarity",
+    "size": "share",
+    "label": "provider",
+    "value": "share",
+    "orientation": "horizontal",
+    "sort": "desc",
+    "showValueLabels": true,
+    "data": [
+      {
+        "provider": "Amazon Web Services",
+        "share": 31
+      },
+      {
+        "provider": "Microsoft Azure",
+        "share": 24
+      },
+      {
+        "provider": "Google Cloud",
+        "share": 11
+      },
+      {
+        "provider": "Alibaba Cloud",
+        "share": 4
+      },
+      {
+        "provider": "Oracle Cloud",
+        "share": 3
+      },
+      {
+        "provider": "IBM Cloud",
+        "share": 2
+      },
+      {
+        "provider": "Salesforce",
+        "share": 2
+      },
+      {
+        "provider": "Tencent Cloud",
+        "share": 2
+      }
+    ]
+  },
+  {
+    "_slug": "03-global-warming",
+    "chart": "line",
+    "title": "The warming, year by year",
+    "subtitle": "Global mean surface temperature anomaly vs. 1951-1980 baseline (degrees Celsius)",
+    "source": "NASA GISS Surface Temperature Analysis",
+    "palette": "diverging-sunset",
+    "size": "poster",
+    "x": "year",
+    "y": "anomaly",
+    "interpolation": "linear",
+    "showSymbols": "none",
+    "areaFill": true,
+    "data": [
+      {
+        "year": 1880,
+        "anomaly": -0.17
+      },
+      {
+        "year": 1900,
+        "anomaly": -0.09
+      },
+      {
+        "year": 1920,
+        "anomaly": -0.27
+      },
+      {
+        "year": 1940,
+        "anomaly": 0.12
+      },
+      {
+        "year": 1960,
+        "anomaly": -0.02
+      },
+      {
+        "year": 1980,
+        "anomaly": 0.26
+      },
+      {
+        "year": 1990,
+        "anomaly": 0.45
+      },
+      {
+        "year": 2000,
+        "anomaly": 0.42
+      },
+      {
+        "year": 2010,
+        "anomaly": 0.72
+      },
+      {
+        "year": 2015,
+        "anomaly": 0.9
+      },
+      {
+        "year": 2020,
+        "anomaly": 1.02
+      },
+      {
+        "year": 2023,
+        "anomaly": 1.17
+      },
+      {
+        "year": 2024,
+        "anomaly": 1.29
+      }
+    ]
+  },
+  {
+    "_slug": "04-co2-by-country",
+    "chart": "geo",
+    "title": "Where the carbon comes from",
+    "subtitle": "Annual CO2 emissions, 2023 (million tonnes)",
+    "source": "Global Carbon Project",
+    "palette": "carbon",
+    "size": "share",
+    "basemap": "world",
+    "code": "country",
+    "value": "emissions",
+    "scale": "stepped",
+    "data": [
+      {
+        "country": "CHN",
+        "emissions": 11900
+      },
+      {
+        "country": "USA",
+        "emissions": 4900
+      },
+      {
+        "country": "IND",
+        "emissions": 3100
+      },
+      {
+        "country": "RUS",
+        "emissions": 1700
+      },
+      {
+        "country": "JPN",
+        "emissions": 990
+      },
+      {
+        "country": "IRN",
+        "emissions": 780
+      },
+      {
+        "country": "DEU",
+        "emissions": 670
+      },
+      {
+        "country": "SAU",
+        "emissions": 660
+      },
+      {
+        "country": "IDN",
+        "emissions": 650
+      },
+      {
+        "country": "KOR",
+        "emissions": 620
+      },
+      {
+        "country": "CAN",
+        "emissions": 570
+      },
+      {
+        "country": "BRA",
+        "emissions": 490
+      },
+      {
+        "country": "TUR",
+        "emissions": 430
+      },
+      {
+        "country": "MEX",
+        "emissions": 410
+      },
+      {
+        "country": "AUS",
+        "emissions": 390
+      },
+      {
+        "country": "GBR",
+        "emissions": 330
+      },
+      {
+        "country": "FRA",
+        "emissions": 300
+      },
+      {
+        "country": "ITA",
+        "emissions": 320
+      },
+      {
+        "country": "POL",
+        "emissions": 300
+      },
+      {
+        "country": "VNM",
+        "emissions": 290
+      },
+      {
+        "country": "ZAF",
+        "emissions": 440
+      },
+      {
+        "country": "ESP",
+        "emissions": 220
+      },
+      {
+        "country": "NGA",
+        "emissions": 120
+      },
+      {
+        "country": "EGY",
+        "emissions": 260
+      },
+      {
+        "country": "ARG",
+        "emissions": 180
+      }
+    ]
+  },
+  {
+    "_slug": "05-energy-mix",
+    "chart": "stacked-area",
+    "title": "Coal peaks, solar surges",
+    "subtitle": "Global electricity generation by source (terawatt-hours)",
+    "source": "Ember Global Electricity Review, 2024",
+    "palette": "earth",
+    "size": "share",
+    "x": "year",
+    "y": [
+      "coal",
+      "gas",
+      "hydro",
+      "nuclear",
+      "wind",
+      "solar",
+      "other"
+    ],
+    "interpolation": "curved",
+    "data": [
+      {
+        "year": 2000,
+        "coal": 5900,
+        "gas": 2750,
+        "hydro": 2700,
+        "nuclear": 2600,
+        "wind": 30,
+        "solar": 1,
+        "other": 400
+      },
+      {
+        "year": 2005,
+        "coal": 7400,
+        "gas": 3600,
+        "hydro": 2900,
+        "nuclear": 2770,
+        "wind": 100,
+        "solar": 4,
+        "other": 460
+      },
+      {
+        "year": 2010,
+        "coal": 8700,
+        "gas": 4750,
+        "hydro": 3450,
+        "nuclear": 2760,
+        "wind": 340,
+        "solar": 32,
+        "other": 540
+      },
+      {
+        "year": 2015,
+        "coal": 9500,
+        "gas": 5500,
+        "hydro": 3900,
+        "nuclear": 2570,
+        "wind": 830,
+        "solar": 250,
+        "other": 610
+      },
+      {
+        "year": 2020,
+        "coal": 9400,
+        "gas": 6200,
+        "hydro": 4360,
+        "nuclear": 2700,
+        "wind": 1590,
+        "solar": 860,
+        "other": 700
+      },
+      {
+        "year": 2023,
+        "coal": 10400,
+        "gas": 6500,
+        "hydro": 4210,
+        "nuclear": 2690,
+        "wind": 2300,
+        "solar": 1630,
+        "other": 780
+      }
+    ]
+  },
+  {
+    "_slug": "06-gdp-top10",
+    "chart": "bar",
+    "title": "The economic heavyweights",
+    "subtitle": "Nominal GDP, 2024 (trillion USD)",
+    "source": "International Monetary Fund, World Economic Outlook",
+    "palette": "boardroom",
+    "size": "inline",
+    "label": "country",
+    "value": "gdp",
+    "orientation": "horizontal",
+    "sort": "desc",
+    "showValueLabels": true,
+    "data": [
+      {
+        "country": "United States",
+        "gdp": 29.2
+      },
+      {
+        "country": "China",
+        "gdp": 18.6
+      },
+      {
+        "country": "Germany",
+        "gdp": 4.7
+      },
+      {
+        "country": "Japan",
+        "gdp": 4.1
+      },
+      {
+        "country": "India",
+        "gdp": 3.9
+      },
+      {
+        "country": "United Kingdom",
+        "gdp": 3.6
+      },
+      {
+        "country": "France",
+        "gdp": 3.2
+      },
+      {
+        "country": "Italy",
+        "gdp": 2.4
+      },
+      {
+        "country": "Brazil",
+        "gdp": 2.3
+      },
+      {
+        "country": "Canada",
+        "gdp": 2.2
+      }
+    ]
+  },
+  {
+    "_slug": "07-inflation-g7",
+    "chart": "line-split",
+    "title": "The great unwinding",
+    "subtitle": "Consumer price inflation, year-on-year (percent)",
+    "source": "OECD Main Economic Indicators",
+    "palette": "mono-blue",
+    "size": "share",
+    "x": "year",
+    "y": [
+      "usa",
+      "uk",
+      "germany",
+      "france",
+      "japan",
+      "canada"
+    ],
+    "columns": 3,
+    "sharedScale": true,
+    "interpolation": "curved",
+    "yFormat": "percent",
+    "data": [
+      {
+        "year": 2019,
+        "usa": 1.8,
+        "uk": 1.8,
+        "germany": 1.4,
+        "france": 1.1,
+        "japan": 0.5,
+        "canada": 1.9
+      },
+      {
+        "year": 2020,
+        "usa": 1.2,
+        "uk": 0.9,
+        "germany": 0.5,
+        "france": 0.5,
+        "japan": 0,
+        "canada": 0.7
+      },
+      {
+        "year": 2021,
+        "usa": 4.7,
+        "uk": 2.6,
+        "germany": 3.2,
+        "france": 2.1,
+        "japan": -0.2,
+        "canada": 3.4
+      },
+      {
+        "year": 2022,
+        "usa": 8,
+        "uk": 9.1,
+        "germany": 8.7,
+        "france": 5.9,
+        "japan": 2.5,
+        "canada": 6.8
+      },
+      {
+        "year": 2023,
+        "usa": 4.1,
+        "uk": 7.3,
+        "germany": 6,
+        "france": 5.7,
+        "japan": 3.3,
+        "canada": 3.9
+      },
+      {
+        "year": 2024,
+        "usa": 2.9,
+        "uk": 2.5,
+        "germany": 2.3,
+        "france": 2,
+        "japan": 2.7,
+        "canada": 2.4
+      }
+    ]
+  },
+  {
+    "_slug": "08-iphone-share",
+    "chart": "pie",
+    "title": "Apple's slice of the smartphone world",
+    "subtitle": "Global smartphone shipments by vendor, Q4 2024",
+    "source": "IDC Worldwide Quarterly Mobile Phone Tracker",
+    "palette": "vibrant",
+    "size": "inline",
+    "label": "vendor",
+    "value": "share",
+    "sort": "desc",
+    "data": [
+      {
+        "vendor": "Apple",
+        "share": 23.4
+      },
+      {
+        "vendor": "Samsung",
+        "share": 16.2
+      },
+      {
+        "vendor": "Xiaomi",
+        "share": 12.8
+      },
+      {
+        "vendor": "Transsion",
+        "share": 8.7
+      },
+      {
+        "vendor": "Oppo",
+        "share": 8.4
+      },
+      {
+        "vendor": "Other",
+        "share": 30.5
+      }
+    ]
+  },
+  {
+    "_slug": "09-netflix-subs",
+    "chart": "combo",
+    "title": "Netflix keeps adding, at a price",
+    "subtitle": "Global paid subscribers (bars, millions) and average revenue per member (line, USD/month)",
+    "source": "Netflix quarterly shareholder letters",
+    "palette": "vibrant",
+    "size": "share",
+    "x": "year",
+    "bars": "subscribers",
+    "lines": "arpm",
+    "interpolation": "curved",
+    "data": [
+      {
+        "year": 2017,
+        "subscribers": 117.6,
+        "arpm": 9.43
+      },
+      {
+        "year": 2018,
+        "subscribers": 139.3,
+        "arpm": 10.31
+      },
+      {
+        "year": 2019,
+        "subscribers": 167.1,
+        "arpm": 10.82
+      },
+      {
+        "year": 2020,
+        "subscribers": 203.7,
+        "arpm": 11.02
+      },
+      {
+        "year": 2021,
+        "subscribers": 221.8,
+        "arpm": 11.67
+      },
+      {
+        "year": 2022,
+        "subscribers": 230.8,
+        "arpm": 11.76
+      },
+      {
+        "year": 2023,
+        "subscribers": 260.3,
+        "arpm": 11.68
+      },
+      {
+        "year": 2024,
+        "subscribers": 301.6,
+        "arpm": 11.85
+      }
+    ]
+  },
+  {
+    "_slug": "10-ev-sales",
+    "chart": "stacked-bar",
+    "title": "The EV decade",
+    "subtitle": "Global electric vehicle sales, by region (millions of units)",
+    "source": "IEA Global EV Outlook 2024",
+    "palette": "viridis",
+    "size": "share",
+    "x": "year",
+    "y": [
+      "china",
+      "europe",
+      "northAmerica",
+      "rest"
+    ],
+    "showTotals": true,
+    "data": [
+      {
+        "year": 2017,
+        "china": 0.6,
+        "europe": 0.3,
+        "northAmerica": 0.2,
+        "rest": 0.1
+      },
+      {
+        "year": 2018,
+        "china": 1.1,
+        "europe": 0.4,
+        "northAmerica": 0.4,
+        "rest": 0.1
+      },
+      {
+        "year": 2019,
+        "china": 1.1,
+        "europe": 0.6,
+        "northAmerica": 0.3,
+        "rest": 0.1
+      },
+      {
+        "year": 2020,
+        "china": 1.3,
+        "europe": 1.4,
+        "northAmerica": 0.3,
+        "rest": 0.1
+      },
+      {
+        "year": 2021,
+        "china": 3.3,
+        "europe": 2.3,
+        "northAmerica": 0.7,
+        "rest": 0.3
+      },
+      {
+        "year": 2022,
+        "china": 6,
+        "europe": 2.7,
+        "northAmerica": 1,
+        "rest": 0.5
+      },
+      {
+        "year": 2023,
+        "china": 8.1,
+        "europe": 3.2,
+        "northAmerica": 1.5,
+        "rest": 0.8
+      },
+      {
+        "year": 2024,
+        "china": 11.3,
+        "europe": 3.5,
+        "northAmerica": 1.8,
+        "rest": 1.2
+      }
+    ]
+  },
+  {
+    "_slug": "11-world-population",
+    "chart": "pie",
+    "title": "Eight billion, unevenly spread",
+    "subtitle": "World population by region, 2024 (millions)",
+    "source": "UN World Population Prospects, 2024 revision",
+    "palette": "earth",
+    "size": "share",
+    "label": "region",
+    "value": "population",
+    "sort": "desc",
+    "data": [
+      {
+        "region": "Asia",
+        "population": 4780
+      },
+      {
+        "region": "Africa",
+        "population": 1510
+      },
+      {
+        "region": "Europe",
+        "population": 745
+      },
+      {
+        "region": "Latin America & Caribbean",
+        "population": 665
+      },
+      {
+        "region": "North America",
+        "population": 380
+      },
+      {
+        "region": "Oceania",
+        "population": 46
+      }
+    ]
+  },
+  {
+    "_slug": "12-semiconductor-geo",
+    "chart": "geo",
+    "title": "Where the chips are made",
+    "subtitle": "Share of global semiconductor fabrication capacity, 2024 (percent)",
+    "source": "Semiconductor Industry Association, BCG",
+    "palette": "twilight",
+    "size": "share",
+    "basemap": "asia",
+    "code": "country",
+    "value": "share",
+    "scale": "linear",
+    "data": [
+      {
+        "country": "TWN",
+        "share": 22
+      },
+      {
+        "country": "KOR",
+        "share": 21
+      },
+      {
+        "country": "JPN",
+        "share": 15
+      },
+      {
+        "country": "CHN",
+        "share": 19
+      },
+      {
+        "country": "USA",
+        "share": 12
+      },
+      {
+        "country": "MYS",
+        "share": 1
+      },
+      {
+        "country": "SGP",
+        "share": 5
+      },
+      {
+        "country": "VNM",
+        "share": 1
+      },
+      {
+        "country": "IND",
+        "share": 1
+      },
+      {
+        "country": "ISR",
+        "share": 2
+      },
+      {
+        "country": "PHL",
+        "share": 1
+      }
+    ]
+  },
+  {
+    "_slug": "13-tesla-revenue",
+    "chart": "combo",
+    "title": "Tesla: revenue up, margins down",
+    "subtitle": "Annual revenue (bars, billion USD) and automotive gross margin (line, percent)",
+    "source": "Tesla 10-K filings",
+    "palette": "carbon",
+    "size": "share",
+    "x": "year",
+    "bars": "revenue",
+    "lines": "margin",
+    "interpolation": "linear",
+    "data": [
+      {
+        "year": 2018,
+        "revenue": 21.5,
+        "margin": 20.1
+      },
+      {
+        "year": 2019,
+        "revenue": 24.6,
+        "margin": 21.2
+      },
+      {
+        "year": 2020,
+        "revenue": 31.5,
+        "margin": 25.6
+      },
+      {
+        "year": 2021,
+        "revenue": 53.8,
+        "margin": 29.3
+      },
+      {
+        "year": 2022,
+        "revenue": 81.5,
+        "margin": 28.5
+      },
+      {
+        "year": 2023,
+        "revenue": 96.8,
+        "margin": 18.2
+      },
+      {
+        "year": 2024,
+        "revenue": 97.7,
+        "margin": 17.9
+      }
+    ]
+  },
+  {
+    "_slug": "14-europe-renewables",
+    "chart": "geo",
+    "title": "Europe, unevenly green",
+    "subtitle": "Share of gross final energy from renewables, 2023 (percent)",
+    "source": "Eurostat SHARES statistics",
+    "palette": "viridis",
+    "size": "share",
+    "basemap": "europe",
+    "code": "country",
+    "value": "share",
+    "scale": "linear",
+    "data": [
+      {
+        "country": "SWE",
+        "share": 66.4
+      },
+      {
+        "country": "FIN",
+        "share": 50.8
+      },
+      {
+        "country": "LVA",
+        "share": 43.3
+      },
+      {
+        "country": "DNK",
+        "share": 44.9
+      },
+      {
+        "country": "EST",
+        "share": 41
+      },
+      {
+        "country": "PRT",
+        "share": 35.9
+      },
+      {
+        "country": "AUT",
+        "share": 38.2
+      },
+      {
+        "country": "HRV",
+        "share": 29.5
+      },
+      {
+        "country": "LTU",
+        "share": 31.9
+      },
+      {
+        "country": "NOR",
+        "share": 72.3
+      },
+      {
+        "country": "ROU",
+        "share": 25.8
+      },
+      {
+        "country": "ESP",
+        "share": 24.1
+      },
+      {
+        "country": "SVN",
+        "share": 25
+      },
+      {
+        "country": "GRC",
+        "share": 25.3
+      },
+      {
+        "country": "ITA",
+        "share": 19.6
+      },
+      {
+        "country": "DEU",
+        "share": 21.6
+      },
+      {
+        "country": "FRA",
+        "share": 22.2
+      },
+      {
+        "country": "BGR",
+        "share": 19.6
+      },
+      {
+        "country": "CZE",
+        "share": 18.2
+      },
+      {
+        "country": "POL",
+        "share": 16.9
+      },
+      {
+        "country": "HUN",
+        "share": 15.2
+      },
+      {
+        "country": "SVK",
+        "share": 18
+      },
+      {
+        "country": "CYP",
+        "share": 19.4
+      },
+      {
+        "country": "MLT",
+        "share": 14.8
+      },
+      {
+        "country": "LUX",
+        "share": 11.6
+      },
+      {
+        "country": "NLD",
+        "share": 17.2
+      },
+      {
+        "country": "BEL",
+        "share": 14.6
+      },
+      {
+        "country": "IRL",
+        "share": 15.3
+      },
+      {
+        "country": "CHE",
+        "share": 27.2
+      },
+      {
+        "country": "GBR",
+        "share": 19.4
+      },
+      {
+        "country": "ISL",
+        "share": 86.9
+      }
+    ]
+  },
+  {
+    "_slug": "15-streaming-wars",
+    "chart": "grouped-bar",
+    "title": "The streaming standings",
+    "subtitle": "Global paid subscribers by service, end of 2024 (millions)",
+    "source": "Company filings, Antenna",
+    "palette": "vibrant",
+    "size": "inline",
+    "x": "service",
+    "y": [
+      "subscribers"
+    ],
+    "orientation": "horizontal",
+    "showValueLabels": true,
+    "data": [
+      {
+        "service": "Netflix",
+        "subscribers": 302
+      },
+      {
+        "service": "Amazon Prime Video",
+        "subscribers": 200
+      },
+      {
+        "service": "Disney+",
+        "subscribers": 123
+      },
+      {
+        "service": "Max (HBO)",
+        "subscribers": 111
+      },
+      {
+        "service": "Paramount+",
+        "subscribers": 77
+      },
+      {
+        "service": "Apple TV+",
+        "subscribers": 44
+      },
+      {
+        "service": "Peacock",
+        "subscribers": 36
+      }
+    ]
+  },
+  {
+    "_slug": "16-olympics-medals",
+    "chart": "stacked-bar",
+    "title": "Paris 2024: the medals ledger",
+    "subtitle": "Top medal-winning countries, Summer Olympics 2024",
+    "source": "International Olympic Committee",
+    "palette": "editorial",
+    "size": "share",
+    "x": "country",
+    "y": [
+      "gold",
+      "silver",
+      "bronze"
+    ],
+    "orientation": "horizontal",
+    "showTotals": true,
+    "data": [
+      {
+        "country": "United States",
+        "gold": 40,
+        "silver": 44,
+        "bronze": 42
+      },
+      {
+        "country": "China",
+        "gold": 40,
+        "silver": 27,
+        "bronze": 24
+      },
+      {
+        "country": "Japan",
+        "gold": 20,
+        "silver": 12,
+        "bronze": 13
+      },
+      {
+        "country": "Australia",
+        "gold": 18,
+        "silver": 19,
+        "bronze": 16
+      },
+      {
+        "country": "France",
+        "gold": 16,
+        "silver": 26,
+        "bronze": 22
+      },
+      {
+        "country": "Netherlands",
+        "gold": 15,
+        "silver": 7,
+        "bronze": 12
+      },
+      {
+        "country": "Great Britain",
+        "gold": 14,
+        "silver": 22,
+        "bronze": 29
+      },
+      {
+        "country": "South Korea",
+        "gold": 13,
+        "silver": 9,
+        "bronze": 10
+      },
+      {
+        "country": "Italy",
+        "gold": 12,
+        "silver": 13,
+        "bronze": 15
+      },
+      {
+        "country": "Germany",
+        "gold": 12,
+        "silver": 13,
+        "bronze": 8
+      }
+    ]
+  },
+  {
+    "_slug": "17-life-expectancy",
+    "chart": "line-split",
+    "title": "The long life divide",
+    "subtitle": "Life expectancy at birth, selected countries (years)",
+    "source": "World Bank, WHO Global Health Observatory",
+    "palette": "earth",
+    "size": "poster",
+    "x": "year",
+    "y": [
+      "japan",
+      "spain",
+      "usa",
+      "china",
+      "india",
+      "nigeria"
+    ],
+    "columns": 3,
+    "sharedScale": true,
+    "interpolation": "curved",
+    "data": [
+      {
+        "year": 1960,
+        "japan": 67.7,
+        "spain": 69.1,
+        "usa": 69.8,
+        "china": 43.7,
+        "india": 41.2,
+        "nigeria": 37.1
+      },
+      {
+        "year": 1970,
+        "japan": 72,
+        "spain": 72,
+        "usa": 70.8,
+        "china": 59.1,
+        "india": 47.7,
+        "nigeria": 41.8
+      },
+      {
+        "year": 1980,
+        "japan": 76.1,
+        "spain": 75.4,
+        "usa": 73.6,
+        "china": 66.5,
+        "india": 53.8,
+        "nigeria": 45.8
+      },
+      {
+        "year": 1990,
+        "japan": 78.8,
+        "spain": 76.9,
+        "usa": 75.2,
+        "china": 68.9,
+        "india": 58.5,
+        "nigeria": 46
+      },
+      {
+        "year": 2000,
+        "japan": 81.1,
+        "spain": 79.3,
+        "usa": 76.6,
+        "china": 72,
+        "india": 62.6,
+        "nigeria": 46.6
+      },
+      {
+        "year": 2010,
+        "japan": 82.9,
+        "spain": 82.4,
+        "usa": 78.6,
+        "china": 74.8,
+        "india": 66.6,
+        "nigeria": 51.3
+      },
+      {
+        "year": 2020,
+        "japan": 84.6,
+        "spain": 82.3,
+        "usa": 77.3,
+        "china": 77.9,
+        "india": 70.1,
+        "nigeria": 54.7
+      },
+      {
+        "year": 2023,
+        "japan": 84.7,
+        "spain": 83.7,
+        "usa": 77.5,
+        "china": 78.6,
+        "india": 72,
+        "nigeria": 56.1
+      }
+    ]
+  },
+  {
+    "_slug": "18-tech-rd",
+    "chart": "bar",
+    "title": "Big Tech's research bill",
+    "subtitle": "Annual R&D spending, 2024 (billion USD)",
+    "source": "Company 10-K and 20-F filings",
+    "palette": "carbon",
+    "size": "share",
+    "label": "company",
+    "value": "spend",
+    "orientation": "horizontal",
+    "sort": "desc",
+    "showValueLabels": true,
+    "data": [
+      {
+        "company": "Amazon",
+        "spend": 88.5
+      },
+      {
+        "company": "Alphabet",
+        "spend": 49.3
+      },
+      {
+        "company": "Meta",
+        "spend": 43.9
+      },
+      {
+        "company": "Microsoft",
+        "spend": 32.5
+      },
+      {
+        "company": "Apple",
+        "spend": 31.4
+      },
+      {
+        "company": "Samsung",
+        "spend": 24.1
+      },
+      {
+        "company": "Huawei",
+        "spend": 23.8
+      },
+      {
+        "company": "Intel",
+        "spend": 16.5
+      }
+    ]
+  },
+  {
+    "_slug": "19-usa-unemployment",
+    "chart": "line",
+    "title": "The US job market, in one line",
+    "subtitle": "Monthly unemployment rate, seasonally adjusted (percent)",
+    "source": "US Bureau of Labor Statistics",
+    "palette": "mono-blue",
+    "size": "share",
+    "x": "month",
+    "y": "rate",
+    "interpolation": "linear",
+    "showSymbols": "none",
+    "areaFill": true,
+    "yFormat": "percent",
+    "data": [
+      {
+        "month": "2019-01",
+        "rate": 4
+      },
+      {
+        "month": "2019-07",
+        "rate": 3.7
+      },
+      {
+        "month": "2020-01",
+        "rate": 3.6
+      },
+      {
+        "month": "2020-04",
+        "rate": 14.8
+      },
+      {
+        "month": "2020-07",
+        "rate": 10.2
+      },
+      {
+        "month": "2020-12",
+        "rate": 6.7
+      },
+      {
+        "month": "2021-06",
+        "rate": 5.9
+      },
+      {
+        "month": "2021-12",
+        "rate": 3.9
+      },
+      {
+        "month": "2022-06",
+        "rate": 3.6
+      },
+      {
+        "month": "2022-12",
+        "rate": 3.5
+      },
+      {
+        "month": "2023-06",
+        "rate": 3.6
+      },
+      {
+        "month": "2023-12",
+        "rate": 3.7
+      },
+      {
+        "month": "2024-06",
+        "rate": 4.1
+      },
+      {
+        "month": "2024-12",
+        "rate": 4.1
+      },
+      {
+        "month": "2025-03",
+        "rate": 4.2
+      }
+    ]
+  },
+  {
+    "_slug": "20-spotify-genres",
+    "chart": "donut",
+    "title": "What the world is streaming",
+    "subtitle": "Share of global Spotify streams by genre, 2024",
+    "source": "Spotify Wrapped aggregates, Chartmetric",
+    "palette": "twilight",
+    "size": "inline",
+    "label": "genre",
+    "value": "share",
+    "sort": "desc",
+    "centerValue": "sum",
+    "centerLabel": "of streams",
+    "data": [
+      {
+        "genre": "Pop",
+        "share": 24
+      },
+      {
+        "genre": "Hip-Hop / Rap",
+        "share": 18
+      },
+      {
+        "genre": "Latin",
+        "share": 12
+      },
+      {
+        "genre": "Rock",
+        "share": 11
+      },
+      {
+        "genre": "EDM",
+        "share": 9
+      },
+      {
+        "genre": "R&B",
+        "share": 7
+      },
+      {
+        "genre": "K-Pop",
+        "share": 5
+      },
+      {
+        "genre": "Country",
+        "share": 5
+      },
+      {
+        "genre": "Other",
+        "share": 9
+      }
+    ]
+  },
+  {
+    "_slug": "21-apple-revenue-split",
+    "chart": "stacked-area",
+    "title": "Apple's pivot to services",
+    "subtitle": "Net sales by segment (billion USD)",
+    "source": "Apple 10-K filings, FY ending September",
+    "palette": "clarity",
+    "size": "share",
+    "x": "year",
+    "y": [
+      "iphone",
+      "services",
+      "wearables",
+      "mac",
+      "ipad"
+    ],
+    "interpolation": "curved",
+    "data": [
+      {
+        "year": 2016,
+        "iphone": 136.7,
+        "services": 24.3,
+        "wearables": 11.1,
+        "mac": 22.8,
+        "ipad": 20.6
+      },
+      {
+        "year": 2017,
+        "iphone": 141.3,
+        "services": 29.9,
+        "wearables": 12.8,
+        "mac": 25.8,
+        "ipad": 19.2
+      },
+      {
+        "year": 2018,
+        "iphone": 166.7,
+        "services": 37.2,
+        "wearables": 17.4,
+        "mac": 25.2,
+        "ipad": 18.4
+      },
+      {
+        "year": 2019,
+        "iphone": 142.4,
+        "services": 46.3,
+        "wearables": 24.5,
+        "mac": 25.7,
+        "ipad": 21.3
+      },
+      {
+        "year": 2020,
+        "iphone": 137.8,
+        "services": 53.8,
+        "wearables": 30.6,
+        "mac": 28.6,
+        "ipad": 23.7
+      },
+      {
+        "year": 2021,
+        "iphone": 191.9,
+        "services": 68.4,
+        "wearables": 38.4,
+        "mac": 35.2,
+        "ipad": 31.9
+      },
+      {
+        "year": 2022,
+        "iphone": 205.5,
+        "services": 78.1,
+        "wearables": 41.2,
+        "mac": 40.2,
+        "ipad": 29.3
+      },
+      {
+        "year": 2023,
+        "iphone": 200.6,
+        "services": 85.2,
+        "wearables": 39.8,
+        "mac": 29.4,
+        "ipad": 28.3
+      },
+      {
+        "year": 2024,
+        "iphone": 201.2,
+        "services": 96.2,
+        "wearables": 37,
+        "mac": 29.9,
+        "ipad": 26.7
+      }
+    ]
+  },
+  {
+    "_slug": "22-bitcoin-halving",
+    "chart": "line",
+    "title": "Bitcoin's jagged ascent",
+    "subtitle": "Year-end price of one bitcoin (USD)",
+    "source": "CoinGecko, Bloomberg",
+    "palette": "vibrant",
+    "size": "share",
+    "x": "year",
+    "y": "price",
+    "interpolation": "curved",
+    "areaFill": true,
+    "showSymbols": "last",
+    "showValueLabels": "last",
+    "yFormat": "currency",
+    "data": [
+      {
+        "year": 2013,
+        "price": 754
+      },
+      {
+        "year": 2014,
+        "price": 318
+      },
+      {
+        "year": 2015,
+        "price": 430
+      },
+      {
+        "year": 2016,
+        "price": 963
+      },
+      {
+        "year": 2017,
+        "price": 14156
+      },
+      {
+        "year": 2018,
+        "price": 3742
+      },
+      {
+        "year": 2019,
+        "price": 7179
+      },
+      {
+        "year": 2020,
+        "price": 28768
+      },
+      {
+        "year": 2021,
+        "price": 47686
+      },
+      {
+        "year": 2022,
+        "price": 16547
+      },
+      {
+        "year": 2023,
+        "price": 42207
+      },
+      {
+        "year": 2024,
+        "price": 93429
+      }
+    ]
+  },
+  {
+    "_slug": "23-obesity-rates",
+    "chart": "bar",
+    "title": "The heavier world",
+    "subtitle": "Adult obesity rate, selected OECD countries (percent, 2022-23)",
+    "source": "OECD Health Statistics 2024",
+    "palette": "diverging-sunset",
+    "size": "share",
+    "label": "country",
+    "value": "rate",
+    "orientation": "horizontal",
+    "sort": "desc",
+    "showValueLabels": true,
+    "yFormat": "percent",
+    "data": [
+      {
+        "country": "United States",
+        "rate": 42.8
+      },
+      {
+        "country": "Mexico",
+        "rate": 36.1
+      },
+      {
+        "country": "New Zealand",
+        "rate": 34.4
+      },
+      {
+        "country": "United Kingdom",
+        "rate": 28
+      },
+      {
+        "country": "Hungary",
+        "rate": 26.4
+      },
+      {
+        "country": "Canada",
+        "rate": 27.8
+      },
+      {
+        "country": "Australia",
+        "rate": 32
+      },
+      {
+        "country": "Germany",
+        "rate": 19
+      },
+      {
+        "country": "Spain",
+        "rate": 16.5
+      },
+      {
+        "country": "France",
+        "rate": 10
+      },
+      {
+        "country": "Italy",
+        "rate": 11.5
+      },
+      {
+        "country": "Japan",
+        "rate": 4.3
+      },
+      {
+        "country": "South Korea",
+        "rate": 6.8
+      }
+    ]
+  },
+  {
+    "_slug": "24-startup-valuations",
+    "chart": "bar-split",
+    "title": "The unicorn club",
+    "subtitle": "Top AI startup valuations by round, 2024 (billion USD)",
+    "source": "PitchBook, Crunchbase",
+    "palette": "twilight",
+    "size": "share",
+    "x": "company",
+    "y": [
+      "valuation"
+    ],
+    "columns": 1,
+    "data": [
+      {
+        "company": "OpenAI",
+        "valuation": 157
+      },
+      {
+        "company": "xAI",
+        "valuation": 50
+      },
+      {
+        "company": "Anthropic",
+        "valuation": 40
+      },
+      {
+        "company": "Databricks",
+        "valuation": 62
+      },
+      {
+        "company": "Perplexity",
+        "valuation": 9
+      },
+      {
+        "company": "Mistral",
+        "valuation": 6
+      },
+      {
+        "company": "Cohere",
+        "valuation": 5.5
+      }
+    ]
+  },
+  {
+    "_slug": "25-flight-emissions",
+    "chart": "donut",
+    "title": "A flight's carbon footprint",
+    "subtitle": "Share of CO2 emissions per economy-class passenger on a long-haul flight",
+    "source": "ICAO Carbon Emissions Calculator methodology",
+    "palette": "earth",
+    "size": "inline",
+    "label": "component",
+    "value": "share",
+    "centerValue": "1.6t",
+    "centerLabel": "CO2 per passenger",
+    "data": [
+      {
+        "component": "Jet fuel combustion",
+        "share": 72
+      },
+      {
+        "component": "Fuel production & transport",
+        "share": 18
+      },
+      {
+        "component": "Non-CO2 effects (contrails)",
+        "share": 8
+      },
+      {
+        "component": "Ground operations",
+        "share": 2
+      }
+    ]
+  },
+  {
+    "_slug": "26-usa-election-map",
+    "chart": "geo",
+    "title": "The 2024 electoral map",
+    "subtitle": "US presidential election margin by state, Trump vs. Harris (percentage points)",
+    "source": "Associated Press, certified state results",
+    "palette": "diverging-sunset",
+    "size": "poster",
+    "basemap": "usa",
+    "code": "state",
+    "value": "margin",
+    "scale": "diverging",
+    "data": [
+      {
+        "state": "AL",
+        "margin": 30
+      },
+      {
+        "state": "AK",
+        "margin": 13
+      },
+      {
+        "state": "AZ",
+        "margin": 5
+      },
+      {
+        "state": "AR",
+        "margin": 21
+      },
+      {
+        "state": "CA",
+        "margin": -20
+      },
+      {
+        "state": "CO",
+        "margin": -11
+      },
+      {
+        "state": "CT",
+        "margin": -14
+      },
+      {
+        "state": "DE",
+        "margin": -15
+      },
+      {
+        "state": "FL",
+        "margin": 13
+      },
+      {
+        "state": "GA",
+        "margin": 2
+      },
+      {
+        "state": "HI",
+        "margin": -24
+      },
+      {
+        "state": "ID",
+        "margin": 37
+      },
+      {
+        "state": "IL",
+        "margin": -11
+      },
+      {
+        "state": "IN",
+        "margin": 19
+      },
+      {
+        "state": "IA",
+        "margin": 13
+      },
+      {
+        "state": "KS",
+        "margin": 16
+      },
+      {
+        "state": "KY",
+        "margin": 30
+      },
+      {
+        "state": "LA",
+        "margin": 22
+      },
+      {
+        "state": "ME",
+        "margin": -7
+      },
+      {
+        "state": "MD",
+        "margin": -29
+      },
+      {
+        "state": "MA",
+        "margin": -25
+      },
+      {
+        "state": "MI",
+        "margin": 1
+      },
+      {
+        "state": "MN",
+        "margin": -4
+      },
+      {
+        "state": "MS",
+        "margin": 22
+      },
+      {
+        "state": "MO",
+        "margin": 18
+      },
+      {
+        "state": "MT",
+        "margin": 20
+      },
+      {
+        "state": "NE",
+        "margin": 20
+      },
+      {
+        "state": "NV",
+        "margin": 3
+      },
+      {
+        "state": "NH",
+        "margin": -3
+      },
+      {
+        "state": "NJ",
+        "margin": -6
+      },
+      {
+        "state": "NM",
+        "margin": -6
+      },
+      {
+        "state": "NY",
+        "margin": -12
+      },
+      {
+        "state": "NC",
+        "margin": 3
+      },
+      {
+        "state": "ND",
+        "margin": 36
+      },
+      {
+        "state": "OH",
+        "margin": 11
+      },
+      {
+        "state": "OK",
+        "margin": 33
+      },
+      {
+        "state": "OR",
+        "margin": -14
+      },
+      {
+        "state": "PA",
+        "margin": 2
+      },
+      {
+        "state": "RI",
+        "margin": -14
+      },
+      {
+        "state": "SC",
+        "margin": 18
+      },
+      {
+        "state": "SD",
+        "margin": 29
+      },
+      {
+        "state": "TN",
+        "margin": 30
+      },
+      {
+        "state": "TX",
+        "margin": 14
+      },
+      {
+        "state": "UT",
+        "margin": 22
+      },
+      {
+        "state": "VT",
+        "margin": -32
+      },
+      {
+        "state": "VA",
+        "margin": -6
+      },
+      {
+        "state": "WA",
+        "margin": -18
+      },
+      {
+        "state": "WV",
+        "margin": 42
+      },
+      {
+        "state": "WI",
+        "margin": 1
+      },
+      {
+        "state": "WY",
+        "margin": 46
+      },
+      {
+        "state": "DC",
+        "margin": -86
+      }
+    ]
+  },
+  {
+    "_slug": "27-chatgpt-growth",
+    "chart": "line",
+    "title": "The fastest adoption curve in history",
+    "subtitle": "Months to reach 100 million monthly users",
+    "source": "Sensor Tower, company disclosures",
+    "palette": "editorial",
+    "size": "share",
+    "x": "service",
+    "y": "months",
+    "interpolation": "linear",
+    "showSymbols": "all",
+    "showValueLabels": "all",
+    "data": [
+      {
+        "service": "ChatGPT",
+        "months": 2
+      },
+      {
+        "service": "TikTok",
+        "months": 9
+      },
+      {
+        "service": "Instagram",
+        "months": 30
+      },
+      {
+        "service": "WhatsApp",
+        "months": 42
+      },
+      {
+        "service": "YouTube",
+        "months": 48
+      },
+      {
+        "service": "Facebook",
+        "months": 54
+      },
+      {
+        "service": "Twitter",
+        "months": 60
+      },
+      {
+        "service": "Netflix",
+        "months": 120
+      }
+    ]
+  },
+  {
+    "_slug": "28-nba-champions",
+    "chart": "pie",
+    "title": "The NBA title holders",
+    "subtitle": "NBA championships by franchise, 1947-2024",
+    "source": "NBA historical records",
+    "palette": "editorial",
+    "size": "inline",
+    "label": "team",
+    "value": "titles",
+    "sort": "desc",
+    "otherThreshold": 0.04,
+    "data": [
+      {
+        "team": "Boston Celtics",
+        "titles": 18
+      },
+      {
+        "team": "LA Lakers",
+        "titles": 17
+      },
+      {
+        "team": "Golden State Warriors",
+        "titles": 7
+      },
+      {
+        "team": "Chicago Bulls",
+        "titles": 6
+      },
+      {
+        "team": "San Antonio Spurs",
+        "titles": 5
+      },
+      {
+        "team": "Philadelphia 76ers",
+        "titles": 3
+      },
+      {
+        "team": "Detroit Pistons",
+        "titles": 3
+      },
+      {
+        "team": "Miami Heat",
+        "titles": 3
+      },
+      {
+        "team": "Houston Rockets",
+        "titles": 2
+      },
+      {
+        "team": "New York Knicks",
+        "titles": 2
+      },
+      {
+        "team": "Denver Nuggets",
+        "titles": 1
+      },
+      {
+        "team": "Milwaukee Bucks",
+        "titles": 2
+      },
+      {
+        "team": "Toronto Raptors",
+        "titles": 1
+      },
+      {
+        "team": "Cleveland Cavaliers",
+        "titles": 1
+      },
+      {
+        "team": "Dallas Mavericks",
+        "titles": 1
+      }
+    ]
+  },
+  {
+    "_slug": "29-china-exports",
+    "chart": "stacked-bar",
+    "title": "China's export mix",
+    "subtitle": "Merchandise exports by category (billion USD)",
+    "source": "UN Comtrade, General Administration of Customs of China",
+    "palette": "boardroom",
+    "size": "share",
+    "x": "year",
+    "y": [
+      "machinery",
+      "textiles",
+      "chemicals",
+      "metals",
+      "vehicles",
+      "other"
+    ],
+    "normalize": true,
+    "data": [
+      {
+        "year": 2000,
+        "machinery": 100,
+        "textiles": 52,
+        "chemicals": 13,
+        "metals": 16,
+        "vehicles": 2,
+        "other": 66
+      },
+      {
+        "year": 2005,
+        "machinery": 352,
+        "textiles": 115,
+        "chemicals": 36,
+        "metals": 37,
+        "vehicles": 11,
+        "other": 210
+      },
+      {
+        "year": 2010,
+        "machinery": 780,
+        "textiles": 207,
+        "chemicals": 103,
+        "metals": 89,
+        "vehicles": 38,
+        "other": 360
+      },
+      {
+        "year": 2015,
+        "machinery": 1140,
+        "textiles": 283,
+        "chemicals": 140,
+        "metals": 98,
+        "vehicles": 64,
+        "other": 550
+      },
+      {
+        "year": 2020,
+        "machinery": 1380,
+        "textiles": 300,
+        "chemicals": 170,
+        "metals": 116,
+        "vehicles": 76,
+        "other": 548
+      },
+      {
+        "year": 2023,
+        "machinery": 1620,
+        "textiles": 291,
+        "chemicals": 195,
+        "metals": 139,
+        "vehicles": 178,
+        "other": 957
+      }
+    ]
+  },
+  {
+    "_slug": "30-tech-layoffs",
+    "chart": "bar",
+    "title": "The tech reset",
+    "subtitle": "Reported tech sector layoffs by year (thousands of workers)",
+    "source": "Layoffs.fyi",
+    "palette": "carbon",
+    "size": "inline",
+    "x": "year",
+    "y": "count",
+    "orientation": "vertical",
+    "showValueLabels": true,
+    "data": [
+      {
+        "year": 2020,
+        "count": 80
+      },
+      {
+        "year": 2021,
+        "count": 15
+      },
+      {
+        "year": 2022,
+        "count": 165
+      },
+      {
+        "year": 2023,
+        "count": 264
+      },
+      {
+        "year": 2024,
+        "count": 152
+      }
+    ]
+  },
+  {
+    "_slug": "31-germany-states-gdp",
+    "chart": "geo",
+    "title": "Germany's economic map",
+    "subtitle": "Gross domestic product by Land, 2023 (billion euros)",
+    "source": "Destatis, Federal Statistical Office of Germany",
+    "palette": "clarity",
+    "size": "share",
+    "basemap": "germany",
+    "code": "state",
+    "value": "gdp",
+    "scale": "linear",
+    "data": [
+      {
+        "state": "BW",
+        "gdp": 611
+      },
+      {
+        "state": "BY",
+        "gdp": 767
+      },
+      {
+        "state": "BE",
+        "gdp": 183
+      },
+      {
+        "state": "BB",
+        "gdp": 91
+      },
+      {
+        "state": "HB",
+        "gdp": 40
+      },
+      {
+        "state": "HH",
+        "gdp": 163
+      },
+      {
+        "state": "HE",
+        "gdp": 348
+      },
+      {
+        "state": "MV",
+        "gdp": 57
+      },
+      {
+        "state": "NI",
+        "gdp": 355
+      },
+      {
+        "state": "NW",
+        "gdp": 831
+      },
+      {
+        "state": "RP",
+        "gdp": 179
+      },
+      {
+        "state": "SL",
+        "gdp": 41
+      },
+      {
+        "state": "SN",
+        "gdp": 156
+      },
+      {
+        "state": "ST",
+        "gdp": 74
+      },
+      {
+        "state": "SH",
+        "gdp": 113
+      },
+      {
+        "state": "TH",
+        "gdp": 74
+      }
+    ]
+  },
+  {
+    "_slug": "32-student-debt",
+    "chart": "line",
+    "title": "The trillion-dollar overhang",
+    "subtitle": "Total outstanding US federal student loans (billion USD)",
+    "source": "US Department of Education Federal Student Aid",
+    "palette": "mono-blue",
+    "size": "share",
+    "x": "year",
+    "y": "debt",
+    "interpolation": "curved",
+    "areaFill": true,
+    "showSymbols": "last",
+    "showValueLabels": "last",
+    "yFormat": "currency",
+    "data": [
+      {
+        "year": 2007,
+        "debt": 516
+      },
+      {
+        "year": 2010,
+        "debt": 811
+      },
+      {
+        "year": 2012,
+        "debt": 1000
+      },
+      {
+        "year": 2014,
+        "debt": 1200
+      },
+      {
+        "year": 2016,
+        "debt": 1350
+      },
+      {
+        "year": 2018,
+        "debt": 1500
+      },
+      {
+        "year": 2020,
+        "debt": 1610
+      },
+      {
+        "year": 2022,
+        "debt": 1640
+      },
+      {
+        "year": 2024,
+        "debt": 1700
+      }
+    ]
+  },
+  {
+    "_slug": "33-world-cup-goals",
+    "chart": "grouped-bar",
+    "title": "The Messi-Ronaldo era",
+    "subtitle": "International career goals, as of Jan 2025",
+    "source": "FIFA, RSSSF",
+    "palette": "vibrant",
+    "size": "share",
+    "x": "player",
+    "y": [
+      "internationalGoals",
+      "clubGoals"
+    ],
+    "showValueLabels": true,
+    "data": [
+      {
+        "player": "Cristiano Ronaldo",
+        "internationalGoals": 136,
+        "clubGoals": 780
+      },
+      {
+        "player": "Lionel Messi",
+        "internationalGoals": 112,
+        "clubGoals": 748
+      },
+      {
+        "player": "Ali Daei",
+        "internationalGoals": 108,
+        "clubGoals": 200
+      },
+      {
+        "player": "Sunil Chhetri",
+        "internationalGoals": 94,
+        "clubGoals": 173
+      },
+      {
+        "player": "Neymar",
+        "internationalGoals": 79,
+        "clubGoals": 340
+      },
+      {
+        "player": "Robert Lewandowski",
+        "internationalGoals": 85,
+        "clubGoals": 470
+      }
+    ]
+  },
+  {
+    "_slug": "34-housing-prices",
+    "chart": "line",
+    "title": "The great home-price climb",
+    "subtitle": "Median existing US home sale price (USD thousands)",
+    "source": "National Association of Realtors",
+    "palette": "earth",
+    "size": "share",
+    "x": "year",
+    "y": "price",
+    "interpolation": "curved",
+    "showSymbols": "last",
+    "showValueLabels": "last",
+    "yFormat": "currency",
+    "data": [
+      {
+        "year": 2000,
+        "price": 139
+      },
+      {
+        "year": 2005,
+        "price": 219
+      },
+      {
+        "year": 2008,
+        "price": 198
+      },
+      {
+        "year": 2012,
+        "price": 181
+      },
+      {
+        "year": 2015,
+        "price": 223
+      },
+      {
+        "year": 2018,
+        "price": 259
+      },
+      {
+        "year": 2020,
+        "price": 296
+      },
+      {
+        "year": 2021,
+        "price": 346
+      },
+      {
+        "year": 2022,
+        "price": 378
+      },
+      {
+        "year": 2023,
+        "price": 389
+      },
+      {
+        "year": 2024,
+        "price": 410
+      }
+    ]
+  },
+  {
+    "_slug": "35-saas-spend",
+    "chart": "donut",
+    "title": "Where the SaaS dollar goes",
+    "subtitle": "Mid-market software spend by category, 2024",
+    "source": "Vendr SaaS Benchmarks Report",
+    "palette": "boardroom",
+    "size": "inline",
+    "label": "category",
+    "value": "share",
+    "sort": "desc",
+    "centerValue": "sum",
+    "centerLabel": "of software spend",
+    "data": [
+      {
+        "category": "Productivity & collaboration",
+        "share": 22
+      },
+      {
+        "category": "Sales & marketing",
+        "share": 19
+      },
+      {
+        "category": "Engineering & devtools",
+        "share": 16
+      },
+      {
+        "category": "Security",
+        "share": 14
+      },
+      {
+        "category": "Finance & HR",
+        "share": 13
+      },
+      {
+        "category": "Data & analytics",
+        "share": 10
+      },
+      {
+        "category": "Other",
+        "share": 6
+      }
+    ]
+  },
+  {
+    "_slug": "36-cancer-deaths",
+    "chart": "stacked-bar",
+    "title": "The shifting cancer picture",
+    "subtitle": "US cancer deaths by type (thousands)",
+    "source": "American Cancer Society, Cancer Facts & Figures 2024",
+    "palette": "diverging-sunset",
+    "size": "share",
+    "x": "year",
+    "y": [
+      "lung",
+      "colorectal",
+      "pancreatic",
+      "breast",
+      "prostate",
+      "liver",
+      "other"
+    ],
+    "data": [
+      {
+        "year": 1990,
+        "lung": 143,
+        "colorectal": 60,
+        "pancreatic": 25,
+        "breast": 44,
+        "prostate": 34,
+        "liver": 13,
+        "other": 181
+      },
+      {
+        "year": 2000,
+        "lung": 156,
+        "colorectal": 57,
+        "pancreatic": 29,
+        "breast": 42,
+        "prostate": 31,
+        "liver": 15,
+        "other": 230
+      },
+      {
+        "year": 2010,
+        "lung": 157,
+        "colorectal": 51,
+        "pancreatic": 37,
+        "breast": 39,
+        "prostate": 32,
+        "liver": 19,
+        "other": 239
+      },
+      {
+        "year": 2020,
+        "lung": 135,
+        "colorectal": 53,
+        "pancreatic": 47,
+        "breast": 42,
+        "prostate": 33,
+        "liver": 28,
+        "other": 264
+      },
+      {
+        "year": 2024,
+        "lung": 125,
+        "colorectal": 53,
+        "pancreatic": 52,
+        "breast": 42,
+        "prostate": 35,
+        "liver": 30,
+        "other": 274
+      }
+    ]
+  },
+  {
+    "_slug": "37-cars-by-type",
+    "chart": "line-split",
+    "title": "The powertrain transition",
+    "subtitle": "Global new passenger car sales by powertrain (million units)",
+    "source": "BloombergNEF Electric Vehicle Outlook 2024",
+    "palette": "viridis",
+    "size": "share",
+    "x": "year",
+    "y": [
+      "ice",
+      "hybrid",
+      "plugInHybrid",
+      "batteryElectric"
+    ],
+    "columns": 2,
+    "sharedScale": true,
+    "interpolation": "curved",
+    "data": [
+      {
+        "year": 2015,
+        "ice": 71,
+        "hybrid": 1.8,
+        "plugInHybrid": 0.2,
+        "batteryElectric": 0.3
+      },
+      {
+        "year": 2017,
+        "ice": 74.5,
+        "hybrid": 2.3,
+        "plugInHybrid": 0.4,
+        "batteryElectric": 0.8
+      },
+      {
+        "year": 2019,
+        "ice": 70.2,
+        "hybrid": 3.1,
+        "plugInHybrid": 0.5,
+        "batteryElectric": 1.6
+      },
+      {
+        "year": 2020,
+        "ice": 58.8,
+        "hybrid": 3.4,
+        "plugInHybrid": 1,
+        "batteryElectric": 2.2
+      },
+      {
+        "year": 2021,
+        "ice": 60.4,
+        "hybrid": 5.3,
+        "plugInHybrid": 1.8,
+        "batteryElectric": 4.6
+      },
+      {
+        "year": 2022,
+        "ice": 55.2,
+        "hybrid": 6.9,
+        "plugInHybrid": 2.9,
+        "batteryElectric": 7.3
+      },
+      {
+        "year": 2023,
+        "ice": 55.4,
+        "hybrid": 8.1,
+        "plugInHybrid": 4.3,
+        "batteryElectric": 9.5
+      },
+      {
+        "year": 2024,
+        "ice": 52,
+        "hybrid": 9.8,
+        "plugInHybrid": 5.1,
+        "batteryElectric": 12.3
+      }
+    ]
+  },
+  {
+    "_slug": "38-africa-population",
+    "chart": "geo",
+    "title": "Africa's young billion",
+    "subtitle": "Population by country, 2024 (millions)",
+    "source": "UN World Population Prospects",
+    "palette": "earth",
+    "size": "share",
+    "basemap": "africa",
+    "code": "country",
+    "value": "population",
+    "scale": "linear",
+    "data": [
+      {
+        "country": "NGA",
+        "population": 232
+      },
+      {
+        "country": "ETH",
+        "population": 128
+      },
+      {
+        "country": "EGY",
+        "population": 114
+      },
+      {
+        "country": "COD",
+        "population": 109
+      },
+      {
+        "country": "TZA",
+        "population": 68
+      },
+      {
+        "country": "ZAF",
+        "population": 63
+      },
+      {
+        "country": "KEN",
+        "population": 56
+      },
+      {
+        "country": "UGA",
+        "population": 49
+      },
+      {
+        "country": "SDN",
+        "population": 49
+      },
+      {
+        "country": "DZA",
+        "population": 46
+      },
+      {
+        "country": "MAR",
+        "population": 38
+      },
+      {
+        "country": "AGO",
+        "population": 37
+      },
+      {
+        "country": "GHA",
+        "population": 34
+      },
+      {
+        "country": "MOZ",
+        "population": 34
+      },
+      {
+        "country": "MDG",
+        "population": 31
+      },
+      {
+        "country": "CMR",
+        "population": 29
+      },
+      {
+        "country": "CIV",
+        "population": 29
+      },
+      {
+        "country": "NER",
+        "population": 27
+      },
+      {
+        "country": "BFA",
+        "population": 23
+      },
+      {
+        "country": "MLI",
+        "population": 24
+      },
+      {
+        "country": "MWI",
+        "population": 21
+      },
+      {
+        "country": "ZMB",
+        "population": 21
+      },
+      {
+        "country": "SEN",
+        "population": 18
+      },
+      {
+        "country": "TCD",
+        "population": 18
+      },
+      {
+        "country": "SOM",
+        "population": 18
+      },
+      {
+        "country": "ZWE",
+        "population": 16
+      },
+      {
+        "country": "GIN",
+        "population": 14
+      },
+      {
+        "country": "RWA",
+        "population": 14
+      },
+      {
+        "country": "BEN",
+        "population": 14
+      },
+      {
+        "country": "TUN",
+        "population": 12
+      },
+      {
+        "country": "BDI",
+        "population": 14
+      },
+      {
+        "country": "LBY",
+        "population": 7
+      },
+      {
+        "country": "LBR",
+        "population": 5
+      },
+      {
+        "country": "SLE",
+        "population": 8
+      },
+      {
+        "country": "TGO",
+        "population": 9
+      },
+      {
+        "country": "ERI",
+        "population": 3
+      },
+      {
+        "country": "NAM",
+        "population": 3
+      },
+      {
+        "country": "BWA",
+        "population": 2
+      },
+      {
+        "country": "GAB",
+        "population": 2
+      },
+      {
+        "country": "LSO",
+        "population": 2
+      },
+      {
+        "country": "GNB",
+        "population": 2
+      },
+      {
+        "country": "MRT",
+        "population": 5
+      }
+    ]
+  },
+  {
+    "_slug": "39-debt-to-gdp",
+    "chart": "bar",
+    "title": "The ballooning national IOU",
+    "subtitle": "Government debt as share of GDP, 2024 (percent)",
+    "source": "IMF Fiscal Monitor, October 2024",
+    "palette": "carbon",
+    "size": "inline",
+    "label": "country",
+    "value": "ratio",
+    "orientation": "horizontal",
+    "sort": "desc",
+    "showValueLabels": true,
+    "yFormat": "percent",
+    "data": [
+      {
+        "country": "Japan",
+        "ratio": 250
+      },
+      {
+        "country": "Greece",
+        "ratio": 159
+      },
+      {
+        "country": "Italy",
+        "ratio": 137
+      },
+      {
+        "country": "United States",
+        "ratio": 123
+      },
+      {
+        "country": "France",
+        "ratio": 112
+      },
+      {
+        "country": "Spain",
+        "ratio": 104
+      },
+      {
+        "country": "United Kingdom",
+        "ratio": 101
+      },
+      {
+        "country": "Canada",
+        "ratio": 106
+      },
+      {
+        "country": "Germany",
+        "ratio": 64
+      }
+    ]
+  },
+  {
+    "_slug": "40-social-media-usage",
+    "chart": "bar-split",
+    "title": "The attention budget",
+    "subtitle": "Average daily minutes on top social platforms, US users 2024",
+    "source": "Sensor Tower State of Mobile 2024",
+    "palette": "vibrant",
+    "size": "share",
+    "x": "platform",
+    "y": [
+      "minutes"
+    ],
+    "columns": 1,
+    "data": [
+      {
+        "platform": "TikTok",
+        "minutes": 108
+      },
+      {
+        "platform": "YouTube",
+        "minutes": 97
+      },
+      {
+        "platform": "Instagram",
+        "minutes": 58
+      },
+      {
+        "platform": "Facebook",
+        "minutes": 43
+      },
+      {
+        "platform": "Snapchat",
+        "minutes": 32
+      },
+      {
+        "platform": "X (Twitter)",
+        "minutes": 24
+      },
+      {
+        "platform": "Reddit",
+        "minutes": 19
+      },
+      {
+        "platform": "LinkedIn",
+        "minutes": 8
+      }
+    ]
+  },
+  {
+    "_slug": "41-central-bank-rates",
+    "chart": "line",
+    "title": "The synchronized hiking cycle",
+    "subtitle": "Policy interest rates, end of quarter (percent)",
+    "source": "Federal Reserve, ECB, Bank of England, Bank of Japan",
+    "palette": "editorial",
+    "size": "inline",
+    "x": "quarter",
+    "y": [
+      "fed",
+      "ecb",
+      "boe",
+      "boj"
+    ],
+    "interpolation": "stepped",
+    "yFormat": "percent",
+    "data": [
+      {
+        "quarter": "2021 Q4",
+        "fed": 0.25,
+        "ecb": 0,
+        "boe": 0.25,
+        "boj": -0.1
+      },
+      {
+        "quarter": "2022 Q2",
+        "fed": 1.75,
+        "ecb": 0,
+        "boe": 1.25,
+        "boj": -0.1
+      },
+      {
+        "quarter": "2022 Q4",
+        "fed": 4.5,
+        "ecb": 2.5,
+        "boe": 3.5,
+        "boj": -0.1
+      },
+      {
+        "quarter": "2023 Q2",
+        "fed": 5.25,
+        "ecb": 4,
+        "boe": 5,
+        "boj": -0.1
+      },
+      {
+        "quarter": "2023 Q4",
+        "fed": 5.5,
+        "ecb": 4.5,
+        "boe": 5.25,
+        "boj": -0.1
+      },
+      {
+        "quarter": "2024 Q2",
+        "fed": 5.5,
+        "ecb": 4.25,
+        "boe": 5.25,
+        "boj": 0.1
+      },
+      {
+        "quarter": "2024 Q4",
+        "fed": 4.5,
+        "ecb": 3.15,
+        "boe": 4.75,
+        "boj": 0.25
+      }
+    ]
+  },
+  {
+    "_slug": "42-amazon-aws-margin",
+    "chart": "combo",
+    "title": "AWS: the profit engine",
+    "subtitle": "Amazon Web Services revenue (bars, billion USD) and operating margin (line, percent)",
+    "source": "Amazon 10-K filings",
+    "palette": "clarity",
+    "size": "share",
+    "x": "year",
+    "bars": "revenue",
+    "lines": "margin",
+    "interpolation": "curved",
+    "data": [
+      {
+        "year": 2017,
+        "revenue": 17.5,
+        "margin": 25
+      },
+      {
+        "year": 2018,
+        "revenue": 25.7,
+        "margin": 28.4
+      },
+      {
+        "year": 2019,
+        "revenue": 35,
+        "margin": 26.3
+      },
+      {
+        "year": 2020,
+        "revenue": 45.4,
+        "margin": 29.8
+      },
+      {
+        "year": 2021,
+        "revenue": 62.2,
+        "margin": 29.8
+      },
+      {
+        "year": 2022,
+        "revenue": 80.1,
+        "margin": 28.5
+      },
+      {
+        "year": 2023,
+        "revenue": 90.8,
+        "margin": 27.1
+      },
+      {
+        "year": 2024,
+        "revenue": 107.6,
+        "margin": 36.5
+      }
+    ]
+  },
+  {
+    "_slug": "43-uk-regions",
+    "chart": "geo",
+    "title": "The London premium",
+    "subtitle": "Gross Value Added per capita, UK ceremonial counties, index (UK=100)",
+    "source": "ONS Regional Accounts",
+    "palette": "mono-blue",
+    "size": "poster",
+    "basemap": "united-kingdom",
+    "code": "county",
+    "value": "gva",
+    "scale": "diverging",
+    "steps": 7,
+    "data": [
+      {
+        "county": "Greater London",
+        "gva": 188
+      },
+      {
+        "county": "Berkshire",
+        "gva": 155
+      },
+      {
+        "county": "Surrey",
+        "gva": 148
+      },
+      {
+        "county": "Buckinghamshire",
+        "gva": 142
+      },
+      {
+        "county": "Oxfordshire",
+        "gva": 138
+      },
+      {
+        "county": "Hertfordshire",
+        "gva": 128
+      },
+      {
+        "county": "Cambridgeshire",
+        "gva": 124
+      },
+      {
+        "county": "West Sussex",
+        "gva": 114
+      },
+      {
+        "county": "Kent",
+        "gva": 106
+      },
+      {
+        "county": "Bristol",
+        "gva": 118
+      },
+      {
+        "county": "Hampshire",
+        "gva": 104
+      },
+      {
+        "county": "Essex",
+        "gva": 97
+      },
+      {
+        "county": "Warwickshire",
+        "gva": 112
+      },
+      {
+        "county": "Leicestershire",
+        "gva": 92
+      },
+      {
+        "county": "Derbyshire",
+        "gva": 86
+      },
+      {
+        "county": "Cheshire",
+        "gva": 108
+      },
+      {
+        "county": "West Midlands",
+        "gva": 84
+      },
+      {
+        "county": "Greater Manchester",
+        "gva": 88
+      },
+      {
+        "county": "Merseyside",
+        "gva": 78
+      },
+      {
+        "county": "South Yorkshire",
+        "gva": 74
+      },
+      {
+        "county": "West Yorkshire",
+        "gva": 83
+      },
+      {
+        "county": "Tyne and Wear",
+        "gva": 77
+      },
+      {
+        "county": "County Durham",
+        "gva": 69
+      },
+      {
+        "county": "Cumbria",
+        "gva": 88
+      },
+      {
+        "county": "Lancashire",
+        "gva": 82
+      },
+      {
+        "county": "Norfolk",
+        "gva": 85
+      },
+      {
+        "county": "Suffolk",
+        "gva": 90
+      },
+      {
+        "county": "Devon",
+        "gva": 80
+      },
+      {
+        "county": "Cornwall",
+        "gva": 70
+      },
+      {
+        "county": "Somerset",
+        "gva": 82
+      },
+      {
+        "county": "Dorset",
+        "gva": 89
+      },
+      {
+        "county": "Wiltshire",
+        "gva": 96
+      },
+      {
+        "county": "Gloucestershire",
+        "gva": 99
+      },
+      {
+        "county": "Shropshire",
+        "gva": 78
+      },
+      {
+        "county": "Staffordshire",
+        "gva": 84
+      },
+      {
+        "county": "Nottinghamshire",
+        "gva": 80
+      },
+      {
+        "county": "Lincolnshire",
+        "gva": 72
+      },
+      {
+        "county": "Northamptonshire",
+        "gva": 93
+      },
+      {
+        "county": "Bedfordshire",
+        "gva": 96
+      },
+      {
+        "county": "East Sussex",
+        "gva": 81
+      },
+      {
+        "county": "Isle of Wight",
+        "gva": 68
+      },
+      {
+        "county": "North Yorkshire",
+        "gva": 86
+      },
+      {
+        "county": "East Riding of Yorkshire",
+        "gva": 79
+      },
+      {
+        "county": "Rutland",
+        "gva": 91
+      },
+      {
+        "county": "Herefordshire",
+        "gva": 74
+      },
+      {
+        "county": "Worcestershire",
+        "gva": 89
+      },
+      {
+        "county": "Northumberland",
+        "gva": 75
+      }
+    ]
+  },
+  {
+    "_slug": "44-bond-yields",
+    "chart": "line",
+    "title": "The end of easy money",
+    "subtitle": "10-year government bond yield, end of month (percent)",
+    "source": "Bloomberg, national treasuries",
+    "palette": "editorial",
+    "size": "share",
+    "x": "month",
+    "y": [
+      "usa",
+      "germany",
+      "japan"
+    ],
+    "interpolation": "curved",
+    "yFormat": "percent",
+    "data": [
+      {
+        "month": "2019-12",
+        "usa": 1.92,
+        "germany": -0.19,
+        "japan": -0.02
+      },
+      {
+        "month": "2020-06",
+        "usa": 0.66,
+        "germany": -0.45,
+        "japan": 0.02
+      },
+      {
+        "month": "2020-12",
+        "usa": 0.93,
+        "germany": -0.57,
+        "japan": 0.02
+      },
+      {
+        "month": "2021-06",
+        "usa": 1.47,
+        "germany": -0.21,
+        "japan": 0.05
+      },
+      {
+        "month": "2021-12",
+        "usa": 1.52,
+        "germany": -0.18,
+        "japan": 0.07
+      },
+      {
+        "month": "2022-06",
+        "usa": 3.01,
+        "germany": 1.34,
+        "japan": 0.23
+      },
+      {
+        "month": "2022-12",
+        "usa": 3.88,
+        "germany": 2.57,
+        "japan": 0.42
+      },
+      {
+        "month": "2023-06",
+        "usa": 3.84,
+        "germany": 2.39,
+        "japan": 0.4
+      },
+      {
+        "month": "2023-12",
+        "usa": 3.88,
+        "germany": 2.03,
+        "japan": 0.62
+      },
+      {
+        "month": "2024-06",
+        "usa": 4.4,
+        "germany": 2.5,
+        "japan": 1.05
+      },
+      {
+        "month": "2024-12",
+        "usa": 4.57,
+        "germany": 2.37,
+        "japan": 1.1
+      },
+      {
+        "month": "2025-03",
+        "usa": 4.25,
+        "germany": 2.74,
+        "japan": 1.55
+      }
+    ]
+  },
+  {
+    "_slug": "45-ocean-heat",
+    "chart": "line",
+    "title": "The oceans are absorbing the heat",
+    "subtitle": "Global ocean heat content anomaly, 0-2000m (zettajoules)",
+    "source": "NOAA National Centers for Environmental Information",
+    "palette": "twilight",
+    "size": "poster",
+    "x": "year",
+    "y": "heat",
+    "interpolation": "curved",
+    "areaFill": true,
+    "showSymbols": "none",
+    "data": [
+      {
+        "year": 1960,
+        "heat": -40
+      },
+      {
+        "year": 1970,
+        "heat": -25
+      },
+      {
+        "year": 1980,
+        "heat": 0
+      },
+      {
+        "year": 1990,
+        "heat": 25
+      },
+      {
+        "year": 2000,
+        "heat": 70
+      },
+      {
+        "year": 2005,
+        "heat": 110
+      },
+      {
+        "year": 2010,
+        "heat": 160
+      },
+      {
+        "year": 2015,
+        "heat": 230
+      },
+      {
+        "year": 2020,
+        "heat": 315
+      },
+      {
+        "year": 2022,
+        "heat": 355
+      },
+      {
+        "year": 2024,
+        "heat": 405
+      }
+    ]
+  },
+  {
+    "_slug": "46-college-majors",
+    "chart": "bar-split",
+    "title": "Winners and losers of the degree shuffle",
+    "subtitle": "Change in US bachelor's degrees awarded, 2012-2022 (percent)",
+    "source": "National Center for Education Statistics",
+    "palette": "diverging-sunset",
+    "size": "share",
+    "x": "field",
+    "y": [
+      "change"
+    ],
+    "columns": 1,
+    "yFormat": "percent",
+    "data": [
+      {
+        "field": "Computer science",
+        "change": 156
+      },
+      {
+        "field": "Engineering",
+        "change": 37
+      },
+      {
+        "field": "Biological sciences",
+        "change": 37
+      },
+      {
+        "field": "Health professions",
+        "change": 52
+      },
+      {
+        "field": "Psychology",
+        "change": 8
+      },
+      {
+        "field": "Business",
+        "change": 6
+      },
+      {
+        "field": "Visual & performing arts",
+        "change": -16
+      },
+      {
+        "field": "Education",
+        "change": -19
+      },
+      {
+        "field": "English language",
+        "change": -38
+      },
+      {
+        "field": "History",
+        "change": -38
+      },
+      {
+        "field": "Foreign languages",
+        "change": -34
+      },
+      {
+        "field": "Philosophy & religion",
+        "change": -28
+      }
+    ]
+  },
+  {
+    "_slug": "47-browser-share",
+    "chart": "stacked-area",
+    "title": "The great browser shuffle",
+    "subtitle": "Desktop browser market share (percent)",
+    "source": "StatCounter Global Stats",
+    "palette": "viridis",
+    "size": "share",
+    "x": "year",
+    "y": [
+      "chrome",
+      "safari",
+      "edge",
+      "firefox",
+      "ie",
+      "other"
+    ],
+    "normalize": true,
+    "interpolation": "curved",
+    "data": [
+      {
+        "year": 2010,
+        "chrome": 11,
+        "safari": 5,
+        "edge": 0,
+        "firefox": 30,
+        "ie": 51,
+        "other": 3
+      },
+      {
+        "year": 2013,
+        "chrome": 37,
+        "safari": 7,
+        "edge": 0,
+        "firefox": 20,
+        "ie": 30,
+        "other": 6
+      },
+      {
+        "year": 2016,
+        "chrome": 56,
+        "safari": 5,
+        "edge": 4,
+        "firefox": 15,
+        "ie": 13,
+        "other": 7
+      },
+      {
+        "year": 2019,
+        "chrome": 68,
+        "safari": 8,
+        "edge": 5,
+        "firefox": 9,
+        "ie": 5,
+        "other": 5
+      },
+      {
+        "year": 2022,
+        "chrome": 66,
+        "safari": 11,
+        "edge": 11,
+        "firefox": 7,
+        "ie": 1,
+        "other": 4
+      },
+      {
+        "year": 2024,
+        "chrome": 65,
+        "safari": 9,
+        "edge": 13,
+        "firefox": 6,
+        "ie": 0,
+        "other": 7
+      }
+    ]
+  },
+  {
+    "_slug": "48-world-languages",
+    "chart": "donut",
+    "title": "The world's mother tongues",
+    "subtitle": "Top languages by number of native speakers (millions)",
+    "source": "Ethnologue 27th edition, 2024",
+    "palette": "earth",
+    "size": "share",
+    "label": "language",
+    "value": "speakers",
+    "sort": "desc",
+    "centerValue": "sum",
+    "centerLabel": "native speakers",
+    "data": [
+      {
+        "language": "Mandarin Chinese",
+        "speakers": 940
+      },
+      {
+        "language": "Spanish",
+        "speakers": 486
+      },
+      {
+        "language": "English",
+        "speakers": 380
+      },
+      {
+        "language": "Hindi",
+        "speakers": 345
+      },
+      {
+        "language": "Portuguese",
+        "speakers": 236
+      },
+      {
+        "language": "Bengali",
+        "speakers": 234
+      },
+      {
+        "language": "Russian",
+        "speakers": 147
+      },
+      {
+        "language": "Japanese",
+        "speakers": 123
+      },
+      {
+        "language": "Punjabi",
+        "speakers": 113
+      },
+      {
+        "language": "Marathi",
+        "speakers": 99
+      }
+    ]
+  },
+  {
+    "_slug": "49-world-gdp-growth",
+    "chart": "grouped-bar",
+    "title": "The uneven rebound",
+    "subtitle": "Real GDP growth, selected economies (percent)",
+    "source": "IMF World Economic Outlook, October 2024",
+    "palette": "boardroom",
+    "size": "share",
+    "x": "country",
+    "y": [
+      "year2022",
+      "year2023",
+      "year2024"
+    ],
+    "showValueLabels": false,
+    "yFormat": "percent",
+    "data": [
+      {
+        "country": "United States",
+        "year2022": 1.9,
+        "year2023": 2.9,
+        "year2024": 2.8
+      },
+      {
+        "country": "Euro area",
+        "year2022": 3.4,
+        "year2023": 0.4,
+        "year2024": 0.8
+      },
+      {
+        "country": "China",
+        "year2022": 3,
+        "year2023": 5.2,
+        "year2024": 4.8
+      },
+      {
+        "country": "India",
+        "year2022": 7,
+        "year2023": 8.2,
+        "year2024": 7
+      },
+      {
+        "country": "Japan",
+        "year2022": 1.2,
+        "year2023": 1.7,
+        "year2024": 0.3
+      },
+      {
+        "country": "Brazil",
+        "year2022": 3,
+        "year2023": 2.9,
+        "year2024": 3
+      },
+      {
+        "country": "Russia",
+        "year2022": -1.2,
+        "year2023": 3.6,
+        "year2024": 3.6
+      }
+    ]
+  },
+  {
+    "_slug": "50-frontier-llms",
+    "chart": "bar",
+    "title": "Frontier models keep getting bigger",
+    "subtitle": "Parameter counts for notable large language models (billions)",
+    "source": "Model cards, company announcements (parameter counts approximate)",
+    "palette": "twilight",
+    "size": "share",
+    "label": "model",
+    "value": "params",
+    "orientation": "horizontal",
+    "sort": "desc",
+    "showValueLabels": true,
+    "data": [
+      {
+        "model": "GPT-4",
+        "params": 1800
+      },
+      {
+        "model": "Gemini 1.5 Ultra",
+        "params": 1600
+      },
+      {
+        "model": "Claude 3.5 Opus",
+        "params": 1400
+      },
+      {
+        "model": "GPT-4 Turbo",
+        "params": 900
+      },
+      {
+        "model": "PaLM 2",
+        "params": 540
+      },
+      {
+        "model": "Llama 3 405B",
+        "params": 405
+      },
+      {
+        "model": "Mistral Large",
+        "params": 220
+      },
+      {
+        "model": "GPT-3.5",
+        "params": 175
+      },
+      {
+        "model": "Llama 3 70B",
+        "params": 70
+      },
+      {
+        "model": "Mixtral 8x7B",
+        "params": 47
+      },
+      {
+        "model": "Llama 3 8B",
+        "params": 8
+      },
+      {
+        "model": "GPT-2",
+        "params": 1.5
+      }
+    ]
+  }
+]
