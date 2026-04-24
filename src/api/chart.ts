@@ -1,5 +1,6 @@
 import type { IncomingMessage, ServerResponse } from 'node:http';
 import { render } from '../render/index.js';
+import { _debugFontState } from '../render/svg-to-png.js';
 import type { ChartConfig } from '../core/types.js';
 
 const PNG_SIGNATURE = Buffer.from([0x89, 0x50, 0x4e, 0x47, 0x0d, 0x0a, 0x1a, 0x0a]);
@@ -42,6 +43,12 @@ export default async function handler(req: IncomingMessage, res: ServerResponse)
       config = (await readJsonBody(req)) as ChartConfig;
     } else if (req.method === 'GET') {
       const url = new URL(req.url ?? '/', 'http://localhost');
+      if (url.searchParams.get('_debug') === 'fonts') {
+        res.statusCode = 200;
+        res.setHeader('Content-Type', 'application/json');
+        res.end(JSON.stringify(_debugFontState(), null, 2));
+        return;
+      }
       const param = url.searchParams.get('config');
       const fmt = url.searchParams.get('format');
       if (fmt === 'svg') format = 'svg';

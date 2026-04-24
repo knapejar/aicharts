@@ -1,55 +1,33 @@
 import { Resvg } from '@resvg/resvg-js';
-import { existsSync, readdirSync, mkdirSync, writeFileSync } from 'node:fs';
-import { dirname, join, resolve } from 'node:path';
+import { existsSync, mkdirSync, writeFileSync, statSync } from 'node:fs';
+import { join } from 'node:path';
 import { tmpdir } from 'node:os';
-import { fileURLToPath } from 'node:url';
 import { EMBEDDED_FONTS } from './embedded-fonts.js';
 
-const __dirname = dirname(fileURLToPath(import.meta.url));
+let cachedFontFiles: string[] | null = null;
 
-let materializedFontsDir: string | null = null;
-
-function materializeEmbeddedFonts(): string | null {
-  if (materializedFontsDir) return materializedFontsDir;
-  if (EMBEDDED_FONTS.length === 0) return null;
+function materializeFonts(): string[] {
+  if (cachedFontFiles) return cachedFontFiles;
+  if (EMBEDDED_FONTS.length === 0) {
+    cachedFontFiles = [];
+    return cachedFontFiles;
+  }
+  const dir = join(tmpdir(), 'aicharts-fonts');
+  const paths: string[] = [];
   try {
-    const dir = join(tmpdir(), 'aicharts-fonts');
     mkdirSync(dir, { recursive: true });
     for (const font of EMBEDDED_FONTS) {
       const target = join(dir, font.name);
       if (!existsSync(target)) {
         writeFileSync(target, Buffer.from(font.base64, 'base64'));
       }
+      paths.push(target);
     }
-    materializedFontsDir = dir;
-    return dir;
-  } catch {
-    return null;
+  } catch (err) {
+    console.error('[aicharts] font materialization failed:', err);
   }
-}
-
-function locateFontsDir(): string | null {
-  const candidates = [
-    resolve(__dirname, '..', 'fonts'),
-    resolve(__dirname, '..', '..', 'fonts'),
-    resolve(__dirname, '..', '..', 'src', 'fonts'),
-    resolve(process.cwd(), 'fonts'),
-    resolve(process.cwd(), 'src', 'fonts'),
-  ];
-  for (const p of candidates) {
-    if (existsSync(p)) return p;
-  }
-  return materializeEmbeddedFonts();
-}
-
-function listFontFiles(dir: string): string[] {
-  try {
-    return readdirSync(dir)
-      .filter((f) => /\.(ttf|otf|woff|woff2)$/i.test(f))
-      .map((f) => join(dir, f));
-  } catch {
-    return [];
-  }
+  cachedFontFiles = paths;
+  return paths;
 }
 
 export interface SvgToPngOptions {
@@ -70,8 +48,7 @@ export function effectiveDpr(width: number | undefined, height: number | undefin
 }
 
 export async function svgToPng(svg: string, opts: SvgToPngOptions = {}): Promise<Uint8Array> {
-  const fontsDir = locateFontsDir();
-  const fontFiles = fontsDir ? listFontFiles(fontsDir) : [];
+  const fontFiles = materializeFonts();
 
   const dpr = effectiveDpr(opts.width, opts.height, opts.dpr ?? 2);
 
@@ -80,10 +57,30 @@ export async function svgToPng(svg: string, opts: SvgToPngOptions = {}): Promise
     fitTo: opts.width ? { mode: 'width', value: Math.round(opts.width * dpr) } : undefined,
     font: {
       fontFiles,
-      loadSystemFonts: true,
+      loadSystemFonts: fontFiles.length === 0,
       defaultFontFamily: opts.defaultFontFamily ?? 'Inter',
+      serifFamily: 'Merriweather',
+      sansSerifFamily: 'Inter',
     },
   });
   const png = resvg.render().asPng();
   return png;
+}
+
+export function _debugFontState() {
+  const files = materializeFonts();
+  const details = files.slice(0, 5).map((p) => {
+    try {
+      const s = statSync(p);
+      return { path: p, size: s.size };
+    } catch (err) {
+      return { path: p, error: (err as Error).message };
+    }
+  });
+  return {
+    embedded: EMBEDDED_FONTS.length,
+    materialized: files.length,
+    tmp: tmpdir(),
+    sample: details,
+  };
 }
