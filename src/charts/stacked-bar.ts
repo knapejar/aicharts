@@ -44,6 +44,7 @@ export function renderStackedBar(cfg: StackedBarConfig, theme: Theme): SvgElemen
   const fmt = cfg.normalize
     ? (v: number) => Math.round(v * 100) + '%'
     : pickNumberFormatter(totals, cfg.yFormat);
+  const totalFmt = pickNumberFormatter(totals, cfg.yFormat);
   const labelSize = labelFontSize(canvas);
   const orderedSeries = cfg.reverseStackOrder ? [...series].reverse() : series;
 
@@ -122,10 +123,11 @@ export function renderStackedBar(cfg: StackedBarConfig, theme: Theme): SvgElemen
           }),
         );
       }
-      if (cfg.showTotals && !cfg.normalize) {
-        const top = yScale(rowTotal);
+      if (cfg.showTotals) {
+        const top = yScale(cfg.normalize ? 1 : rowTotal);
+        const totalText = totalFmt(rowTotal);
         bars.push(
-          text(fmt(rowTotal), {
+          text(totalText, {
             x: bx + bw / 2,
             y: top - 6,
             'font-size': labelSize,
@@ -205,18 +207,21 @@ export function renderStackedBar(cfg: StackedBarConfig, theme: Theme): SvgElemen
       const rowTotal = totals[i]!;
       const by = horizPlot.y + po * step + i * step;
       let cursor = 0;
+      const rightLimit = horizPlot.x + horizPlot.width;
       for (const key of orderedSeries) {
         let v = Number(row[key] ?? 0);
         if (cfg.normalize) v = rowTotal > 0 ? v / rowTotal : 0;
         if (v <= 0) continue;
         const bx = xScale(cursor);
-        const bwidth = xScale(cursor + v) - bx;
+        const rawRight = xScale(cursor + v);
+        const clippedRight = Math.min(rawRight, rightLimit);
+        const bwidth = Math.max(0.5, clippedRight - bx);
         cursor += v;
         out.push(
           rect({
             x: bx,
             y: by,
-            width: Math.max(1, bwidth),
+            width: bwidth,
             height: bh,
             fill: palette.colors[series.indexOf(key) % palette.colors.length]!,
           }),
@@ -232,6 +237,20 @@ export function renderStackedBar(cfg: StackedBarConfig, theme: Theme): SvgElemen
           'text-anchor': 'end',
         }),
       );
+      if (cfg.showTotals) {
+        const labelX = xScale(cfg.normalize ? 1 : rowTotal);
+        out.push(
+          text(totalFmt(rowTotal), {
+            x: Math.min(rightLimit, labelX) + 6,
+            y: by + bh / 2 + labelSize * 0.35,
+            'font-size': labelSize,
+            'font-weight': 600,
+            'font-family': palette.fontBody,
+            fill: palette.text,
+            'text-anchor': 'start',
+          }),
+        );
+      }
     }
   }
 
