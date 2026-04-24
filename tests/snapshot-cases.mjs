@@ -333,6 +333,97 @@ export function snapshotCases() {
     },
   });
 
+  cases.push({
+    name: 'pie-basic',
+    config: {
+      chart: 'pie',
+      data: [
+        { label: 'Mobile', value: 62 },
+        { label: 'Desktop', value: 30 },
+        { label: 'Tablet', value: 8 },
+      ],
+      title: 'Traffic by device',
+      subtitle: 'Share of sessions',
+      source: 'Analytics',
+    },
+  });
+
+  cases.push({
+    name: 'pie-election',
+    config: {
+      chart: 'pie',
+      data: election,
+      label: 'party',
+      value: 'share',
+      title: 'Election results',
+      subtitle: 'Share of votes',
+      source: 'Central Election Commission',
+      palette: 'editorial',
+    },
+  });
+
+  cases.push({
+    name: 'pie-many-slices',
+    config: {
+      chart: 'pie',
+      data: [
+        { label: 'A', value: 40 },
+        { label: 'B', value: 25 },
+        { label: 'C', value: 12 },
+        { label: 'D', value: 8 },
+        { label: 'E', value: 5 },
+        { label: 'F', value: 3 },
+        { label: 'G', value: 2 },
+        { label: 'H', value: 2 },
+        { label: 'I', value: 1.5 },
+        { label: 'J', value: 1.5 },
+      ],
+      title: 'Auto-grouped Other',
+      subtitle: 'Small slices merged when >6 categories',
+      source: 'Test',
+      palette: 'vibrant',
+    },
+  });
+
+  cases.push({
+    name: 'donut-basic',
+    config: {
+      chart: 'donut',
+      data: [
+        { label: 'Subscription', value: 540 },
+        { label: 'Services', value: 230 },
+        { label: 'Hardware', value: 180 },
+        { label: 'Other', value: 50 },
+      ],
+      title: 'Revenue mix',
+      subtitle: 'Millions USD',
+      source: 'Financial report',
+      centerValue: 'sum',
+      centerLabel: 'Total MUSD',
+    },
+  });
+
+  cases.push({
+    name: 'donut-carbon',
+    config: {
+      chart: 'donut',
+      data: marketing[0],
+      label: 'channel',
+      value: 'share',
+      title: 'Marketing share Q1 2024',
+      subtitle: 'Share of leads',
+      source: 'Analytics',
+      palette: 'carbon',
+      innerRadius: 'thin',
+      data: [
+        { channel: 'organic', share: 42 },
+        { channel: 'paid', share: 28 },
+        { channel: 'email', share: 18 },
+        { channel: 'referral', share: 12 },
+      ],
+    },
+  });
+
   void election;
   void temperature;
 
