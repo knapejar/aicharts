@@ -1,5 +1,6 @@
 node_modules/
 dist/
+src/render/embedded-fonts.ts
 *.tsbuildinfo
 
 .env

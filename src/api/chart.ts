@@ -2,6 +2,14 @@ import type { IncomingMessage, ServerResponse } from 'node:http';
 import { render } from '../render/index.js';
 import type { ChartConfig } from '../core/types.js';
 
+const PNG_SIGNATURE = Buffer.from([0x89, 0x50, 0x4e, 0x47, 0x0d, 0x0a, 0x1a, 0x0a]);
+
+function isValidPng(data: Uint8Array): boolean {
+  if (data.length < 8) return false;
+  const head = Buffer.from(data.buffer, data.byteOffset, 8);
+  return head.equals(PNG_SIGNATURE);
+}
+
 function decodeBase64Url(input: string): string {
   const pad = input.length % 4 === 2 ? '==' : input.length % 4 === 3 ? '=' : '';
   const b64 = input.replace(/-/g, '+').replace(/_/g, '/') + pad;
@@ -70,6 +78,18 @@ export default async function handler(req: IncomingMessage, res: ServerResponse)
       res.setHeader('Content-Type', 'image/svg+xml');
       res.setHeader('Cache-Control', 'public, max-age=300');
       res.end(Buffer.from(out));
+      return;
+    }
+    if (!isValidPng(out)) {
+      res.statusCode = 500;
+      res.setHeader('Content-Type', 'application/json');
+      res.end(
+        JSON.stringify({
+          error: 'render produced non-PNG output',
+          bytes: out.length,
+          hint: 'resvg returned bytes that do not start with the PNG magic signature',
+        }),
+      );
       return;
     }
     res.statusCode = 200;

@@ -19,7 +19,7 @@
     "node": ">=20.0.0"
   },
   "scripts": {
-    "build": "node scripts/build.mjs && tsc --emitDeclarationOnly",
+    "build": "node scripts/embed-fonts.mjs && node scripts/build.mjs && tsc --emitDeclarationOnly",
     "dev": "node scripts/build.mjs --watch",
     "test": "node --test tests/unit/**/*.test.mjs",
     "test:scenarios": "node tests/scenarios/birth-rate-report.mjs && node tests/scenarios/company-metrics.mjs",

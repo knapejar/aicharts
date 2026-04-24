@@ -1,9 +1,32 @@
 import { Resvg } from '@resvg/resvg-js';
-import { readFileSync, existsSync, readdirSync } from 'node:fs';
+import { existsSync, readdirSync, mkdirSync, writeFileSync } from 'node:fs';
 import { dirname, join, resolve } from 'node:path';
+import { tmpdir } from 'node:os';
 import { fileURLToPath } from 'node:url';
+import { EMBEDDED_FONTS } from './embedded-fonts.js';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
+
+let materializedFontsDir: string | null = null;
+
+function materializeEmbeddedFonts(): string | null {
+  if (materializedFontsDir) return materializedFontsDir;
+  if (EMBEDDED_FONTS.length === 0) return null;
+  try {
+    const dir = join(tmpdir(), 'aicharts-fonts');
+    mkdirSync(dir, { recursive: true });
+    for (const font of EMBEDDED_FONTS) {
+      const target = join(dir, font.name);
+      if (!existsSync(target)) {
+        writeFileSync(target, Buffer.from(font.base64, 'base64'));
+      }
+    }
+    materializedFontsDir = dir;
+    return dir;
+  } catch {
+    return null;
+  }
+}
 
 function locateFontsDir(): string | null {
   const candidates = [
@@ -16,7 +39,7 @@ function locateFontsDir(): string | null {
   for (const p of candidates) {
     if (existsSync(p)) return p;
   }
-  return null;
+  return materializeEmbeddedFonts();
 }
 
 function listFontFiles(dir: string): string[] {

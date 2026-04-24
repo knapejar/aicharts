@@ -6,6 +6,14 @@ import { listPalettes } from '../palettes/index.js';
 
 const SIZE_ENUM = z.enum(['inline', 'share', 'poster']).optional();
 
+const PNG_SIGNATURE = Buffer.from([0x89, 0x50, 0x4e, 0x47, 0x0d, 0x0a, 0x1a, 0x0a]);
+
+function isValidPng(data: Uint8Array): boolean {
+  if (data.length < 8) return false;
+  const head = Buffer.from(data.buffer, data.byteOffset, 8);
+  return head.equals(PNG_SIGNATURE);
+}
+
 const paletteSchema = z.union([
   z.string(),
   z.object({
@@ -103,6 +111,17 @@ export function createServer(): McpServer {
           content: [
             { type: 'text', text },
           ],
+        };
+      }
+      if (!isValidPng(data)) {
+        return {
+          content: [
+            {
+              type: 'text',
+              text: `Render produced ${data.length} bytes that are not a valid PNG. Returning text instead of a corrupt image to avoid poisoning the conversation.`,
+            },
+          ],
+          isError: true,
         };
       }
       const base64 = Buffer.from(data).toString('base64');
