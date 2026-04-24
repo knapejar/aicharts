@@ -1,55 +1,158 @@
 # aicharts
 
-Professional chart PNGs for AI agents. Paste a URL, get a chart.
+**Professional charts, straight from your AI chat.** Ask ChatGPT or Claude for
+a chart, get an editorial-quality image back. No plugins, no code, no Chart.js.
 
 <p align="center">
-  <img src="docs/gallery/hero-1.png" width="32%" alt="Europe GDP growth choropleth" />
-  <img src="docs/gallery/hero-2.png" width="32%" alt="Central bank policy rates" />
-  <img src="docs/gallery/hero-3.png" width="32%" alt="EV share of new car sales" />
+  <img src="docs/gallery/hero-1.png" width="90%" alt="Europe GDP growth 2024 — diverging choropleth map" />
 </p>
 
-## Try it in 30 seconds
+## Copy-paste this into ChatGPT to use aicharts
 
-Open this URL in a browser, paste it to ChatGPT or Claude, or pipe it through
-curl — all three work:
+Open a new chat in ChatGPT, Claude, Gemini, or any AI assistant, paste the
+block below as your first message, then ask for any chart you want.
+
+````text
+You can create charts for me using the aicharts API. Endpoint:
+
+  https://mcp-charts.vercel.app/chart?j=<URL-ENCODED JSON>
+
+When I ask for a chart:
+1. Build a flat JSON config that describes the chart.
+2. Always include: "chart" (type), "data" (array of row objects), and the
+   correct field names for that chart type (see rules below).
+3. URL-encode the JSON (use encodeURIComponent-style percent-encoding:
+   " becomes %22, space becomes %20, { becomes %7B, } becomes %7D, etc).
+4. Respond with ONLY a Markdown image that renders inline:
+
+     ![short title](https://mcp-charts.vercel.app/chart?j=ENCODED)
+
+Chart types: line, bar, grouped-bar, stacked-bar, bar-split, stacked-area,
+combo, line-split, pie, donut, geo.
+
+Field rules (always include "data" on every chart):
+- line, stacked-area, line-split, grouped-bar, stacked-bar, bar-split:
+  set "x" (column name) and "y" (column name or array of columns).
+- combo: set "x", "bars" (column or array), "lines" (column or array).
+- bar: use either ("x","y") or ("label","value").
+- pie, donut: use "label" and "value".
+- geo: set "basemap" (one of: world, europe, usa, north-america,
+  south-america, africa, asia, oceania, czech-republic, germany, france,
+  united-kingdom), "code" (ISO3 country code column), and "value" column.
+
+Optional on any chart: title, subtitle, source, palette, size, width, height.
+Palettes: clarity (default), editorial, boardroom, vibrant, carbon, viridis,
+earth, twilight, mono-blue, diverging-sunset.
+Sizes: inline (800x500), share (1200x675, default), poster (1600x2000).
+
+If I do not give you numbers, invent a realistic dataset yourself. Default to
+"diverging-sunset" palette for maps, "editorial" or "clarity" otherwise. Keep
+titles short and specific. Always include a source line.
+
+Before you send the URL, mentally re-parse the JSON once to confirm every
+key and string is wrapped in double quotes and every key has a colon after
+it. A single missing quote breaks the whole chart.
+
+Respond with the Markdown image only, nothing else.
+````
+
+Then try:
+
+> Create a map of Europe for 2025 showing CO2 emissions per capita by country.
+
+The assistant will reply with a Markdown image URL that renders like the map
+at the top of this README. No setup, no API keys, no packages.
+
+## Gallery
+
+<p align="center">
+  <img src="docs/gallery/04-ev-sales.png" width="48%" alt="Norway EV share bar chart" />
+  <img src="docs/gallery/19-ai-model-costs.png" width="48%" alt="Cost of a million tokens line chart" />
+</p>
+<p align="center">
+  <img src="docs/gallery/11-cloud-market.png" width="48%" alt="Cloud infrastructure donut chart" />
+  <img src="docs/gallery/06-central-bank-rates.png" width="48%" alt="Central bank policy rate step line" />
+</p>
+<p align="center">
+  <img src="docs/gallery/16-inflation-split.png" width="48%" alt="G4 inflation line-split panels" />
+  <img src="docs/gallery/14-olympic-medals.png" width="48%" alt="Paris 2024 Olympic medal table stacked bars" />
+</p>
+<p align="center">
+  <img src="docs/gallery/13-housing-affordability.png" width="48%" alt="US housing affordability line with fill" />
+  <img src="docs/gallery/01-ai-adoption.png" width="48%" alt="Generative AI adoption S-curve" />
+</p>
+
+See [CHATGPT-EXAMPLES.md](./CHATGPT-EXAMPLES.md) for 30+ ready-to-paste prompts.
+
+## Try it without ChatGPT
+
+Every chart is a single URL. Open this one in a browser, email it, or paste it
+into any Markdown editor — it renders as an image:
 
 ```
 https://mcp-charts.vercel.app/chart?config=eyJjaGFydCI6ImJhciIsInRpdGxlIjoiUXVhcnRlcmx5IHJldmVudWUiLCJzdWJ0aXRsZSI6IkZZMjAyNSwgbWlsbGlvbnMgVVNEIiwiZGF0YSI6W3sibGFiZWwiOiJRMSIsInZhbHVlIjo0Mn0seyJsYWJlbCI6IlEyIiwidmFsdWUiOjU4fSx7ImxhYmVsIjoiUTMiLCJ2YWx1ZSI6NzF9LHsibGFiZWwiOiJRNCIsInZhbHVlIjo4OX1dfQ
 ```
 
-The query string is base64url-encoded JSON. The config in that URL is a
-four-bar chart titled _Quarterly revenue_. Change the data, rebuild the URL,
-share the link. That is the whole API.
+That URL is the string `{"chart":"bar","title":"Quarterly revenue","subtitle":"FY2025, millions USD","data":[{"label":"Q1","value":42},{"label":"Q2","value":58},{"label":"Q3","value":71},{"label":"Q4","value":89}]}` base64url-encoded and tacked onto `?config=`. Change any value, rebuild
+the URL, share the link.
 
-## In ChatGPT, Claude, or any AI chat
+Interactive playground and live encoder: [mcp-charts.vercel.app](https://mcp-charts.vercel.app).
 
-Paste a prompt like this and the agent will fetch the image inline:
+## Embed in Markdown, Notion, or anywhere that shows images
 
-> Fetch this URL and show the image:
->
-> `https://mcp-charts.vercel.app/chart?config=...`
-
-Agents can also generate their own URLs on the fly — the schema is small (one
-flat JSON config) and fully documented in
-[CHATGPT-EXAMPLES.md](./CHATGPT-EXAMPLES.md). Try asking: "create a map of
-Europe for 2025 showing how much CO2 each European country emits per capita."
-A capable model will produce something like the URL below — which is a real,
-working link you can click right now:
-
-```
-https://mcp-charts.vercel.app/chart?config=eyJjaGFydCI6ImdlbyIsInRpdGxlIjoiRXVyb3BlIENPMiBlbWlzc2lvbnMgcGVyIGNhcGl0YSwgMjAyNSIsInN1YnRpdGxlIjoiVG9ubmVzIG9mIENPMiBwZXIgcGVyc29uLCBlc3RpbWF0ZSIsInNvdXJjZSI6Ik91ciBXb3JsZCBpbiBEYXRhLCBFdXJvc3RhdCAoMjAyNSBlc3QuKSIsInBhbGV0dGUiOiJkaXZlcmdpbmctc3Vuc2V0IiwiYmFzZW1hcCI6ImV1cm9wZSIsImNvZGUiOiJjb2RlIiwidmFsdWUiOiJlbWlzc2lvbnMiLCJzY2FsZSI6InN0ZXBwZWQiLCJzdGVwcyI6NiwiZGF0YSI6W3siY29kZSI6IkxVWCIsImVtaXNzaW9ucyI6MTMuMn0seyJjb2RlIjoiQ1pFIiwiZW1pc3Npb25zIjo5LjF9LHsiY29kZSI6IkVTVCIsImVtaXNzaW9ucyI6OC45fSx7ImNvZGUiOiJERVUiLCJlbWlzc2lvbnMiOjcuN30seyJjb2RlIjoiUE9MIiwiZW1pc3Npb25zIjo3Ljl9LHsiY29kZSI6Ik5MRCIsImVtaXNzaW9ucyI6Ny4zfSx7ImNvZGUiOiJCRUwiLCJlbWlzc2lvbnMiOjcuMX0seyJjb2RlIjoiSVJMIiwiZW1pc3Npb25zIjo2Ljh9LHsiY29kZSI6IkZJTiIsImVtaXNzaW9ucyI6Ny40fSx7ImNvZGUiOiJBVVQiLCJlbWlzc2lvbnMiOjYuNX0seyJjb2RlIjoiQ1lQIiwiZW1pc3Npb25zIjo2LjB9LHsiY29kZSI6IkdSQyIsImVtaXNzaW9ucyI6NS42fSx7ImNvZGUiOiJJVEEiLCJlbWlzc2lvbnMiOjUuMn0seyJjb2RlIjoiU1ZLIiwiZW1pc3Npb25zIjo1LjR9LHsiY29kZSI6IlNWTiIsImVtaXNzaW9ucyI6NS4zfSx7ImNvZGUiOiJCR1IiLCJlbWlzc2lvbnMiOjUuOH0seyJjb2RlIjoiRE5LIiwiZW1pc3Npb25zIjo0Ljh9LHsiY29kZSI6IkxUVSIsImVtaXNzaW9ucyI6NC42fSx7ImNvZGUiOiJFU1AiLCJlbWlzc2lvbnMiOjQuOH0seyJjb2RlIjoiSFVOIiwiZW1pc3Npb25zIjo0LjV9LHsiY29kZSI6IkdCUiIsImVtaXNzaW9ucyI6NC40fSx7ImNvZGUiOiJGUkEiLCJlbWlzc2lvbnMiOjQuMX0seyJjb2RlIjoiSFJWIiwiZW1pc3Npb25zIjo0LjF9LHsiY29kZSI6IkxWQSIsImVtaXNzaW9ucyI6My45fSx7ImNvZGUiOiJST1UiLCJlbWlzc2lvbnMiOjMuOH0seyJjb2RlIjoiUFJUIiwiZW1pc3Npb25zIjozLjh9LHsiY29kZSI6IlNXRSIsImVtaXNzaW9ucyI6My4yfSx7ImNvZGUiOiJNTFQiLCJlbWlzc2lvbnMiOjMuM30seyJjb2RlIjoiQ0hFIiwiZW1pc3Npb25zIjozLjd9LHsiY29kZSI6Ik5PUiIsImVtaXNzaW9ucyI6Ni43fSx7ImNvZGUiOiJJU0wiLCJlbWlzc2lvbnMiOjguN31dfQ
+```md
+![Quarterly revenue](https://mcp-charts.vercel.app/chart?config=eyJjaGFydCI6ImJhciIsInRpdGxlIjoiUXVhcnRlcmx5IHJldmVudWUiLCJkYXRhIjpbeyJsYWJlbCI6IlExIiwidmFsdWUiOjQyfSx7ImxhYmVsIjoiUTIiLCJ2YWx1ZSI6NTh9XX0)
 ```
 
-## What it renders
+Works in GitHub READMEs, Notion, Obsidian, Slack message unfurls, GitBook,
+Docusaurus — anywhere that renders Markdown images.
 
-11 chart types, 10 palettes, 11 basemaps, 3 sizes (`inline` 800x500,
-`share` 1200x675, `poster` 1600x2000).
+## Install (optional)
+
+You only need this if you want to run charts locally, ship a library
+dependency, or self-host the HTTP endpoint. The hosted endpoint above is free
+and has no rate limits for reasonable use.
+
+### As an npm library
+
+```sh
+npm install aicharts
+```
+
+```ts
+import { render } from 'aicharts';
+
+const png = await render({
+  chart: 'bar',
+  title: 'Quarterly revenue',
+  data: [
+    { label: 'Q1', value: 42 },
+    { label: 'Q2', value: 58 },
+    { label: 'Q3', value: 71 },
+    { label: 'Q4', value: 89 },
+  ],
+});
+
+// png is a Uint8Array. Write it, ship it, base64-encode it.
+```
+
+### As an MCP server (Claude Desktop, Cursor, Windsurf, etc.)
+
+```sh
+claude mcp add aicharts -- npx -y aicharts
+```
+
+Or point any HTTP MCP client at `https://mcp-charts.vercel.app/mcp`.
+
+## What it can render
+
+11 chart types, 10 palettes, 11 basemaps, 3 preset sizes.
 
 | Chart type   | Use when                                        |
 | ------------ | ----------------------------------------------- |
 | line         | a trend over time, one or a few series          |
 | line-split   | many series, each worth its own panel           |
-| bar          | compare a single metric across categories       |
+| bar          | compare one metric across categories            |
 | grouped-bar  | compare two or three metrics across categories  |
 | stacked-bar  | parts of a whole across categories              |
 | bar-split    | same categories, one panel per metric           |
@@ -59,61 +162,22 @@ https://mcp-charts.vercel.app/chart?config=eyJjaGFydCI6ImdlbyIsInRpdGxlIjoiRXVyb
 | donut        | parts of a whole with a center value            |
 | geo          | choropleth on a country, region, or world map   |
 
-## More examples
+Palettes: `clarity` (default), `editorial`, `boardroom`, `vibrant`, `carbon`,
+`viridis`, `earth`, `twilight`, `mono-blue`, `diverging-sunset`.
 
-<p align="center">
-  <img src="docs/gallery/01-ai-adoption.png" width="48%" alt="AI adoption curve" />
-  <img src="docs/gallery/11-cloud-market.png" width="48%" alt="Cloud market share" />
-</p>
-<p align="center">
-  <img src="docs/gallery/13-housing-affordability.png" width="48%" alt="Housing affordability" />
-  <img src="docs/gallery/19-ai-model-costs.png" width="48%" alt="AI model cost per million tokens" />
-</p>
-
-AI adoption by sector (bars). Cloud market share over time (stacked area).
-Housing affordability index across metros (line-split). Falling cost per
-million tokens across major AI models (line).
-
-## Use from code
-
-```
-npm install aicharts
-```
-
-```ts
-import { render } from 'aicharts';
-
-const png = await render({
-  chart: 'bar',
-  data: [
-    { label: 'A', value: 12 },
-    { label: 'B', value: 18 },
-  ],
-  title: 'Hello',
-});
-```
-
-`render()` returns a `Uint8Array` containing a PNG.
-
-## MCP server
-
-aicharts ships as an MCP server so Claude, Cursor, and any MCP-capable agent
-can call `render_chart` directly. Local install:
-
-```
-claude mcp add aicharts -- npx -y aicharts
-```
-
-Remote (ChatGPT custom connector, hosted Claude, or any HTTP MCP client):
-point at `https://mcp-charts.vercel.app/mcp`.
+Basemaps: `world`, `europe`, `usa`, `north-america`, `south-america`,
+`africa`, `asia`, `oceania`, `czech-republic`, `germany`, `france`,
+`united-kingdom`.
 
 ## Links
 
-- [CHATGPT-EXAMPLES.md](./CHATGPT-EXAMPLES.md) — 20+ ready-to-paste prompts.
+- [CHATGPT-EXAMPLES.md](./CHATGPT-EXAMPLES.md) — 30+ ready-to-paste prompts
+  with URLs you can click.
 - [FOR-DEVELOPERS.md](./FOR-DEVELOPERS.md) — architecture, palette reference,
-  contributing guide.
-- Live demo and playground: [mcp-charts.vercel.app](https://mcp-charts.vercel.app)
-- Source: [github.com/knapejar/aicharts](https://github.com/knapejar/aicharts)
+  contributing guide, HTTP / MCP API details.
+- [mcp-charts.vercel.app](https://mcp-charts.vercel.app) — live demo and
+  URL builder.
+- [github.com/knapejar/aicharts](https://github.com/knapejar/aicharts) — source.
 
 ## License
 

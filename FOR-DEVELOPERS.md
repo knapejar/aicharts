@@ -155,14 +155,31 @@ Body:
 
 Returns: `image/png` body.
 
-### GET /chart?config=\<base64url\>
+### GET /chart
 
-Same schema, `config` is base64url-encoded JSON. Useful for embedding in
-Markdown:
+Three accepted query formats. All three render the same chart — pick the one
+that is easiest for your client to produce.
 
-```md
-![chart](https://mcp-charts.vercel.app/chart?config=eyJjaGFydCI6ImJhciIsImRhdGEiOlt7ImxhYmVsIjoiQSIsInZhbHVlIjoxMn1dfQ)
-```
+1. `?j=<url-encoded JSON>` — **recommended for LLMs.** JSON is percent-encoded
+   normally. Most forgiving: visible JSON means parsing errors are obvious
+   before you hit send.
+
+   ```
+   /chart?j=%7B%22chart%22%3A%22bar%22%2C%22data%22%3A%5B%7B%22label%22%3A%22A%22%2C%22value%22%3A12%7D%5D%7D
+   ```
+
+2. `?config=<raw JSON>` — same as above but on the `config` param. The server
+   sniffs whether the value starts with `{` or `[`; if so it parses as JSON,
+   otherwise falls back to base64url.
+
+3. `?config=<base64url JSON>` — compact, Markdown-friendly. Standard base64
+   with `+`→`-`, `/`→`_`, trailing `=` stripped.
+
+   ```md
+   ![chart](https://mcp-charts.vercel.app/chart?config=eyJjaGFydCI6ImJhciIsImRhdGEiOlt7ImxhYmVsIjoiQSIsInZhbHVlIjoxMn1dfQ)
+   ```
+
+Optional `?format=svg` returns the SVG source instead of a PNG.
 
 ### MCP tool: `render_chart`
 

@@ -49,21 +49,29 @@ export default async function handler(req: IncomingMessage, res: ServerResponse)
         res.end(JSON.stringify(_debugFontState(), null, 2));
         return;
       }
+      const jParam = url.searchParams.get('j');
       const param = url.searchParams.get('config');
       const fmt = url.searchParams.get('format');
       if (fmt === 'svg') format = 'svg';
-      if (!param) {
+      if (!param && !jParam) {
         res.statusCode = 400;
         res.setHeader('Content-Type', 'application/json');
         res.end(
           JSON.stringify({
             error:
-              'Missing ?config=<base64url-encoded JSON>. Example: /chart?config=eyJjaGFydCI6ImJhciIsImRhdGEiOlt7ImxhYmVsIjoiQSIsInZhbHVlIjoxMn1dfQ',
+              'Provide the chart config as either ?j=<url-encoded JSON> or ?config=<base64url JSON>. Example: /chart?j=%7B%22chart%22%3A%22bar%22%2C%22data%22%3A%5B%7B%22label%22%3A%22A%22%2C%22value%22%3A12%7D%5D%7D',
           }),
         );
         return;
       }
-      config = JSON.parse(decodeBase64Url(param)) as ChartConfig;
+      if (jParam) {
+        config = JSON.parse(jParam) as ChartConfig;
+      } else {
+        const raw = param!.trim();
+        config = JSON.parse(
+          raw.startsWith('{') || raw.startsWith('[') ? raw : decodeBase64Url(raw),
+        ) as ChartConfig;
+      }
     } else {
       res.statusCode = 405;
       res.end('method not allowed');
