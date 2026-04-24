@@ -1,0 +1,10 @@
+{
+  "$schema": "https://raw.githubusercontent.com/anthropics/claude-code/main/plugins/marketplace.schema.json",
+  "name": "aicharts",
+  "owner": "aicharts",
+  "description": "Professional charts for AI agents",
+  "category": "visualization",
+  "tags": ["chart", "mcp", "png", "svg", "dataviz", "ai"],
+  "repository": "https://github.com/aicharts/aicharts",
+  "homepage": "https://aicharts.dev"
+}

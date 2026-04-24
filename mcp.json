@@ -1,0 +1,17 @@
+{
+  "name": "aicharts",
+  "version": "0.1.0",
+  "description": "Professional charts for AI agents — one tool, any chart, beautiful defaults.",
+  "homepage": "https://aicharts.dev",
+  "repository": "https://github.com/aicharts/aicharts",
+  "license": "MIT",
+  "command": "npx",
+  "args": ["-y", "aicharts"],
+  "transports": ["stdio", "http"],
+  "tools": [
+    {
+      "name": "render_chart",
+      "description": "Render a declarative chart config to a PNG image. Returns an ImageContent block."
+    }
+  ]
+}

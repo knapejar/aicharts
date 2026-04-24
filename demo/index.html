@@ -1,0 +1,50 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <title>aicharts — demo</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link rel="stylesheet" href="./style.css" />
+  </head>
+  <body>
+    <header>
+      <h1>aicharts</h1>
+      <p>Professional charts for AI agents — one tool, any chart, beautiful defaults.</p>
+    </header>
+    <main>
+      <section class="controls">
+        <label>
+          Chart type
+          <select id="chart-type"></select>
+        </label>
+        <label>
+          Palette
+          <select id="palette"></select>
+        </label>
+        <label>
+          Size
+          <select id="size">
+            <option value="inline">inline 800x500</option>
+            <option value="share" selected>share 1200x675</option>
+            <option value="poster">poster 1600x2000</option>
+          </select>
+        </label>
+        <button id="render-btn">Render</button>
+      </section>
+      <section class="config">
+        <label for="config">Config (JSON)</label>
+        <textarea id="config" spellcheck="false"></textarea>
+      </section>
+      <section class="preview">
+        <img id="preview" alt="rendered chart" />
+        <pre id="error" hidden></pre>
+      </section>
+    </main>
+    <footer>
+      <a href="https://github.com/aicharts/aicharts">GitHub</a>
+      <a href="https://aicharts.dev/chart">API</a>
+      <a href="https://aicharts.dev/mcp">MCP</a>
+    </footer>
+    <script src="./app.js" type="module"></script>
+  </body>
+</html>

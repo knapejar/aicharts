@@ -1,0 +1,15 @@
+{
+  "$schema": "https://raw.githubusercontent.com/anthropics/claude-code/main/plugins/plugin.schema.json",
+  "name": "aicharts",
+  "version": "0.1.0",
+  "description": "Professional charts for AI agents — one tool, any chart, beautiful defaults.",
+  "homepage": "https://aicharts.dev",
+  "repository": "https://github.com/aicharts/aicharts",
+  "license": "MIT",
+  "mcpServers": {
+    "aicharts": {
+      "command": "npx",
+      "args": ["-y", "aicharts"]
+    }
+  }
+}

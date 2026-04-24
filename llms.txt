@@ -1,0 +1,35 @@
+# aicharts
+
+> Professional charts for AI agents — one tool, any chart, beautiful defaults. An MCP server and TypeScript library that turns a declarative JSON config into a PNG chart.
+
+aicharts exposes a single MCP tool, `render_chart`, accepting a flat config with `chart`, `data`, and optional `title`, `subtitle`, `source`, `palette`, `size`. Returns a base64 PNG rendered via SVG then resvg. Works via stdio (local install) and HTTP (Vercel deployment).
+
+## Docs
+
+- [README](https://github.com/aicharts/aicharts/blob/main/README.md): installation, quickstart, palettes, API.
+- [CLAUDE.md](https://github.com/aicharts/aicharts/blob/main/CLAUDE.md): project architecture and conventions for AI coding agents.
+- [Research](https://github.com/aicharts/aicharts/blob/main/.plan/RESEARCH.md): competitive analysis, rendering stack rationale, design decisions.
+
+## API
+
+- `POST https://api.aicharts.dev/chart` with JSON body, returns image/png.
+- `GET https://api.aicharts.dev/chart?config=<base64url-json>` same schema.
+- `POST https://api.aicharts.dev/mcp` Streamable HTTP MCP endpoint.
+
+## Install as MCP server
+
+```
+claude mcp add aicharts -- npx -y aicharts
+```
+
+## Chart types
+
+line, bar, grouped-bar, stacked-bar, bar-split, stacked-area, combo, line-split, pie, donut, geo.
+
+## Palettes
+
+clarity (default), boardroom, editorial, vibrant, carbon, viridis, earth, twilight, mono-blue, diverging-sunset. Fonts bundled per palette. Custom palette via `palette: { colors, font, background, text }`.
+
+## Sizes
+
+inline (800x500), share (1200x675, default), poster (1600x2000).

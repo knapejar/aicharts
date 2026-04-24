@@ -1,0 +1,64 @@
+{
+  "name": "aicharts",
+  "version": "0.1.0",
+  "description": "Professional charts for AI agents — one tool, any chart, beautiful defaults.",
+  "type": "module",
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "bin": {
+    "aicharts": "./dist/mcp/stdio.js"
+  },
+  "files": [
+    "dist",
+    "basemaps",
+    "fonts",
+    "README.md",
+    "LICENSE"
+  ],
+  "engines": {
+    "node": ">=20.0.0"
+  },
+  "scripts": {
+    "build": "node scripts/build.mjs && tsc --emitDeclarationOnly",
+    "dev": "node scripts/build.mjs --watch",
+    "test": "node --test tests/unit/**/*.test.mjs",
+    "snapshot": "node scripts/snapshot.mjs",
+    "download-basemaps": "node scripts/download-basemaps.mjs",
+    "lint": "prettier --check .",
+    "format": "prettier --write ."
+  },
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "^1.0.0",
+    "@resvg/resvg-js": "^2.6.0",
+    "zod": "^3.23.0"
+  },
+  "devDependencies": {
+    "@types/node": "^20.0.0",
+    "esbuild": "^0.24.0",
+    "prettier": "^3.3.0",
+    "typescript": "^5.4.0"
+  },
+  "keywords": [
+    "mcp",
+    "chart",
+    "charts",
+    "visualization",
+    "ai",
+    "llm",
+    "anthropic",
+    "claude",
+    "chatgpt",
+    "openai",
+    "svg",
+    "png"
+  ],
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/aicharts/aicharts.git"
+  },
+  "homepage": "https://aicharts.dev",
+  "bugs": {
+    "url": "https://github.com/aicharts/aicharts/issues"
+  }
+}
