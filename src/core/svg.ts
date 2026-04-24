@@ -93,3 +93,48 @@ export function estimateTextWidth(str: string, fontSize: number): number {
   }
   return w;
 }
+
+export function wrapText(value: string, fontSize: number, maxWidth: number, maxLines = 3): string[] {
+  if (!value) return [];
+  if (estimateTextWidth(value, fontSize) <= maxWidth) return [value];
+  const words = value.split(/\s+/).filter(Boolean);
+  if (words.length <= 1) return [value];
+  const lines: string[] = [];
+  let current = '';
+  for (const w of words) {
+    const attempt = current ? `${current} ${w}` : w;
+    if (estimateTextWidth(attempt, fontSize) <= maxWidth) {
+      current = attempt;
+    } else {
+      if (current) lines.push(current);
+      current = w;
+      if (lines.length >= maxLines - 1) break;
+    }
+  }
+  if (current) lines.push(current);
+  if (lines.length >= maxLines && words.join(' ') !== lines.join(' ')) {
+    const last = lines[lines.length - 1]!;
+    const joinedRest = words.slice(lines.slice(0, -1).reduce((acc, l) => acc + l.split(/\s+/).length, 0)).join(' ');
+    lines[lines.length - 1] = ellipsize(joinedRest, fontSize, maxWidth);
+    void last;
+  }
+  return lines;
+}
+
+export function ellipsize(value: string, fontSize: number, maxWidth: number): string {
+  if (estimateTextWidth(value, fontSize) <= maxWidth) return value;
+  const ellipsis = '…';
+  const ellipsisW = estimateTextWidth(ellipsis, fontSize);
+  let lo = 0;
+  let hi = value.length;
+  while (lo < hi) {
+    const mid = Math.floor((lo + hi + 1) / 2);
+    const trial = value.slice(0, mid);
+    if (estimateTextWidth(trial, fontSize) + ellipsisW <= maxWidth) {
+      lo = mid;
+    } else {
+      hi = mid - 1;
+    }
+  }
+  return value.slice(0, lo).trimEnd() + ellipsis;
+}

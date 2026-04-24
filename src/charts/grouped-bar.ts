@@ -17,6 +17,8 @@ export function renderGroupedBar(cfg: GroupedBarConfig, theme: Theme): SvgElemen
   const plot = computePlotArea(canvas, {
     hasTitle: !!cfg.title,
     hasSubtitle: !!cfg.subtitle,
+    title: cfg.title,
+    subtitle: cfg.subtitle,
     hasLegend,
   });
   const out: SvgElement[] = [];
@@ -45,6 +47,7 @@ export function renderGroupedBar(cfg: GroupedBarConfig, theme: Theme): SvgElemen
   const labelSize = labelFontSize(canvas);
 
   const { elements: yElems, scale: yScale } = renderYAxis({
+    canvas,
     min: vMin,
     max: vMax + padMax,
     palette,
@@ -54,6 +57,7 @@ export function renderGroupedBar(cfg: GroupedBarConfig, theme: Theme): SvgElemen
   out.push(...yElems);
 
   const { elements: xElems, bandStart, bandWidth } = renderBandXAxis({
+    canvas,
     categories,
     palette,
     plot,
@@ -111,7 +115,7 @@ export function renderGroupedBar(cfg: GroupedBarConfig, theme: Theme): SvgElemen
         })),
         palette,
         canvas,
-        y: legendY(canvas, !!cfg.title, !!cfg.subtitle),
+        y: legendY(canvas, !!cfg.title, !!cfg.subtitle, cfg.title, cfg.subtitle),
       }),
     );
   }

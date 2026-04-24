@@ -1,5 +1,21 @@
-import { estimateTextWidth, g, line, rect, text } from './svg.js';
-import type { Canvas, Palette, SvgElement } from './types.js';
+import { classifyAspect } from './size.js';
+import { estimateTextWidth, g, line, rect, text, wrapText } from './svg.js';
+import type { AspectClass, Canvas, Palette, SvgElement } from './types.js';
+
+function headerMaxWidth(canvas: Canvas): number {
+  const logoPad = Math.round(smallFontSize(canvas) * 4.6);
+  return canvas.width - canvas.padding.left - canvas.padding.right - logoPad;
+}
+
+function titleLines(canvas: Canvas, title?: string): string[] {
+  if (!title) return [];
+  return wrapText(title, titleFontSize(canvas), headerMaxWidth(canvas), 3);
+}
+
+function subtitleLines(canvas: Canvas, subtitle?: string): string[] {
+  if (!subtitle) return [];
+  return wrapText(subtitle, subtitleFontSize(canvas), headerMaxWidth(canvas), 3);
+}
 
 export interface HeaderOptions {
   title?: string;
@@ -28,17 +44,45 @@ export interface LegendOptions {
   y: number;
 }
 
+const TYPOGRAPHY: Record<AspectClass, { big: number; small: number }> = {
+  landscape: { big: 40, small: 22 },
+  square: { big: 44, small: 24 },
+  portrait: { big: 52, small: 28 },
+};
+
+const LANDSCAPE_COMPACT_THRESHOLD = 900;
+
+function canvasAspect(canvas: Canvas): AspectClass {
+  return canvas.aspect ?? classifyAspect(canvas.width, canvas.height);
+}
+
+export function bigFontSize(canvas: Canvas): number {
+  const aspect = canvasAspect(canvas);
+  const base = TYPOGRAPHY[aspect].big;
+  if (aspect === 'landscape' && canvas.width < LANDSCAPE_COMPACT_THRESHOLD) return 30;
+  if (aspect === 'portrait' && canvas.height < 1200) return 44;
+  return base;
+}
+
+export function smallFontSize(canvas: Canvas): number {
+  const aspect = canvasAspect(canvas);
+  const base = TYPOGRAPHY[aspect].small;
+  if (aspect === 'landscape' && canvas.width < LANDSCAPE_COMPACT_THRESHOLD) return 18;
+  if (aspect === 'portrait' && canvas.height < 1200) return 24;
+  return base;
+}
+
 export function titleFontSize(canvas: Canvas): number {
-  return Math.round(Math.max(18, Math.min(32, canvas.width * 0.022)));
+  return bigFontSize(canvas);
 }
 export function subtitleFontSize(canvas: Canvas): number {
-  return Math.round(titleFontSize(canvas) * 0.66);
+  return smallFontSize(canvas);
 }
 export function labelFontSize(canvas: Canvas): number {
-  return Math.round(Math.max(11, Math.min(14, canvas.width * 0.011)));
+  return smallFontSize(canvas);
 }
 export function axisFontSize(canvas: Canvas): number {
-  return labelFontSize(canvas);
+  return smallFontSize(canvas);
 }
 
 export function renderHeader(opts: HeaderOptions): SvgElement[] {
@@ -47,10 +91,14 @@ export function renderHeader(opts: HeaderOptions): SvgElement[] {
   const x = canvas.padding.left;
   const titleSize = titleFontSize(canvas);
   const subtitleSize = subtitleFontSize(canvas);
-  let y = Math.round(titleSize * 1.5);
-  if (title) {
+  const titleLineHeight = Math.round(titleSize * 1.15);
+  const subtitleLineHeight = Math.round(subtitleSize * 1.3);
+  const tLines = titleLines(canvas, title);
+  const sLines = subtitleLines(canvas, subtitle);
+  let y = Math.round(titleSize * 1.1);
+  for (const l of tLines) {
     out.push(
-      text(title, {
+      text(l, {
         x,
         y,
         'font-size': titleSize,
@@ -59,11 +107,12 @@ export function renderHeader(opts: HeaderOptions): SvgElement[] {
         fill: palette.text,
       }),
     );
-    y += Math.round(subtitleSize * 1.8);
+    y += titleLineHeight;
   }
-  if (subtitle) {
+  if (tLines.length > 0 && sLines.length > 0) y += Math.round(subtitleSize * 0.4);
+  for (const l of sLines) {
     out.push(
-      text(subtitle, {
+      text(l, {
         x,
         y,
         'font-size': subtitleSize,
@@ -72,6 +121,7 @@ export function renderHeader(opts: HeaderOptions): SvgElement[] {
         fill: palette.textMuted,
       }),
     );
+    y += subtitleLineHeight;
   }
   return out;
 }
@@ -79,7 +129,7 @@ export function renderHeader(opts: HeaderOptions): SvgElement[] {
 export function renderFooter(opts: FooterOptions): SvgElement[] {
   const { source, logo, palette, canvas } = opts;
   const out: SvgElement[] = [];
-  const size = labelFontSize(canvas);
+  const size = smallFontSize(canvas);
   const y = canvas.height - Math.round(size * 1.4);
   if (source) {
     out.push(
@@ -93,10 +143,11 @@ export function renderFooter(opts: FooterOptions): SvgElement[] {
     );
   }
   if (logo !== 'none') {
-    const logoSize = Math.round(size * 1.6);
-    const logoX = canvas.width - canvas.padding.right - logoSize;
-    const logoY = y - logoSize * 0.8;
-    out.push(renderLogo(logoX, logoY, logoSize, palette));
+    const iconS = Math.round(size * 1.3);
+    const totalLogoW = Math.round(iconS * 3.5);
+    const logoX = canvas.width - canvas.padding.right - totalLogoW;
+    const logoY = y - iconS * 0.75;
+    out.push(renderLogo(logoX, logoY, iconS, palette));
   }
   return out;
 }
@@ -133,7 +184,7 @@ function renderLogo(x: number, y: number, size: number, palette: Palette): SvgEl
         attrs: {
           x: 12,
           y: 4,
-          'font-size': 12,
+          'font-size': 14,
           'font-weight': 700,
           'font-family': palette.fontHeadline,
           fill: palette.text,
@@ -147,13 +198,12 @@ function renderLogo(x: number, y: number, size: number, palette: Palette): SvgEl
 export function renderLegend(opts: LegendOptions): SvgElement[] {
   const { items, palette, canvas, y } = opts;
   if (items.length === 0) return [];
-  const size = labelFontSize(canvas);
+  const size = smallFontSize(canvas);
   const swatchW = size * 1.4;
-  const gap = size * 0.8;
-  const itemPadX = size * 1.8;
+  const gap = size * 0.7;
+  const itemPadX = size * 1.4;
 
   const widths = items.map((item) => swatchW + gap * 0.5 + estimateTextWidth(item.label, size));
-  const totalW = widths.reduce((a, b) => a + b + itemPadX, -itemPadX);
 
   const startX = canvas.padding.left;
   const wrapAt = canvas.width - canvas.padding.right;
@@ -168,13 +218,13 @@ export function renderLegend(opts: LegendOptions): SvgElement[] {
       cursorX = startX;
       cursorY += size * 1.8;
     }
-    const swatchY = cursorY - size * 0.6;
+    const swatchY = cursorY - size * 0.65;
     if (item.dash && item.dash !== 'solid') {
       out.push(
         line(cursorX, cursorY - size * 0.3, cursorX + swatchW, cursorY - size * 0.3, {
           stroke: item.color,
-          'stroke-width': 2.5,
-          'stroke-dasharray': item.dash === 'dashed' ? '4 2' : '1 2',
+          'stroke-width': 3,
+          'stroke-dasharray': item.dash === 'dashed' ? '6 3' : '1 3',
           'stroke-linecap': 'round',
         }),
       );
@@ -184,7 +234,7 @@ export function renderLegend(opts: LegendOptions): SvgElement[] {
           x: cursorX,
           y: swatchY,
           width: swatchW,
-          height: size * 0.7,
+          height: size * 0.75,
           rx: 2,
           fill: item.color,
         }),
@@ -202,24 +252,34 @@ export function renderLegend(opts: LegendOptions): SvgElement[] {
     );
     cursorX += w + itemPadX;
   }
-  void totalW;
   return out;
 }
 
-export function reservedHeaderHeight(canvas: Canvas, hasTitle: boolean, hasSubtitle: boolean): number {
+export function reservedHeaderHeight(
+  canvas: Canvas,
+  hasTitle: boolean,
+  hasSubtitle: boolean,
+  title?: string,
+  subtitle?: string,
+): number {
   const t = titleFontSize(canvas);
   const s = subtitleFontSize(canvas);
+  const tLH = Math.round(t * 1.15);
+  const sLH = Math.round(s * 1.3);
+  const tLines = hasTitle ? (title ? titleLines(canvas, title).length : 1) : 0;
+  const sLines = hasSubtitle ? (subtitle ? subtitleLines(canvas, subtitle).length : 1) : 0;
   let h = 0;
-  if (hasTitle) h += Math.round(t * 1.5);
-  if (hasSubtitle) h += Math.round(s * 1.8);
+  if (tLines > 0) h += Math.round(t * 1.1) + (tLines - 1) * tLH + Math.round(s * 0.4);
+  if (sLines > 0) h += sLines * sLH;
   return h;
 }
 
-export function headerBottomY(canvas: Canvas, hasTitle: boolean, hasSubtitle: boolean): number {
-  const t = titleFontSize(canvas);
-  const s = subtitleFontSize(canvas);
-  let y = 0;
-  if (hasTitle) y = Math.round(t * 1.5) + Math.round(s * 1.0);
-  if (hasSubtitle) y = (hasTitle ? y : 0) + Math.round(s * 1.0);
-  return y;
+export function headerBottomY(
+  canvas: Canvas,
+  hasTitle: boolean,
+  hasSubtitle: boolean,
+  title?: string,
+  subtitle?: string,
+): number {
+  return reservedHeaderHeight(canvas, hasTitle, hasSubtitle, title, subtitle);
 }

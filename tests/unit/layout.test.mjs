@@ -31,29 +31,46 @@ function canvas(name = 'share') {
 
 // ---------- font size helpers ----------
 
-test('titleFontSize grows with canvas width, clamped to [18, 32]', () => {
+test('titleFontSize is at least 30 on every preset', () => {
+  for (const s of ['inline', 'share', 'square', 'poster']) {
+    const v = titleFontSize(canvas(s));
+    assert.ok(v >= 30, `${s}: title size ${v} < 30`);
+  }
+});
+
+test('portrait poster has the largest title', () => {
   const inlineT = titleFontSize(canvas('inline'));
   const posterT = titleFontSize(canvas('poster'));
-  assert.ok(inlineT >= 18 && inlineT <= 32, `inline title out of range: ${inlineT}`);
-  assert.ok(posterT >= 18 && posterT <= 32, `poster title out of range: ${posterT}`);
-  assert.ok(posterT >= inlineT, 'poster title should be >= inline title');
+  assert.ok(posterT > inlineT, 'poster title must exceed inline title');
 });
 
-test('subtitleFontSize is ~66% of title size', () => {
-  const c = canvas('share');
-  assert.equal(subtitleFontSize(c), Math.round(titleFontSize(c) * 0.66));
+test('subtitleFontSize collapses to smallFontSize (same as label/axis)', () => {
+  for (const s of ['inline', 'share', 'square', 'poster']) {
+    const c = canvas(s);
+    assert.equal(subtitleFontSize(c), labelFontSize(c));
+    assert.equal(subtitleFontSize(c), axisFontSize(c));
+  }
 });
 
-test('labelFontSize is clamped to [11, 14]', () => {
-  for (const s of ['inline', 'share', 'poster']) {
+test('smallFontSize floor is 18 so phone downscale stays legible', () => {
+  for (const s of ['inline', 'share', 'square', 'poster']) {
     const v = labelFontSize(canvas(s));
-    assert.ok(v >= 11 && v <= 14, `${s}: label size ${v} out of [11,14]`);
+    assert.ok(v >= 18, `${s}: small font ${v} < 18`);
   }
 });
 
 test('axisFontSize equals labelFontSize', () => {
-  const c = canvas('share');
-  assert.equal(axisFontSize(c), labelFontSize(c));
+  for (const s of ['inline', 'share', 'square', 'poster']) {
+    const c = canvas(s);
+    assert.equal(axisFontSize(c), labelFontSize(c));
+  }
+});
+
+test('big font is always larger than small font', () => {
+  for (const s of ['inline', 'share', 'square', 'poster']) {
+    const c = canvas(s);
+    assert.ok(titleFontSize(c) > labelFontSize(c), `${s}: title not > label`);
+  }
 });
 
 // ---------- reservedHeaderHeight / headerBottomY ----------
@@ -182,7 +199,7 @@ test('renderLegend uses a dashed line swatch when dash="dashed"', () => {
   });
   const body = out.map(serialize).join('');
   assert.ok(body.includes('stroke="#00f"'), 'dashed item should stroke with color');
-  assert.ok(body.includes('stroke-dasharray="4 2"'), `expected dashed pattern, got ${body}`);
+  assert.ok(body.includes('stroke-dasharray="6 3"'), `expected dashed pattern, got ${body}`);
 });
 
 test('renderLegend wraps onto a new line when items exceed canvas width', () => {

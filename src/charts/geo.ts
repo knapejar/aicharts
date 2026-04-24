@@ -191,7 +191,7 @@ export function renderGeo(cfg: GeoConfig, theme: Theme): SvgElement[] {
   const basemapId = cfg.basemap ?? 'world';
   const topo = loadBasemap(basemapId);
   if (!topo) {
-    const top = reservedHeaderHeight(canvas, !!cfg.title, !!cfg.subtitle) + 32;
+    const top = reservedHeaderHeight(canvas, !!cfg.title, !!cfg.subtitle, cfg.title, cfg.subtitle) + 32;
     out.push(
       text(`Basemap "${basemapId}" not found. Place JSON in basemaps/.`, {
         x: canvas.width / 2,
@@ -219,7 +219,7 @@ export function renderGeo(cfg: GeoConfig, theme: Theme): SvgElement[] {
 
   const content = topo.content;
   const bbox = content.bbox;
-  const header = reservedHeaderHeight(canvas, !!cfg.title, !!cfg.subtitle);
+  const header = reservedHeaderHeight(canvas, !!cfg.title, !!cfg.subtitle, cfg.title, cfg.subtitle);
   const footer = labelFontSize(canvas) * 3.2;
   const top = header + 16;
   const bottom = canvas.height - footer - 56;

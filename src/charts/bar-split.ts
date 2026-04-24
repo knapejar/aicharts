@@ -16,7 +16,7 @@ export function renderBarSplit(cfg: BarSplitConfig, theme: Theme): SvgElement[] 
 
   const columns = cfg.columns ?? Math.min(series.length, series.length <= 3 ? series.length : 3);
   const rows = Math.ceil(series.length / columns);
-  const top = reservedHeaderHeight(canvas, !!cfg.title, !!cfg.subtitle) + 32;
+  const top = reservedHeaderHeight(canvas, !!cfg.title, !!cfg.subtitle, cfg.title, cfg.subtitle) + 32;
   const footer = labelSize * 3.2;
   const gridX = canvas.padding.left;
   const gridW = canvas.width - canvas.padding.left - canvas.padding.right;

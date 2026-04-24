@@ -76,6 +76,8 @@ export function renderLine(cfg: LineConfig, theme: Theme): SvgElement[] {
   const plot = computePlotArea(canvas, {
     hasTitle: !!cfg.title,
     hasSubtitle: !!cfg.subtitle,
+    title: cfg.title,
+    subtitle: cfg.subtitle,
     hasLegend,
   });
   const out: SvgElement[] = [];
@@ -103,6 +105,7 @@ export function renderLine(cfg: LineConfig, theme: Theme): SvgElement[] {
   const yPad = (yMax - yMin) * 0.08 || 1;
 
   const { elements: yElems, scale: yScale } = renderYAxis({
+    canvas,
     min: Math.min(yMin, yMin < 0 ? yMin - yPad : 0),
     max: yMax + yPad,
     palette,
@@ -114,12 +117,13 @@ export function renderLine(cfg: LineConfig, theme: Theme): SvgElement[] {
   let xScale: (i: number, row: LineConfig['data'][number]) => number;
   if (xKind === 'date') {
     const dates = cfg.data.map((r) => toDate(r[cfg.x] as string | number) ?? new Date(0));
-    const { elements, scale } = renderDateXAxis({ values: dates, palette, plot });
+    const { elements, scale } = renderDateXAxis({ canvas, values: dates, palette, plot });
     out.push(...elements);
     xScale = (i) => scale(dates[i]!);
   } else if (xKind === 'number') {
     const numbers = cfg.data.map((r) => Number(r[cfg.x]));
     const { elements, scale } = renderLinearXAxis({
+      canvas,
       values: numbers,
       palette,
       plot,
@@ -129,7 +133,12 @@ export function renderLine(cfg: LineConfig, theme: Theme): SvgElement[] {
     xScale = (i) => scale(numbers[i]!);
   } else {
     const cats = cfg.data.map((r) => String(r[cfg.x] ?? ''));
-    const { elements, bandStart, bandWidth } = renderBandXAxis({ categories: cats, palette, plot });
+    const { elements, bandStart, bandWidth } = renderBandXAxis({
+      canvas,
+      categories: cats,
+      palette,
+      plot,
+    });
     out.push(...elements);
     xScale = (i) => bandStart(i) + bandWidth() / 2;
   }
@@ -268,7 +277,7 @@ export function renderLine(cfg: LineConfig, theme: Theme): SvgElement[] {
         })),
         palette,
         canvas,
-        y: legendY(canvas, !!cfg.title, !!cfg.subtitle),
+        y: legendY(canvas, !!cfg.title, !!cfg.subtitle, cfg.title, cfg.subtitle),
       }),
     );
   }

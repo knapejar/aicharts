@@ -17,6 +17,8 @@ export function renderStackedBar(cfg: StackedBarConfig, theme: Theme): SvgElemen
   const plot = computePlotArea(canvas, {
     hasTitle: !!cfg.title,
     hasSubtitle: !!cfg.subtitle,
+    title: cfg.title,
+    subtitle: cfg.subtitle,
     hasLegend: true,
   });
   const out: SvgElement[] = [];
@@ -44,6 +46,7 @@ export function renderStackedBar(cfg: StackedBarConfig, theme: Theme): SvgElemen
 
   if (orientation === 'vertical') {
     const { elements: yElems, scale: yScale } = renderYAxis({
+      canvas,
       min: 0,
       max: maxTotal + padMax,
       palette,
@@ -53,6 +56,7 @@ export function renderStackedBar(cfg: StackedBarConfig, theme: Theme): SvgElemen
     out.push(...yElems);
 
     const { elements: xElems, bandStart, bandWidth } = renderBandXAxis({
+      canvas,
       categories,
       palette,
       plot,
@@ -120,6 +124,8 @@ export function renderStackedBar(cfg: StackedBarConfig, theme: Theme): SvgElemen
     const horizPlot = computePlotArea(canvas, {
       hasTitle: !!cfg.title,
       hasSubtitle: !!cfg.subtitle,
+      title: cfg.title,
+      subtitle: cfg.subtitle,
       hasLegend: true,
       yTickWidth,
     });
@@ -195,7 +201,7 @@ export function renderStackedBar(cfg: StackedBarConfig, theme: Theme): SvgElemen
       })),
       palette,
       canvas,
-      y: legendY(canvas, !!cfg.title, !!cfg.subtitle),
+      y: legendY(canvas, !!cfg.title, !!cfg.subtitle, cfg.title, cfg.subtitle),
     }),
   );
 

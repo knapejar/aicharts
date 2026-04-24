@@ -108,7 +108,7 @@ export function renderPieLike(
   const { slices, total } = prepareSlices(cfg, palette.colors, threshold);
   if (slices.length === 0 || total === 0) return out;
 
-  const header = reservedHeaderHeight(canvas, !!cfg.title, !!cfg.subtitle);
+  const header = reservedHeaderHeight(canvas, !!cfg.title, !!cfg.subtitle, cfg.title, cfg.subtitle);
   const footer = labelFontSize(canvas) * 3.2;
   const legendItems = slices.map((s) => ({
     label: `${s.label} · ${formatPercent(s.fraction, s.fraction >= 0.1 ? 0 : 1)}`,

@@ -42,7 +42,7 @@ export function renderLineSplit(cfg: LineSplitConfig, theme: Theme): SvgElement[
   const labelSize = labelFontSize(canvas);
   const columns = cfg.columns ?? (series.length <= 2 ? series.length : series.length <= 4 ? 2 : 3);
   const rows = Math.ceil(series.length / columns);
-  const top = reservedHeaderHeight(canvas, !!cfg.title, !!cfg.subtitle) + 32;
+  const top = reservedHeaderHeight(canvas, !!cfg.title, !!cfg.subtitle, cfg.title, cfg.subtitle) + 32;
   const footer = labelSize * 3.2;
   const gridX = canvas.padding.left;
   const gridW = canvas.width - canvas.padding.left - canvas.padding.right;

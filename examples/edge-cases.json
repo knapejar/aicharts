@@ -1,0 +1,319 @@
+[
+  {
+    "_slug": "edge-01-very-long-title",
+    "chart": "line",
+    "title": "This is a deliberately long headline that any real assistant might produce and it must still fit inside the plot without swallowing the data",
+    "subtitle": "And a subtitle that continues describing the dataset across many words to pressure-test wrapping behaviour",
+    "source": "Made-up data for stress testing",
+    "palette": "editorial",
+    "x": "year",
+    "y": "value",
+    "data": [
+      {"year": 2020, "value": 10},
+      {"year": 2021, "value": 30},
+      {"year": 2022, "value": 50},
+      {"year": 2023, "value": 90}
+    ]
+  },
+  {
+    "_slug": "edge-02-single-data-point",
+    "chart": "line",
+    "title": "Single point",
+    "subtitle": "Only one observation in the whole series",
+    "palette": "clarity",
+    "x": "year",
+    "y": "value",
+    "showSymbols": "all",
+    "data": [{"year": 2024, "value": 42}]
+  },
+  {
+    "_slug": "edge-03-zero-data",
+    "chart": "bar",
+    "title": "No data at all",
+    "subtitle": "The render must not crash or show garbage",
+    "palette": "mono-blue",
+    "label": "name",
+    "value": "count",
+    "data": []
+  },
+  {
+    "_slug": "edge-04-single-bar",
+    "chart": "bar",
+    "title": "One bar",
+    "subtitle": "Only a single category",
+    "palette": "boardroom",
+    "label": "country",
+    "value": "gdp",
+    "orientation": "horizontal",
+    "showValueLabels": true,
+    "data": [{"country": "Iceland", "gdp": 31.2}]
+  },
+  {
+    "_slug": "edge-05-huge-category-names",
+    "chart": "bar",
+    "title": "Huge category names",
+    "subtitle": "Labels longer than the bar itself",
+    "palette": "vibrant",
+    "label": "institution",
+    "value": "endowment",
+    "orientation": "horizontal",
+    "sort": "desc",
+    "showValueLabels": true,
+    "data": [
+      {"institution": "The Massachusetts Institute of Technology and Research", "endowment": 24.6},
+      {"institution": "University of California at Berkeley and Associated Labs", "endowment": 6.9},
+      {"institution": "Eidgenossische Technische Hochschule Zurich (ETH Zurich)", "endowment": 3.2},
+      {"institution": "Karolinska Institutet Stockholm Sweden", "endowment": 2.1}
+    ]
+  },
+  {
+    "_slug": "edge-06-many-bars",
+    "chart": "bar",
+    "title": "Too many bars",
+    "subtitle": "Forty categories, density stress test",
+    "palette": "clarity",
+    "label": "code",
+    "value": "v",
+    "orientation": "vertical",
+    "sort": "desc",
+    "data": [
+      {"code": "A01", "v": 97}, {"code": "A02", "v": 94}, {"code": "A03", "v": 91}, {"code": "A04", "v": 88},
+      {"code": "A05", "v": 85}, {"code": "A06", "v": 82}, {"code": "A07", "v": 79}, {"code": "A08", "v": 76},
+      {"code": "A09", "v": 73}, {"code": "A10", "v": 70}, {"code": "A11", "v": 67}, {"code": "A12", "v": 64},
+      {"code": "A13", "v": 61}, {"code": "A14", "v": 58}, {"code": "A15", "v": 55}, {"code": "A16", "v": 52},
+      {"code": "A17", "v": 49}, {"code": "A18", "v": 46}, {"code": "A19", "v": 43}, {"code": "A20", "v": 40},
+      {"code": "A21", "v": 37}, {"code": "A22", "v": 34}, {"code": "A23", "v": 31}, {"code": "A24", "v": 28},
+      {"code": "A25", "v": 25}, {"code": "A26", "v": 22}, {"code": "A27", "v": 19}, {"code": "A28", "v": 16},
+      {"code": "A29", "v": 14}, {"code": "A30", "v": 12}, {"code": "A31", "v": 10}, {"code": "A32", "v": 9},
+      {"code": "A33", "v": 8}, {"code": "A34", "v": 7}, {"code": "A35", "v": 6}, {"code": "A36", "v": 5},
+      {"code": "A37", "v": 4}, {"code": "A38", "v": 3}, {"code": "A39", "v": 2}, {"code": "A40", "v": 1}
+    ]
+  },
+  {
+    "_slug": "edge-07-all-same-value",
+    "chart": "bar",
+    "title": "All bars same value",
+    "subtitle": "Y-axis has zero range — must still render",
+    "palette": "earth",
+    "label": "team",
+    "value": "score",
+    "showValueLabels": true,
+    "data": [
+      {"team": "A", "score": 50}, {"team": "B", "score": 50}, {"team": "C", "score": 50},
+      {"team": "D", "score": 50}, {"team": "E", "score": 50}
+    ]
+  },
+  {
+    "_slug": "edge-08-extreme-range",
+    "chart": "line",
+    "title": "Extreme dynamic range",
+    "subtitle": "One value is a billion times another",
+    "palette": "twilight",
+    "x": "year",
+    "y": "count",
+    "interpolation": "curved",
+    "showSymbols": "all",
+    "data": [
+      {"year": 2019, "count": 0.001}, {"year": 2020, "count": 1},
+      {"year": 2021, "count": 1000}, {"year": 2022, "count": 1000000},
+      {"year": 2023, "count": 1000000000}
+    ]
+  },
+  {
+    "_slug": "edge-09-negatives",
+    "chart": "bar",
+    "title": "All-negative returns",
+    "subtitle": "Worst-performing assets of 2022 (percent)",
+    "palette": "diverging-sunset",
+    "label": "asset",
+    "value": "ret",
+    "orientation": "horizontal",
+    "sort": "asc",
+    "showValueLabels": true,
+    "yFormat": "percent",
+    "data": [
+      {"asset": "Crypto index", "ret": -64},
+      {"asset": "Long-duration bond ETF", "ret": -27},
+      {"asset": "NASDAQ 100", "ret": -22},
+      {"asset": "S&P 500", "ret": -18}
+    ]
+  },
+  {
+    "_slug": "edge-10-pie-20-slices",
+    "chart": "pie",
+    "title": "Pie with far too many slices",
+    "subtitle": "Library should auto-group tail as Other",
+    "palette": "vibrant",
+    "label": "country",
+    "value": "pop",
+    "sort": "desc",
+    "data": [
+      {"country": "China", "pop": 1410}, {"country": "India", "pop": 1390},
+      {"country": "USA", "pop": 332}, {"country": "Indonesia", "pop": 275},
+      {"country": "Pakistan", "pop": 232}, {"country": "Brazil", "pop": 214},
+      {"country": "Nigeria", "pop": 218}, {"country": "Bangladesh", "pop": 169},
+      {"country": "Russia", "pop": 144}, {"country": "Mexico", "pop": 128},
+      {"country": "Japan", "pop": 125}, {"country": "Ethiopia", "pop": 120},
+      {"country": "Philippines", "pop": 114}, {"country": "Egypt", "pop": 109},
+      {"country": "Vietnam", "pop": 98}, {"country": "DR Congo", "pop": 95},
+      {"country": "Iran", "pop": 87}, {"country": "Turkey", "pop": 85},
+      {"country": "Germany", "pop": 83}, {"country": "Thailand", "pop": 70}
+    ]
+  },
+  {
+    "_slug": "edge-11-percent-already-scaled",
+    "chart": "line",
+    "title": "Percent values pre-scaled to 0..100",
+    "subtitle": "Share of US workers using AI at work (percent)",
+    "source": "McKinsey AI survey",
+    "palette": "editorial",
+    "x": "year",
+    "y": "share",
+    "interpolation": "curved",
+    "areaFill": true,
+    "showSymbols": "last",
+    "showValueLabels": "last",
+    "yFormat": "percent",
+    "data": [
+      {"year": 2018, "share": 3}, {"year": 2020, "share": 8},
+      {"year": 2022, "share": 23}, {"year": 2023, "share": 42},
+      {"year": 2024, "share": 58}, {"year": 2025, "share": 74}
+    ]
+  },
+  {
+    "_slug": "edge-12-tiny-fractions",
+    "chart": "line",
+    "title": "Microscopic values",
+    "subtitle": "Probabilities below 1 percent (as fractions, 0..1)",
+    "palette": "mono-blue",
+    "x": "year",
+    "y": "p",
+    "yFormat": "percent",
+    "data": [
+      {"year": 2015, "p": 0.0003}, {"year": 2018, "p": 0.0011},
+      {"year": 2021, "p": 0.0038}, {"year": 2024, "p": 0.0092}
+    ]
+  },
+  {
+    "_slug": "edge-13-many-stacked-series",
+    "chart": "stacked-area",
+    "title": "Eight-way stack",
+    "subtitle": "Lots of overlapping slivers",
+    "palette": "earth",
+    "x": "year",
+    "y": ["a", "b", "c", "d", "e", "f", "g", "h"],
+    "interpolation": "curved",
+    "data": [
+      {"year": 2000, "a": 10, "b": 20, "c": 15, "d": 5, "e": 30, "f": 8, "g": 12, "h": 3},
+      {"year": 2005, "a": 14, "b": 22, "c": 18, "d": 7, "e": 34, "f": 12, "g": 16, "h": 5},
+      {"year": 2010, "a": 20, "b": 25, "c": 22, "d": 11, "e": 40, "f": 18, "g": 22, "h": 9},
+      {"year": 2015, "a": 28, "b": 28, "c": 26, "d": 15, "e": 45, "f": 25, "g": 30, "h": 13},
+      {"year": 2020, "a": 38, "b": 30, "c": 30, "d": 20, "e": 50, "f": 33, "g": 38, "h": 18},
+      {"year": 2024, "a": 50, "b": 32, "c": 34, "d": 26, "e": 55, "f": 42, "g": 46, "h": 24}
+    ]
+  },
+  {
+    "_slug": "edge-14-huge-numbers",
+    "chart": "bar",
+    "title": "Trillions and billions",
+    "subtitle": "Very large numeric range",
+    "palette": "boardroom",
+    "label": "company",
+    "value": "marketCap",
+    "orientation": "horizontal",
+    "sort": "desc",
+    "showValueLabels": true,
+    "data": [
+      {"company": "Apple", "marketCap": 3410000000000},
+      {"company": "Microsoft", "marketCap": 3100000000000},
+      {"company": "Alphabet", "marketCap": 2020000000000},
+      {"company": "Saudi Aramco", "marketCap": 1900000000000},
+      {"company": "Nvidia", "marketCap": 1800000000000}
+    ]
+  },
+  {
+    "_slug": "edge-15-two-points-only",
+    "chart": "line",
+    "title": "Two points, should still draw a line",
+    "subtitle": "Minimal viable line",
+    "palette": "clarity",
+    "x": "quarter",
+    "y": "rev",
+    "showSymbols": "all",
+    "showValueLabels": "all",
+    "data": [
+      {"quarter": "Q1", "rev": 100}, {"quarter": "Q2", "rev": 140}
+    ]
+  },
+  {
+    "_slug": "edge-16-title-only-no-data",
+    "chart": "pie",
+    "title": "Loading state?",
+    "subtitle": "Empty pie with a title — should fall back gracefully",
+    "palette": "vibrant",
+    "label": "x",
+    "value": "y",
+    "data": []
+  },
+  {
+    "_slug": "edge-17-combo-imbalanced",
+    "chart": "combo",
+    "title": "Mixed-magnitude combo",
+    "subtitle": "Bars in millions, line in single digits",
+    "palette": "editorial",
+    "x": "year",
+    "bars": "revenue",
+    "lines": "rating",
+    "interpolation": "curved",
+    "data": [
+      {"year": 2020, "revenue": 1200000, "rating": 3.2},
+      {"year": 2021, "revenue": 1800000, "rating": 3.5},
+      {"year": 2022, "revenue": 2100000, "rating": 3.9},
+      {"year": 2023, "revenue": 2600000, "rating": 4.2},
+      {"year": 2024, "revenue": 3200000, "rating": 4.5}
+    ]
+  },
+  {
+    "_slug": "edge-18-non-year-integers",
+    "chart": "line",
+    "title": "Non-year integer x-axis",
+    "subtitle": "Could be trial numbers or round counts",
+    "palette": "mono-blue",
+    "x": "round",
+    "y": "score",
+    "data": [
+      {"round": 1, "score": 120}, {"round": 2, "score": 240}, {"round": 3, "score": 310},
+      {"round": 4, "score": 280}, {"round": 5, "score": 420}, {"round": 6, "score": 510}
+    ]
+  },
+  {
+    "_slug": "edge-19-mixed-signs-line",
+    "chart": "line",
+    "title": "Crossing zero",
+    "subtitle": "Line oscillating across the zero baseline",
+    "palette": "diverging-sunset",
+    "x": "month",
+    "y": "delta",
+    "interpolation": "curved",
+    "areaFill": true,
+    "showSymbols": "all",
+    "data": [
+      {"month": "Jan", "delta": 12}, {"month": "Feb", "delta": -5},
+      {"month": "Mar", "delta": 8}, {"month": "Apr", "delta": -14},
+      {"month": "May", "delta": 3}, {"month": "Jun", "delta": -9},
+      {"month": "Jul", "delta": 22}, {"month": "Aug", "delta": -18}
+    ]
+  },
+  {
+    "_slug": "edge-20-geo-one-country",
+    "chart": "geo",
+    "title": "Map with one data point",
+    "subtitle": "Single country highlighted on world map",
+    "palette": "carbon",
+    "basemap": "world",
+    "code": "country",
+    "value": "v",
+    "scale": "stepped",
+    "data": [{"country": "FIN", "v": 100}]
+  }
+]

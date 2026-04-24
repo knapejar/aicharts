@@ -11,7 +11,9 @@ export type ChartType =
   | 'donut'
   | 'geo';
 
-export type SizeName = 'inline' | 'share' | 'poster';
+export type SizeName = 'inline' | 'share' | 'square' | 'poster';
+
+export type AspectClass = 'landscape' | 'square' | 'portrait';
 
 export type Orientation = 'vertical' | 'horizontal';
 
@@ -32,6 +34,7 @@ export interface Palette {
 export interface Canvas {
   width: number;
   height: number;
+  aspect: AspectClass;
   padding: { top: number; right: number; bottom: number; left: number };
   plot: { x: number; y: number; width: number; height: number };
 }

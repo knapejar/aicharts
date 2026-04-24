@@ -131,3 +131,36 @@ vercel deploy         # api/*, demo/ served at mcp-charts.vercel.app
 
 - `.plan/RESEARCH.md` for architectural decisions, competitive analysis, chart design.
 - `.plan/MASTER-PLAN.md` for the phase-by-phase implementation plan.
+
+## Product-owner complaint log (kept private, never surfaced to user)
+
+The PO reviews the example zoo after each milestone and files complaints. Log them here with the shipped fix so the next iteration does not regress.
+
+### Iteration: model-zoo readability (2026-04-24)
+
+Complaints:
+1. "Fonts are too small everywhere — unreadable on desktop, impossible on phone." All four font tiers (title/subtitle/label/axis) were width-clamped low (max 14px on labels, 32px on title).
+2. "I want only 2 font sizes in the whole chart, configured per format (landscape / square / portrait). Chart must scale to format."
+3. "Default returned chart should be square." The project shipped `share` (landscape) as default.
+4. "Every zoo chart must look good even with terrible input — long title, one bar, zero data. Add an edge-case zoo."
+5. "Horizontal bar 02-hyperscalers: right side empty, left side huge padding — make padding symmetric." Caused by `niceScale` overshooting dataMax combined with asymmetric yTickWidth.
+6. "Line 03-global-warming: top gridline crams into subtitle, bottom -0.5 tick collides with source footer. Hide the colliding bottom tick automatically."
+7. "Stacked-area 05-energy-mix has ugly finger-like protrusions on the right and left edges." Root cause: `curvedAreaPath()` concatenates `top + reverse(bottom)` and runs one continuous Catmull-Rom across the vertical edge transitions, so endpoint control points bulge outside the plot.
+8. "README needs a visible URL under each image pointing to the live production render." Only the image itself was a clickable link.
+9. "Provide all zoos in all three aspect ratios — 3 x 50 = 150 images side by side."
+10. "Add an npm workflow so any commit already contains up-to-date images (local pre-commit or at least npm release)."
+
+Decisions taken (record why, not just what):
+- **Two-font-size system**: `big` (title only, weight 700) and `small` (everything else: subtitle, labels, axis, legend, value labels, source). Hierarchy comes from weight + color, not a third size. Values per preset: `inline` 30/18, `share` 40/22, `square` 44/24, `poster` 56/30. Small >= 18px so a 2× phone downscale stays legible.
+- **New `square` preset (1200x1200)**, flipped `DEFAULT_SIZE` to `square`. Backward compat: `inline`, `share`, `poster` kept by name.
+- **Horizontal bar fix**: tight `xMax = dataMax` (no headroom). Nice-rounded tick values still drawn, but the last tick only if ≤ dataMax * 1.02. This removes the right-side void without mirroring a fake label column.
+- **Vertical breathing room**: `extraTop = smallFont * 1.5` (scales with typography). Footer min = `max(96, smallFont * 4)`. Bottom-most Y tick label is suppressed when its baseline would sit within `smallFont * 1.2` of the footer zone.
+- **Stacked-area fix**: curve `top` (left→right) and `bottom` (right→left) as independent paths, join with straight `L` at the two ends. This is the idiomatic shape for a cardinal/Catmull-like curve through samples — tangent lookups no longer reach across the vertical edge segments.
+- **Percent formatter**: auto-detect scale. If `maxAbs >= 1.5`, treat values as already-percent (show as-is with `%`), else multiply by 100 as before. Threshold covers fractions up to 150% without false positives.
+- **Zoo generator**: one `specs.json` rendered at three aspect ratios via an `--aspect` flag. Edge-case specs live in a separate `examples/edge-cases.json`. Pre-commit hook runs `npm run zoo:all` which renders all four zoo READMEs deterministically.
+
+Guarantees for the next iteration:
+- If the PO complains again about small fonts, check the TYPOGRAPHY table in `src/core/layout.ts` first — do not reintroduce a width-clamp formula.
+- If a new chart type ships, it MUST use `bigFontSize()` / `smallFontSize()` helpers and no hard-coded font sizes.
+- The stacked-area curve pattern (independent top/bottom curves + straight edge joins) is the reference for any new band chart.
+- The edge-case zoo is the acceptance gate; no release if any edge-case render looks bad.

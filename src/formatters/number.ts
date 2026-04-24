@@ -88,7 +88,17 @@ export function pickNumberFormatter(
   explicit?: 'auto' | 'number' | 'year' | 'date' | 'percent' | 'currency',
 ): (v: number) => string {
   if (explicit === 'year') return formatYear;
-  if (explicit === 'percent') return (v: number) => formatNumber(v * 100, { decimals: 0 }) + '%';
+  if (explicit === 'percent') {
+    const finite = values.filter((v) => Number.isFinite(v));
+    const maxAbs = finite.length ? Math.max(...finite.map((v) => Math.abs(v))) : 0;
+    const scale = maxAbs >= 1.5 ? 1 : 100;
+    return (v: number) => {
+      const scaled = v * scale;
+      const abs = Math.abs(scaled);
+      const decimals = abs >= 10 || Number.isInteger(scaled) ? 0 : 1;
+      return formatNumber(scaled, { decimals }) + '%';
+    };
+  }
   if (explicit === 'currency')
     return (v: number) => '$' + formatNumber(v, { compact: Math.abs(v) >= 1000 });
 

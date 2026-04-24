@@ -49,6 +49,8 @@ export function renderCombo(cfg: ComboConfig, theme: Theme): SvgElement[] {
   const plot = computePlotArea(canvas, {
     hasTitle: !!cfg.title,
     hasSubtitle: !!cfg.subtitle,
+    title: cfg.title,
+    subtitle: cfg.subtitle,
     hasLegend: true,
   });
   if (!cfg.data || cfg.data.length === 0) {
@@ -83,6 +85,7 @@ export function renderCombo(cfg: ComboConfig, theme: Theme): SvgElement[] {
   const lineFmt = pickNumberFormatter(lineValues, cfg.yFormat);
 
   const { elements: yElems, scale: yBarScale } = renderYAxis({
+    canvas,
     min: barScale.min,
     max: barScale.max,
     palette,
@@ -111,6 +114,7 @@ export function renderCombo(cfg: ComboConfig, theme: Theme): SvgElement[] {
 
   const categories = cfg.data.map((r) => String(r[cfg.x] ?? ''));
   const { elements: xElems, bandStart, bandWidth } = renderBandXAxis({
+    canvas,
     categories,
     palette,
     plot,
@@ -203,7 +207,7 @@ export function renderCombo(cfg: ComboConfig, theme: Theme): SvgElement[] {
       items: legendItems,
       palette,
       canvas,
-      y: legendY(canvas, !!cfg.title, !!cfg.subtitle),
+      y: legendY(canvas, !!cfg.title, !!cfg.subtitle, cfg.title, cfg.subtitle),
     }),
   );
 

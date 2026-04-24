@@ -1,5 +1,5 @@
 import { estimateTextWidth, g, line, rect, text } from '../core/svg.js';
-import { axisFontSize, labelFontSize, reservedHeaderHeight } from '../core/layout.js';
+import { reservedHeaderHeight, smallFontSize } from '../core/layout.js';
 export const LEGEND_GAP = 16;
 import { niceScale } from '../formatters/tick.js';
 import { pickNumberFormatter } from '../formatters/number.js';
@@ -18,6 +18,8 @@ export function computePlotArea(
   opts: {
     hasTitle?: boolean;
     hasSubtitle?: boolean;
+    title?: string;
+    subtitle?: string;
     hasLegend?: boolean;
     legendHeight?: number;
     yTickWidth?: number;
@@ -25,12 +27,19 @@ export function computePlotArea(
     extraTop?: number;
   } = {},
 ): PlotArea {
-  const header = reservedHeaderHeight(canvas, !!opts.hasTitle, !!opts.hasSubtitle);
-  const footerH = Math.round(labelFontSize(canvas) * 3.0);
-  const legendH = opts.hasLegend ? (opts.legendHeight ?? labelFontSize(canvas) * 2.2) : 0;
-  const yTickW = opts.yTickWidth ?? 56;
-  const xTickH = opts.xTickHeight ?? 28;
-  const extraTop = opts.extraTop ?? 16;
+  const font = smallFontSize(canvas);
+  const header = reservedHeaderHeight(
+    canvas,
+    !!opts.hasTitle,
+    !!opts.hasSubtitle,
+    opts.title,
+    opts.subtitle,
+  );
+  const footerH = Math.max(canvas.padding.bottom, Math.round(font * 3.0));
+  const legendH = opts.hasLegend ? (opts.legendHeight ?? font * 2.4) : 0;
+  const yTickW = opts.yTickWidth ?? Math.round(font * 3.2);
+  const xTickH = opts.xTickHeight ?? Math.round(font * 2.2);
+  const extraTop = opts.extraTop ?? Math.round(font * 1.6);
 
   const topY = header + (legendH > 0 ? LEGEND_GAP + legendH : 0) + extraTop;
   const bottomY = canvas.height - footerH - xTickH;
@@ -42,11 +51,22 @@ export function computePlotArea(
   };
 }
 
-export function legendY(canvas: Canvas, hasTitle: boolean, hasSubtitle: boolean): number {
-  return reservedHeaderHeight(canvas, hasTitle, hasSubtitle) + LEGEND_GAP + labelFontSize(canvas);
+export function legendY(
+  canvas: Canvas,
+  hasTitle: boolean,
+  hasSubtitle: boolean,
+  title?: string,
+  subtitle?: string,
+): number {
+  return (
+    reservedHeaderHeight(canvas, hasTitle, hasSubtitle, title, subtitle) +
+    LEGEND_GAP +
+    smallFontSize(canvas)
+  );
 }
 
 export interface YAxisOptions {
+  canvas: Canvas;
   min: number;
   max: number;
   palette: Palette;
@@ -58,16 +78,21 @@ export interface YAxisOptions {
   label?: string;
 }
 
-export function renderYAxis(opts: YAxisOptions): { elements: SvgElement[]; scale: (v: number) => number; tickValues: number[] } {
-  const { palette, plot } = opts;
+export function renderYAxis(opts: YAxisOptions): {
+  elements: SvgElement[];
+  scale: (v: number) => number;
+  tickValues: number[];
+} {
+  const { canvas, palette, plot } = opts;
   const { ticks, min, max } = niceScale(opts.min, opts.max, opts.maxTicks ?? 5);
-  const scale = (v: number) =>
-    plot.y + plot.height - ((v - min) / (max - min || 1)) * plot.height;
+  const scale = (v: number) => plot.y + plot.height - ((v - min) / (max - min || 1)) * plot.height;
   const out: SvgElement[] = [];
-  const size = labelFontSize({ width: plot.width + 100, height: plot.height } as Canvas);
+  const size = smallFontSize(canvas);
   const format = opts.format ?? pickNumberFormatter(ticks);
+  const footerTop = canvas.height - canvas.padding.bottom;
 
-  for (const t of ticks) {
+  for (let i = 0; i < ticks.length; i++) {
+    const t = ticks[i]!;
     const y = scale(t);
     if (opts.showGrid !== false) {
       out.push(
@@ -78,21 +103,26 @@ export function renderYAxis(opts: YAxisOptions): { elements: SvgElement[]; scale
         }),
       );
     }
-    out.push(
-      text(format(t), {
-        x: plot.x - 8,
-        y: y + size * 0.35,
-        'font-size': size,
-        'font-family': palette.fontBody,
-        fill: palette.textMuted,
-        'text-anchor': 'end',
-      }),
-    );
+    const textBaseline = y + size * 0.35;
+    const collidesWithFooter = textBaseline > footerTop - size * 0.6;
+    if (!collidesWithFooter) {
+      out.push(
+        text(format(t), {
+          x: plot.x - 10,
+          y: textBaseline,
+          'font-size': size,
+          'font-family': palette.fontBody,
+          fill: palette.textMuted,
+          'text-anchor': 'end',
+        }),
+      );
+    }
   }
   return { elements: out, scale, tickValues: ticks };
 }
 
 export interface XAxisBandOptions {
+  canvas: Canvas;
   categories: string[];
   palette: Palette;
   plot: PlotArea;
@@ -106,25 +136,31 @@ export function renderBandXAxis(opts: XAxisBandOptions): {
   bandStart: (i: number) => number;
   bandWidth: () => number;
 } {
-  const { categories, palette, plot } = opts;
+  const { canvas, categories, palette, plot } = opts;
   const pi = opts.paddingInner ?? 0.2;
   const po = opts.paddingOuter ?? 0.1;
   const n = categories.length;
   const step = n > 0 ? plot.width / Math.max(1, n - pi + 2 * po) : plot.width;
   const bandWidth = Math.max(2, step * (1 - pi));
   const bandStart = (i: number) => plot.x + po * step + i * step;
-  const size = axisFontSize({ width: plot.width + 100, height: plot.height } as Canvas);
+  const size = smallFontSize(canvas);
   const labelY = plot.y + plot.height + size * 1.4;
   const out: SvgElement[] = [];
 
+  let maxCatWidth = 0;
+  for (const cat of categories) maxCatWidth = Math.max(maxCatWidth, estimateTextWidth(cat, size));
   let rotate = opts.rotate ?? false;
-  if (!rotate) {
-    let max = 0;
-    for (const cat of categories) max = Math.max(max, estimateTextWidth(cat, size));
-    if (max > step * (1 - pi) * 1.2) rotate = true;
+  if (!rotate && maxCatWidth > step * (1 - pi) * 1.2) rotate = true;
+  const rotatedSlot = size * 1.4;
+  const horizontalSlot = step * (1 - pi) * 1.05;
+  const slotWidth = rotate ? rotatedSlot : horizontalSlot;
+  let strideForLabels = 1;
+  while (strideForLabels * slotWidth < maxCatWidth && strideForLabels < categories.length) {
+    strideForLabels += 1;
   }
 
   for (let i = 0; i < categories.length; i++) {
+    if (strideForLabels > 1 && i % strideForLabels !== 0 && i !== categories.length - 1) continue;
     const cat = categories[i]!;
     const cx = bandStart(i) + bandWidth / 2;
     const attrs: Record<string, string | number> = {
@@ -149,6 +185,7 @@ export function renderBandXAxis(opts: XAxisBandOptions): {
 }
 
 export interface XAxisLinearOptions {
+  canvas: Canvas;
   values: number[];
   palette: Palette;
   plot: PlotArea;
@@ -162,7 +199,7 @@ export function renderLinearXAxis(opts: XAxisLinearOptions): {
   scale: (v: number) => number;
   tickValues: number[];
 } {
-  const { values, palette, plot } = opts;
+  const { canvas, values, palette, plot } = opts;
   const dataMin = Math.min(...values);
   const dataMax = Math.max(...values);
   let min = dataMin;
@@ -190,9 +227,9 @@ export function renderLinearXAxis(opts: XAxisLinearOptions): {
   }
   const scale = (v: number) => plot.x + ((v - min) / (max - min || 1)) * plot.width;
   const format = opts.format ?? pickNumberFormatter(values);
-  const size = axisFontSize({ width: plot.width + 100, height: plot.height } as Canvas);
+  const size = smallFontSize(canvas);
   const out: SvgElement[] = [];
-  const labelY = plot.y + plot.height + size * 1.6;
+  const labelY = plot.y + plot.height + size * 1.7;
   for (const t of ticks) {
     const x = scale(t);
     out.push(
@@ -217,6 +254,7 @@ export function renderLinearXAxis(opts: XAxisLinearOptions): {
 }
 
 export interface XAxisDateOptions {
+  canvas: Canvas;
   values: Date[];
   palette: Palette;
   plot: PlotArea;
@@ -227,7 +265,7 @@ export function renderDateXAxis(opts: XAxisDateOptions): {
   elements: SvgElement[];
   scale: (v: Date) => number;
 } {
-  const { values, palette, plot } = opts;
+  const { canvas, values, palette, plot } = opts;
   const min = Math.min(...values.map((v) => v.getTime()));
   const max = Math.max(...values.map((v) => v.getTime()));
   const scale = (v: Date) => plot.x + ((v.getTime() - min) / (max - min || 1)) * plot.width;
@@ -242,8 +280,8 @@ export function renderDateXAxis(opts: XAxisDateOptions): {
     }
   }
   const format = pickDateFormatter(values);
-  const size = axisFontSize({ width: plot.width + 100, height: plot.height } as Canvas);
-  const labelY = plot.y + plot.height + size * 1.6;
+  const size = smallFontSize(canvas);
+  const labelY = plot.y + plot.height + size * 1.7;
   const out: SvgElement[] = [];
   for (const t of ticks) {
     const x = scale(t);
@@ -291,7 +329,7 @@ export function emptyPlotHint(plot: PlotArea, palette: Palette, message: string)
     text(message, {
       x: plot.x + plot.width / 2,
       y: plot.y + plot.height / 2,
-      'font-size': 14,
+      'font-size': 18,
       'font-family': palette.fontBody,
       fill: palette.textMuted,
       'text-anchor': 'middle',
@@ -300,7 +338,9 @@ export function emptyPlotHint(plot: PlotArea, palette: Palette, message: string)
   ]);
 }
 
-export function pickXAxisKind(values: Array<string | number | Date | null | undefined>): 'date' | 'number' | 'band' {
+export function pickXAxisKind(
+  values: Array<string | number | Date | null | undefined>,
+): 'date' | 'number' | 'band' {
   let dateHits = 0;
   let numberHits = 0;
   let totalDefined = 0;

@@ -1,4 +1,4 @@
-import { g, line as svgLine, rect, text } from '../core/svg.js';
+import { estimateTextWidth, g, line as svgLine, rect, text } from '../core/svg.js';
 import { labelFontSize, renderLegend } from '../core/layout.js';
 import {
   computePlotArea,
@@ -29,6 +29,8 @@ export function renderBar(cfg: BarConfig, theme: Theme): SvgElement[] {
   const plot = computePlotArea(canvas, {
     hasTitle: !!cfg.title,
     hasSubtitle: !!cfg.subtitle,
+    title: cfg.title,
+    subtitle: cfg.subtitle,
   });
   if (!cfg.data || cfg.data.length === 0) {
     out.push(emptyPlotHint(plot, palette, 'No data'));
@@ -56,6 +58,7 @@ export function renderBar(cfg: BarConfig, theme: Theme): SvgElement[] {
 
   if (orientation === 'vertical') {
     const { elements: yElems, scale: yScale } = renderYAxis({
+      canvas,
       min: vMin,
       max: vMax + padMax,
       palette,
@@ -65,6 +68,7 @@ export function renderBar(cfg: BarConfig, theme: Theme): SvgElement[] {
     out.push(...yElems);
 
     const { elements: xElems, bandStart, bandWidth } = renderBandXAxis({
+      canvas,
       categories: rows.map((r) => r.label),
       palette,
       plot,
@@ -76,10 +80,14 @@ export function renderBar(cfg: BarConfig, theme: Theme): SvgElement[] {
     const bars: SvgElement[] = [];
     const labels: SvgElement[] = [];
     const baseY = yScale(0);
+    const bandW = bandWidth();
+    const widestLabel = Math.max(...rows.map((r) => estimateTextWidth(fmt(r.value), labelSize)));
+    const labelsFit = widestLabel <= bandW * 1.1;
+    const showLabels = cfg.showValueLabels === true || (cfg.showValueLabels !== false && labelsFit);
     for (let i = 0; i < rows.length; i++) {
       const row = rows[i]!;
       const bx = bandStart(i);
-      const bw = bandWidth();
+      const bw = bandW;
       const by = row.value >= 0 ? yScale(row.value) : baseY;
       const bh = Math.abs(yScale(row.value) - baseY);
       bars.push(
@@ -92,8 +100,8 @@ export function renderBar(cfg: BarConfig, theme: Theme): SvgElement[] {
           rx: 1,
         }),
       );
-      if (cfg.showValueLabels !== false) {
-        const textY = row.value >= 0 ? by - 6 : by + bh + labelSize + 2;
+      if (showLabels) {
+        const textY = row.value >= 0 ? by - labelSize * 0.4 : by + bh + labelSize + 2;
         labels.push(
           text(fmt(row.value), {
             x: bx + bw / 2,
@@ -119,23 +127,31 @@ export function renderBar(cfg: BarConfig, theme: Theme): SvgElement[] {
   } else {
     const categories = rows.map((r) => r.label);
     const maxLabelLen = Math.max(...categories.map((c) => c.length));
-    const yTickWidth = Math.min(240, 8 + Math.max(64, maxLabelLen * labelSize * 0.55));
+    const valueLabelReserve =
+      cfg.showValueLabels !== false ? Math.round(labelSize * 3.5) : Math.round(labelSize * 0.8);
+    const yTickWidth = Math.min(
+      Math.round(canvas.width * 0.3),
+      Math.round(labelSize * 0.6) + Math.max(Math.round(labelSize * 4), maxLabelLen * labelSize * 0.6),
+    );
     const horizPlot = computePlotArea(canvas, {
       hasTitle: !!cfg.title,
       hasSubtitle: !!cfg.subtitle,
       yTickWidth,
     });
+    const usableWidth = Math.max(60, horizPlot.width - valueLabelReserve);
     const n = rows.length;
     const po = barPad * 0.7;
     const step = horizPlot.height / Math.max(1, n - barPad + 2 * po);
     const bh = Math.max(2, step * (1 - barPad));
-    const niceX = niceScale(vMin, vMax, 5);
-    const xMin = niceX.min;
-    const xMax = niceX.max;
+    const xMin = Math.min(0, vMin);
+    const xMax = vMax <= 0 ? 0 : vMax;
     const xScale = (v: number) =>
-      horizPlot.x + ((v - xMin) / (xMax - xMin || 1)) * horizPlot.width;
+      horizPlot.x + ((v - xMin) / (xMax - xMin || 1)) * usableWidth;
+    const niceTicks = niceScale(xMin, xMax, 5).ticks.filter(
+      (t) => t >= xMin - 1e-9 && t <= xMax + xMax * 0.02 + 1e-9,
+    );
 
-    for (const t of niceX.ticks) {
+    for (const t of niceTicks) {
       out.push(
         svgLine(xScale(t), horizPlot.y, xScale(t), horizPlot.y + horizPlot.height, {
           stroke: palette.grid,
@@ -146,7 +162,7 @@ export function renderBar(cfg: BarConfig, theme: Theme): SvgElement[] {
       out.push(
         text(fmt(t), {
           x: xScale(t),
-          y: horizPlot.y + horizPlot.height + labelSize * 1.6,
+          y: horizPlot.y + horizPlot.height + labelSize * 1.8,
           'font-size': labelSize,
           'font-family': palette.fontBody,
           fill: palette.textMuted,
@@ -174,7 +190,7 @@ export function renderBar(cfg: BarConfig, theme: Theme): SvgElement[] {
       );
       out.push(
         text(row.label, {
-          x: horizPlot.x - 8,
+          x: horizPlot.x - 10,
           y: by + bh / 2 + labelSize * 0.35,
           'font-size': labelSize,
           'font-family': palette.fontBody,
@@ -184,8 +200,7 @@ export function renderBar(cfg: BarConfig, theme: Theme): SvgElement[] {
       );
       if (cfg.showValueLabels !== false) {
         const baseX = xScale(0);
-        const labelX =
-          row.value >= 0 ? cx + 8 : Math.max(baseX + 8, cx + 8);
+        const labelX = row.value >= 0 ? cx + labelSize * 0.4 : Math.max(baseX + labelSize * 0.4, cx + labelSize * 0.4);
         out.push(
           text(fmt(row.value), {
             x: labelX,
@@ -207,7 +222,7 @@ export function renderBar(cfg: BarConfig, theme: Theme): SvgElement[] {
         items: [{ label: valueKey, color: primaryColor }],
         palette,
         canvas,
-        y: legendY(canvas, !!cfg.title, !!cfg.subtitle),
+        y: legendY(canvas, !!cfg.title, !!cfg.subtitle, cfg.title, cfg.subtitle),
       }),
     );
   }
