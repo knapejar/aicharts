@@ -1,4 +1,6 @@
 import { classifyAspect } from './size.js';
+import { computeFrame, outerMargin } from './frame.js';
+import type { Frame } from './frame.js';
 import { estimateTextWidth, g, line, rect, text, wrapText } from './svg.js';
 import type { AspectClass, Canvas, Palette, SvgElement } from './types.js';
 
@@ -88,40 +90,46 @@ export function axisFontSize(canvas: Canvas): number {
 export function renderHeader(opts: HeaderOptions): SvgElement[] {
   const { title, subtitle, palette, canvas } = opts;
   const out: SvgElement[] = [];
-  const x = canvas.padding.left;
-  const titleSize = titleFontSize(canvas);
-  const subtitleSize = subtitleFontSize(canvas);
-  const titleLineHeight = Math.round(titleSize * 1.15);
-  const subtitleLineHeight = Math.round(subtitleSize * 1.3);
+  const frame = computeFrame(canvas, { title, subtitle });
+  const titleSize = frame.tokens.bigFont;
+  const subtitleSize = frame.tokens.smallFont;
+  const titleLineHeight = frame.tokens.titleLineHeight;
+  const subtitleLineHeight = frame.tokens.subtitleLineHeight;
   const tLines = titleLines(canvas, title);
   const sLines = subtitleLines(canvas, subtitle);
-  let y = Math.round(titleSize * 1.1);
-  for (const l of tLines) {
-    out.push(
-      text(l, {
-        x,
-        y,
-        'font-size': titleSize,
-        'font-weight': 700,
-        'font-family': palette.fontHeadline,
-        fill: palette.text,
-      }),
-    );
-    y += titleLineHeight;
+
+  if (frame.title && tLines.length > 0) {
+    let y = frame.title.y + titleSize;
+    for (const l of tLines) {
+      out.push(
+        text(l, {
+          x: frame.title.x,
+          y,
+          'font-size': titleSize,
+          'font-weight': 700,
+          'font-family': palette.fontHeadline,
+          fill: palette.text,
+        }),
+      );
+      y += titleLineHeight;
+    }
   }
-  if (tLines.length > 0 && sLines.length > 0) y += Math.round(subtitleSize * 0.4);
-  for (const l of sLines) {
-    out.push(
-      text(l, {
-        x,
-        y,
-        'font-size': subtitleSize,
-        'font-weight': 400,
-        'font-family': palette.fontBody,
-        fill: palette.textMuted,
-      }),
-    );
-    y += subtitleLineHeight;
+
+  if (frame.subtitle && sLines.length > 0) {
+    let y = frame.subtitle.y + Math.round(subtitleSize * 0.95);
+    for (const l of sLines) {
+      out.push(
+        text(l, {
+          x: frame.subtitle.x,
+          y,
+          'font-size': subtitleSize,
+          'font-weight': 400,
+          'font-family': palette.fontBody,
+          fill: palette.textMuted,
+        }),
+      );
+      y += subtitleLineHeight;
+    }
   }
   return out;
 }
@@ -129,24 +137,24 @@ export function renderHeader(opts: HeaderOptions): SvgElement[] {
 export function renderFooter(opts: FooterOptions): SvgElement[] {
   const { source, logo, palette, canvas } = opts;
   const out: SvgElement[] = [];
-  const size = smallFontSize(canvas);
-  const y = canvas.height - Math.round(size * 1.4);
-  if (source) {
+  const frame = computeFrame(canvas, { source, logo });
+  const size = frame.tokens.smallFont;
+  if (source && frame.source) {
+    const baseline = frame.source.y + Math.round(size * 0.82);
     out.push(
       text(source.startsWith('Source') ? source : `Source: ${source}`, {
-        x: canvas.padding.left,
-        y,
+        x: frame.source.x,
+        y: baseline,
         'font-size': size,
         'font-family': palette.fontBody,
         fill: palette.textMuted,
       }),
     );
   }
-  if (logo !== 'none') {
+  if (logo !== 'none' && frame.logo) {
     const iconS = Math.round(size * 1.3);
-    const totalLogoW = Math.round(iconS * 3.5);
-    const logoX = canvas.width - canvas.padding.right - totalLogoW;
-    const logoY = y - iconS * 0.75;
+    const logoX = frame.logo.x;
+    const logoY = frame.logo.y;
     out.push(renderLogo(logoX, logoY, iconS, palette));
   }
   return out;
@@ -262,16 +270,13 @@ export function reservedHeaderHeight(
   title?: string,
   subtitle?: string,
 ): number {
-  const t = titleFontSize(canvas);
-  const s = subtitleFontSize(canvas);
-  const tLH = Math.round(t * 1.15);
-  const sLH = Math.round(s * 1.3);
-  const tLines = hasTitle ? (title ? titleLines(canvas, title).length : 1) : 0;
-  const sLines = hasSubtitle ? (subtitle ? subtitleLines(canvas, subtitle).length : 1) : 0;
-  let h = 0;
-  if (tLines > 0) h += Math.round(t * 1.1) + (tLines - 1) * tLH + Math.round(s * 0.4);
-  if (sLines > 0) h += sLines * sLH;
-  return h;
+  const frame = computeFrame(canvas, {
+    title: hasTitle ? title ?? 'X' : undefined,
+    subtitle: hasSubtitle ? subtitle ?? 'X' : undefined,
+  });
+  if (frame.subtitle) return frame.subtitle.y + frame.subtitle.height;
+  if (frame.title) return frame.title.y + frame.title.height;
+  return frame.margin.top;
 }
 
 export function headerBottomY(

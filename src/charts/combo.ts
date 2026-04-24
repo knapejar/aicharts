@@ -1,9 +1,9 @@
 import { circle, g, line as svgLine, path, rect, text } from '../core/svg.js';
 import { labelFontSize, renderLegend } from '../core/layout.js';
+import { computeFrame } from '../core/frame.js';
 import {
-  computePlotArea,
   emptyPlotHint,
-  legendY,
+  estimateBandXAxisHeight,
   renderBandXAxis,
   renderYAxis,
 } from './axes.js';
@@ -46,13 +46,23 @@ export function renderCombo(cfg: ComboConfig, theme: Theme): SvgElement[] {
   const bars = Array.isArray(cfg.bars) ? cfg.bars : [cfg.bars];
   const lines = Array.isArray(cfg.lines) ? cfg.lines : [cfg.lines];
   const out: SvgElement[] = [];
-  const plot = computePlotArea(canvas, {
-    hasTitle: !!cfg.title,
-    hasSubtitle: !!cfg.subtitle,
+  const legendLabels = [...bars, ...lines];
+  const categoriesForHeight = (cfg.data ?? []).map((r) => String(r[cfg.x] ?? ''));
+  const xTickBandHeight = estimateBandXAxisHeight(
+    canvas,
+    categoriesForHeight,
+    canvas.width * 0.85,
+  );
+  const frame = computeFrame(canvas, {
+    xTickBandHeight,
     title: cfg.title,
     subtitle: cfg.subtitle,
     hasLegend: true,
+    legendLabels,
+    source: cfg.source,
+    logo: cfg.logo ?? 'default',
   });
+  const plot = frame.plot;
   if (!cfg.data || cfg.data.length === 0) {
     out.push(emptyPlotHint(plot, palette, 'No data'));
     return out;
@@ -202,14 +212,16 @@ export function renderCombo(cfg: ComboConfig, theme: Theme): SvgElement[] {
       dash: 'solid' as const,
     })),
   ];
-  out.push(
-    ...renderLegend({
-      items: legendItems,
-      palette,
-      canvas,
-      y: legendY(canvas, !!cfg.title, !!cfg.subtitle, cfg.title, cfg.subtitle),
-    }),
-  );
+  if (frame.legend) {
+    out.push(
+      ...renderLegend({
+        items: legendItems,
+        palette,
+        canvas,
+        y: frame.legend.y + frame.tokens.ascender,
+      }),
+    );
+  }
 
   return out;
 }

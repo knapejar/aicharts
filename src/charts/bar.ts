@@ -1,9 +1,9 @@
-import { estimateTextWidth, g, line as svgLine, rect, text } from '../core/svg.js';
+import { ellipsize, estimateTextWidth, g, line as svgLine, rect, text } from '../core/svg.js';
 import { labelFontSize, renderLegend } from '../core/layout.js';
+import { computeFrame } from '../core/frame.js';
 import {
-  computePlotArea,
   emptyPlotHint,
-  legendY,
+  estimateBandXAxisHeight,
   renderBandXAxis,
   renderYAxis,
 } from './axes.js';
@@ -26,17 +26,17 @@ function thickness(t: BarConfig['barThickness']): number {
 export function renderBar(cfg: BarConfig, theme: Theme): SvgElement[] {
   const { palette, canvas } = theme;
   const out: SvgElement[] = [];
-  const plot = computePlotArea(canvas, {
-    hasTitle: !!cfg.title,
-    hasSubtitle: !!cfg.subtitle,
-    title: cfg.title,
-    subtitle: cfg.subtitle,
-  });
+  const { labelKey, valueKey } = resolveFields(cfg);
   if (!cfg.data || cfg.data.length === 0) {
-    out.push(emptyPlotHint(plot, palette, 'No data'));
+    const frame = computeFrame(canvas, {
+      title: cfg.title,
+      subtitle: cfg.subtitle,
+      source: cfg.source,
+      logo: cfg.logo ?? 'default',
+    });
+    out.push(emptyPlotHint(frame.plot, palette, 'No data'));
     return out;
   }
-  const { labelKey, valueKey } = resolveFields(cfg);
   let rows = cfg.data.map((r, i) => ({
     label: String(r[labelKey] ?? i),
     value: Number(r[valueKey] ?? 0),
@@ -57,6 +57,20 @@ export function renderBar(cfg: BarConfig, theme: Theme): SvgElement[] {
   const primaryColor = palette.colors[0]!;
 
   if (orientation === 'vertical') {
+    const categoriesForHeight = rows.map((r) => r.label);
+    const xTickBandHeight = estimateBandXAxisHeight(
+      canvas,
+      categoriesForHeight,
+      canvas.width * 0.85,
+    );
+    const frame = computeFrame(canvas, {
+      title: cfg.title,
+      subtitle: cfg.subtitle,
+      source: cfg.source,
+      logo: cfg.logo ?? 'default',
+      xTickBandHeight,
+    });
+    const plot = frame.plot;
     const { elements: yElems, scale: yScale } = renderYAxis({
       canvas,
       min: vMin,
@@ -137,14 +151,19 @@ export function renderBar(cfg: BarConfig, theme: Theme): SvgElement[] {
       Math.round(canvas.width * 0.34),
       Math.ceil(widestCat + labelSize * 0.8),
     );
-    const horizPlot = computePlotArea(canvas, {
-      hasTitle: !!cfg.title,
-      hasSubtitle: !!cfg.subtitle,
+    const frame = computeFrame(canvas, {
       title: cfg.title,
       subtitle: cfg.subtitle,
-      yTickWidth,
-      rightGutter: valueLabelReserve,
+      source: cfg.source,
+      logo: cfg.logo ?? 'default',
+      yTickBandWidth: yTickWidth,
     });
+    const horizPlot = {
+      x: frame.plot.x,
+      y: frame.plot.y,
+      width: Math.max(60, frame.plot.width - valueLabelReserve),
+      height: frame.plot.height,
+    };
     const usableWidth = horizPlot.width;
     const n = rows.length;
     const po = barPad * 0.7;
@@ -178,6 +197,7 @@ export function renderBar(cfg: BarConfig, theme: Theme): SvgElement[] {
       );
     }
 
+    const labelBudget = yTickWidth - labelSize * 0.8;
     for (let i = 0; i < rows.length; i++) {
       const row = rows[i]!;
       const by = horizPlot.y + po * step + i * step;
@@ -195,8 +215,9 @@ export function renderBar(cfg: BarConfig, theme: Theme): SvgElement[] {
           rx: 1,
         }),
       );
+      const labelText = ellipsize(row.label, labelSize, labelBudget);
       out.push(
-        text(row.label, {
+        text(labelText, {
           x: horizPlot.x - 10,
           y: by + bh / 2 + labelSize * 0.35,
           'font-size': labelSize,
@@ -224,14 +245,24 @@ export function renderBar(cfg: BarConfig, theme: Theme): SvgElement[] {
   }
 
   if (cfg.legendPosition && cfg.legendPosition !== 'none' && cfg.legendPosition !== 'auto') {
-    out.push(
-      ...renderLegend({
-        items: [{ label: valueKey, color: primaryColor }],
-        palette,
-        canvas,
-        y: legendY(canvas, !!cfg.title, !!cfg.subtitle, cfg.title, cfg.subtitle),
-      }),
-    );
+    const legendFrame = computeFrame(canvas, {
+      title: cfg.title,
+      subtitle: cfg.subtitle,
+      hasLegend: true,
+      legendLabels: [valueKey],
+      source: cfg.source,
+      logo: cfg.logo ?? 'default',
+    });
+    if (legendFrame.legend) {
+      out.push(
+        ...renderLegend({
+          items: [{ label: valueKey, color: primaryColor }],
+          palette,
+          canvas,
+          y: legendFrame.legend.y + legendFrame.tokens.ascender,
+        }),
+      );
+    }
   }
 
   return out;

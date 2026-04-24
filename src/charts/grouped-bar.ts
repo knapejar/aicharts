@@ -1,9 +1,9 @@
 import { g, line as svgLine, rect, text } from '../core/svg.js';
 import { labelFontSize, renderLegend } from '../core/layout.js';
+import { computeFrame } from '../core/frame.js';
 import {
-  computePlotArea,
   emptyPlotHint,
-  legendY,
+  estimateBandXAxisHeight,
   renderBandXAxis,
   renderYAxis,
 } from './axes.js';
@@ -14,13 +14,22 @@ export function renderGroupedBar(cfg: GroupedBarConfig, theme: Theme): SvgElemen
   const { palette, canvas } = theme;
   const series = Array.isArray(cfg.y) ? cfg.y : [cfg.y];
   const hasLegend = series.length > 1;
-  const plot = computePlotArea(canvas, {
-    hasTitle: !!cfg.title,
-    hasSubtitle: !!cfg.subtitle,
+  const categoriesForHeight = (cfg.data ?? []).map((r) => String(r[cfg.x] ?? ''));
+  const xTickBandHeight = estimateBandXAxisHeight(
+    canvas,
+    categoriesForHeight,
+    canvas.width * 0.85,
+  );
+  const frame = computeFrame(canvas, {
     title: cfg.title,
     subtitle: cfg.subtitle,
     hasLegend,
+    legendLabels: hasLegend ? series : undefined,
+    source: cfg.source,
+    logo: cfg.logo ?? 'default',
+    xTickBandHeight,
   });
+  const plot = frame.plot;
   const out: SvgElement[] = [];
 
   if (!cfg.data || cfg.data.length === 0) {
@@ -106,7 +115,7 @@ export function renderGroupedBar(cfg: GroupedBarConfig, theme: Theme): SvgElemen
     }),
   );
 
-  if (hasLegend) {
+  if (hasLegend && frame.legend) {
     out.push(
       ...renderLegend({
         items: series.map((key, i) => ({
@@ -115,7 +124,7 @@ export function renderGroupedBar(cfg: GroupedBarConfig, theme: Theme): SvgElemen
         })),
         palette,
         canvas,
-        y: legendY(canvas, !!cfg.title, !!cfg.subtitle, cfg.title, cfg.subtitle),
+        y: frame.legend.y + frame.tokens.ascender,
       }),
     );
   }

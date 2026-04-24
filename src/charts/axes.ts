@@ -140,6 +140,26 @@ export interface XAxisBandOptions {
   rotate?: boolean;
 }
 
+export function estimateBandXAxisHeight(
+  canvas: Canvas,
+  categories: string[],
+  availableWidth: number,
+  paddingInner = 0.2,
+): number {
+  const size = smallFontSize(canvas);
+  if (categories.length === 0) return Math.round(size * 1.8);
+  const n = categories.length;
+  const step = availableWidth / Math.max(1, n);
+  let maxCatWidth = 0;
+  for (const cat of categories) {
+    maxCatWidth = Math.max(maxCatWidth, estimateTextWidth(cat, size));
+  }
+  const willRotate = maxCatWidth > step * (1 - paddingInner) * 1.2;
+  if (!willRotate) return Math.round(size * 1.8);
+  const rotatedHeight = Math.round(maxCatWidth * 0.7 + size * 0.8);
+  return Math.min(rotatedHeight, Math.round(canvas.height * 0.22));
+}
+
 export function renderBandXAxis(opts: XAxisBandOptions): {
   elements: SvgElement[];
   bandStart: (i: number) => number;
@@ -239,8 +259,10 @@ export function renderLinearXAxis(opts: XAxisLinearOptions): {
   const size = smallFontSize(canvas);
   const out: SvgElement[] = [];
   const labelY = plot.y + plot.height + size * 1.7;
-  for (const t of ticks) {
+  for (let i = 0; i < ticks.length; i++) {
+    const t = ticks[i]!;
     const x = scale(t);
+    const anchor = i === 0 ? 'start' : i === ticks.length - 1 ? 'end' : 'middle';
     out.push(
       text(format(t), {
         x,
@@ -248,7 +270,7 @@ export function renderLinearXAxis(opts: XAxisLinearOptions): {
         'font-size': size,
         'font-family': palette.fontBody,
         fill: palette.textMuted,
-        'text-anchor': 'middle',
+        'text-anchor': anchor,
       }),
     );
   }
@@ -292,8 +314,10 @@ export function renderDateXAxis(opts: XAxisDateOptions): {
   const size = smallFontSize(canvas);
   const labelY = plot.y + plot.height + size * 1.7;
   const out: SvgElement[] = [];
-  for (const t of ticks) {
+  for (let i = 0; i < ticks.length; i++) {
+    const t = ticks[i]!;
     const x = scale(t);
+    const anchor = i === 0 ? 'start' : i === ticks.length - 1 ? 'end' : 'middle';
     out.push(
       text(format(t), {
         x,
@@ -301,7 +325,7 @@ export function renderDateXAxis(opts: XAxisDateOptions): {
         'font-size': size,
         'font-family': palette.fontBody,
         fill: palette.textMuted,
-        'text-anchor': 'middle',
+        'text-anchor': anchor,
       }),
     );
   }

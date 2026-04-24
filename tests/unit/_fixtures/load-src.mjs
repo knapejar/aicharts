@@ -84,3 +84,9 @@ export async function loadTheme() {
   const text = await bundleEntry(entry);
   return importBundle(text);
 }
+
+export async function loadFrame() {
+  const entry = "export * from '" + repoRoot + "/src/core/frame.ts';";
+  const text = await bundleEntry(entry);
+  return importBundle(text);
+}

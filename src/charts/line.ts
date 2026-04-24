@@ -1,9 +1,8 @@
-import { circle, g, line as svgLine, path, text } from '../core/svg.js';
+import { circle, estimateTextWidth, g, line as svgLine, path, text } from '../core/svg.js';
 import { renderLegend, labelFontSize } from '../core/layout.js';
+import { computeFrame } from '../core/frame.js';
 import {
-  computePlotArea,
   emptyPlotHint,
-  legendY,
   pickXAxisKind,
   renderBandXAxis,
   renderDateXAxis,
@@ -73,13 +72,15 @@ export function renderLine(cfg: LineConfig, theme: Theme): SvgElement[] {
   const { palette, canvas } = theme;
   const series = Array.isArray(cfg.y) ? cfg.y : [cfg.y];
   const hasLegend = series.length > 1;
-  const plot = computePlotArea(canvas, {
-    hasTitle: !!cfg.title,
-    hasSubtitle: !!cfg.subtitle,
+  const frame = computeFrame(canvas, {
     title: cfg.title,
     subtitle: cfg.subtitle,
     hasLegend,
+    legendLabels: hasLegend ? series : undefined,
+    source: cfg.source,
+    logo: cfg.logo ?? 'default',
   });
+  const plot = frame.plot;
   const out: SvgElement[] = [];
 
   if (!cfg.data || cfg.data.length === 0) {
@@ -246,14 +247,20 @@ export function renderLine(cfg: LineConfig, theme: Theme): SvgElement[] {
       }
     }
 
-    if (!hasLegend && series.length === 1 && points.length > 1) {
+    const valueLabelModeForCollision = cfg.showValueLabels ?? 'none';
+    const valueLabelsOnEndpoint =
+      valueLabelModeForCollision === 'last' ||
+      valueLabelModeForCollision === 'all' ||
+      valueLabelModeForCollision === 'first-last';
+    if (!hasLegend && series.length === 1 && points.length > 1 && !valueLabelsOnEndpoint) {
       const lastPoint = points[points.length - 1]!;
       const plotRight = plot.x + plot.width;
-      const labelX = Math.min(lastPoint[0] + 8, plotRight - 80);
+      const labelW = estimateTextWidth(key, labelSize);
+      const labelX = Math.min(lastPoint[0] + labelSize * 0.35, plotRight - labelW);
       labelsGroup.push(
         text(key, {
           x: labelX,
-          y: lastPoint[1] + labelSize * 0.35,
+          y: Math.max(plot.y + labelSize, lastPoint[1] - labelSize * 0.8),
           'font-size': labelSize,
           'font-weight': 600,
           'font-family': palette.fontBody,
@@ -267,7 +274,7 @@ export function renderLine(cfg: LineConfig, theme: Theme): SvgElement[] {
   out.push(g({}, symbolsGroup));
   out.push(g({}, labelsGroup));
 
-  if (hasLegend) {
+  if (hasLegend && frame.legend) {
     out.push(
       ...renderLegend({
         items: series.map((key, i) => ({
@@ -277,7 +284,7 @@ export function renderLine(cfg: LineConfig, theme: Theme): SvgElement[] {
         })),
         palette,
         canvas,
-        y: legendY(canvas, !!cfg.title, !!cfg.subtitle, cfg.title, cfg.subtitle),
+        y: frame.legend.y + frame.tokens.ascender,
       }),
     );
   }

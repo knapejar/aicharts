@@ -1,9 +1,9 @@
 import { estimateTextWidth, g, line as svgLine, rect, text } from '../core/svg.js';
 import { labelFontSize, renderLegend } from '../core/layout.js';
+import { computeFrame } from '../core/frame.js';
 import {
-  computePlotArea,
   emptyPlotHint,
-  legendY,
+  estimateBandXAxisHeight,
   renderBandXAxis,
   renderYAxis,
 } from './axes.js';
@@ -14,17 +14,18 @@ import type { StackedBarConfig, SvgElement, Theme } from '../core/types.js';
 export function renderStackedBar(cfg: StackedBarConfig, theme: Theme): SvgElement[] {
   const { palette, canvas } = theme;
   const series = Array.isArray(cfg.y) ? cfg.y : [cfg.y];
-  const plot = computePlotArea(canvas, {
-    hasTitle: !!cfg.title,
-    hasSubtitle: !!cfg.subtitle,
-    title: cfg.title,
-    subtitle: cfg.subtitle,
-    hasLegend: true,
-  });
   const out: SvgElement[] = [];
 
   if (!cfg.data || cfg.data.length === 0) {
-    out.push(emptyPlotHint(plot, palette, 'No data'));
+    const frame = computeFrame(canvas, {
+      title: cfg.title,
+      subtitle: cfg.subtitle,
+      hasLegend: true,
+      legendLabels: series,
+      source: cfg.source,
+      logo: cfg.logo ?? 'default',
+    });
+    out.push(emptyPlotHint(frame.plot, palette, 'No data'));
     return out;
   }
 
@@ -44,7 +45,24 @@ export function renderStackedBar(cfg: StackedBarConfig, theme: Theme): SvgElemen
   const labelSize = labelFontSize(canvas);
   const orderedSeries = cfg.reverseStackOrder ? [...series].reverse() : series;
 
+  let legendFrameRef: ReturnType<typeof computeFrame> | null = null;
   if (orientation === 'vertical') {
+    const xTickBandHeight = estimateBandXAxisHeight(
+      canvas,
+      categories,
+      canvas.width * 0.85,
+    );
+    const frame = computeFrame(canvas, {
+      xTickBandHeight,
+      title: cfg.title,
+      subtitle: cfg.subtitle,
+      hasLegend: true,
+      legendLabels: series,
+      source: cfg.source,
+      logo: cfg.logo ?? 'default',
+    });
+    legendFrameRef = frame;
+    const plot = frame.plot;
     const { elements: yElems, scale: yScale } = renderYAxis({
       canvas,
       min: 0,
@@ -124,15 +142,23 @@ export function renderStackedBar(cfg: StackedBarConfig, theme: Theme): SvgElemen
       Math.round(canvas.width * 0.34),
       Math.ceil(widestCat + labelSize * 0.8),
     );
-    const horizPlot = computePlotArea(canvas, {
-      hasTitle: !!cfg.title,
-      hasSubtitle: !!cfg.subtitle,
+    const rightGutter = Math.round(labelSize * 0.8);
+    const frame = computeFrame(canvas, {
       title: cfg.title,
       subtitle: cfg.subtitle,
       hasLegend: true,
-      yTickWidth,
-      rightGutter: Math.round(labelSize * 0.8),
+      legendLabels: series,
+      source: cfg.source,
+      logo: cfg.logo ?? 'default',
+      yTickBandWidth: yTickWidth,
     });
+    legendFrameRef = frame;
+    const horizPlot = {
+      x: frame.plot.x,
+      y: frame.plot.y,
+      width: Math.max(60, frame.plot.width - rightGutter),
+      height: frame.plot.height,
+    };
     const n = categories.length;
     const po = 0.15;
     const pi = 0.3;
@@ -197,17 +223,19 @@ export function renderStackedBar(cfg: StackedBarConfig, theme: Theme): SvgElemen
     }
   }
 
-  out.push(
-    ...renderLegend({
-      items: series.map((key, i) => ({
-        label: key,
-        color: palette.colors[i % palette.colors.length]!,
-      })),
-      palette,
-      canvas,
-      y: legendY(canvas, !!cfg.title, !!cfg.subtitle, cfg.title, cfg.subtitle),
-    }),
-  );
+  if (legendFrameRef && legendFrameRef.legend) {
+    out.push(
+      ...renderLegend({
+        items: series.map((key, i) => ({
+          label: key,
+          color: palette.colors[i % palette.colors.length]!,
+        })),
+        palette,
+        canvas,
+        y: legendFrameRef.legend.y + legendFrameRef.tokens.ascender,
+      }),
+    );
+  }
 
   return out;
 }

@@ -1,5 +1,6 @@
 import { g, path, text } from '../core/svg.js';
-import { labelFontSize, reservedHeaderHeight, renderLegend } from '../core/layout.js';
+import { labelFontSize, renderLegend } from '../core/layout.js';
+import { computeFrame } from '../core/frame.js';
 import { formatPercent } from '../formatters/percent.js';
 import type { DonutConfig, PieConfig, SvgElement, Theme } from '../core/types.js';
 
@@ -108,19 +109,26 @@ export function renderPieLike(
   const { slices, total } = prepareSlices(cfg, palette.colors, threshold);
   if (slices.length === 0 || total === 0) return out;
 
-  const header = reservedHeaderHeight(canvas, !!cfg.title, !!cfg.subtitle, cfg.title, cfg.subtitle);
-  const footer = labelFontSize(canvas) * 3.2;
   const legendItems = slices.map((s) => ({
     label: `${s.label} · ${formatPercent(s.fraction, s.fraction >= 0.1 ? 0 : 1)}`,
     color: s.color,
   }));
   const showLegend = slices.length > 4 || cfg.legendPosition === 'right' || cfg.legendPosition === 'bottom';
 
-  const top = header + 32;
-  const bottom = canvas.height - footer;
-  const availH = bottom - top;
-
-  let chartArea = { x: canvas.padding.left, y: top, w: canvas.width - canvas.padding.left - canvas.padding.right, h: availH };
+  const frame = computeFrame(canvas, {
+    title: cfg.title,
+    subtitle: cfg.subtitle,
+    source: cfg.source,
+    logo: cfg.logo ?? 'default',
+    hasXAxis: false,
+    hasYAxis: false,
+  });
+  let chartArea = {
+    x: frame.inner.x,
+    y: frame.plot.y,
+    w: frame.inner.width,
+    h: frame.plot.height,
+  };
   if (showLegend) {
     const legendWidth = Math.min(350, chartArea.w * 0.35);
     chartArea.w -= legendWidth + 20;
@@ -144,7 +152,9 @@ export function renderPieLike(
   }
   out.push(g({}, arcs));
 
-  if (cfg.labelPlacement !== 'none') {
+  const explicitPlacement = cfg.labelPlacement !== undefined;
+  const autoSuppressLabels = showLegend && !explicitPlacement;
+  if (cfg.labelPlacement !== 'none' && !autoSuppressLabels) {
     const placement = cfg.labelPlacement ?? (slices.length > 6 ? 'outside' : 'inside');
     const labelSize = labelFontSize(canvas);
     for (const s of slices) {
@@ -237,13 +247,14 @@ export function renderPieLike(
         }),
       );
     }
-  } else {
+  } else if (cfg.labelPlacement === 'none') {
+    const legendSize = labelFontSize(canvas);
     out.push(
       ...renderLegend({
         items: legendItems,
         palette,
         canvas,
-        y: canvas.height - footer + labelFontSize(canvas) * 0.6,
+        y: frame.plot.y + frame.plot.height - legendSize * 0.4,
       }),
     );
   }

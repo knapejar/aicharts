@@ -205,3 +205,59 @@ Decisions taken:
 - **`footerH` minimum raised** from `font * 3.0` to `font * 3.2` so the source + logo get room.
 
 The effect visible in 210 freshly regenerated zoo images: fonts are clearly bigger, hyperscalers' longest bar now sits flush against the right gutter, warming's bottom axis labels are gone, and every line-chart plot painting has a tiny right-side cushion that balances the Y-tick column on the left.
+
+### Iteration: Frame system — strict layout contract (2026-04-24 #3)
+
+PO was still seeing drift and overlap across chart types. Root cause: every chart module was computing its own layout, `reservedHeaderHeight()` under-estimated the bottom of the subtitle (returned 124px when subtitle baseline was actually at 201px for square preset), so the legend rendered on top of the subtitle. And there was no test that asserted regions did not overlap.
+
+Complaints and fixes:
+
+1. "Subtitle and legend share the same row." Cause: `reservedHeaderHeight` omitted the final line-height + descender, so `legendY = reservedHeaderHeight + LEGEND_GAP + fontSize` landed inside the subtitle text. Fix: `reservedHeaderHeight` now delegates to `computeFrame` and returns `frame.subtitle.y + frame.subtitle.height` — the actual pixel bottom of the text.
+
+2. "Huge category names on horizontal bars get clipped at the left canvas edge." Cause: `y TickWidth` was capped at `canvas.width * 0.34`, but the end-anchored text still extended left past the margin when the label was longer than that cap. Fix: `ellipsize()` the category text to fit within `yTickBandWidth - labelSize * 0.8`.
+
+3. "Rotated X-axis labels spill into the source zone." Cause: `xTickBandHeight` was always `small * 1.8` regardless of rotation; rotated labels of length L extend `L * 0.64` downward. Fix: new `estimateBandXAxisHeight(canvas, categories, availableWidth)` helper in axes.ts that mirrors the rotation decision and returns `maxCatWidth * 0.7 + size * 0.8` when rotation is expected. Passed to `computeFrame` as `xTickBandHeight` by bar (vertical), grouped-bar, stacked-bar (vertical), combo.
+
+4. "Pie / donut sidebar legend duplicates the outside labels." Cause: when `showLegend` was true AND `labelPlacement` was not explicitly set, both the sidebar legend and the outside labels rendered — the outside labels overlapped the edge of the donut and duplicated the legend text. Fix: `autoSuppressLabels = showLegend && !explicitPlacement` — if the library is auto-deciding, let the sidebar legend carry the labels alone.
+
+5. "First and last X-axis tick labels hang over the edge of the plot." Cause: centered `text-anchor` on first/last ticks made half the label bleed left of `plot.x` / right of `plot.x + plot.width`. Fix: first tick uses `text-anchor: start`, last uses `text-anchor: end`, middle ticks stay `middle`.
+
+6. "Line chart inline series label (`share`) visually collides with value label (`74%`) at the endpoint." Cause: both were drawn near the same point. Fix: when `showValueLabels` covers the last point, suppress the inline series label (the value label already identifies the line).
+
+**New module: `src/core/frame.ts`.** Single source of truth for positioning. `computeFrame(canvas, opts)` returns a `Frame` with named bounding boxes:
+
+```
+margin: { top, right, bottom, left }  // per-preset fixed pixels, not percent
+inner:  BBox                           // canvas minus margin
+title:  BBox | null                    // flush left/right with margin, touches top
+subtitle: BBox | null                  // below title + gapTitleToSubtitle
+legend: BBox | null                    // below header stack + gapHeaderToLegend, wraps to multi-row
+plot:   BBox                           // fills remainder, has min floor (40% × 25% of canvas)
+yTickBand: BBox                        // fixed-width strip to the left of plot
+xTickBand: BBox                        // strip below plot, reserves rotated-label height
+source: BBox | null                    // touches margin bottom + left
+logo:   BBox | null                    // touches margin bottom + right
+tokens: FrameTokens                    // small/big font, descender, ascender, gaps — derived from canvas
+regions(): DebugRegion[]               // for overlay rendering
+```
+
+Key invariants (see `tests/unit/frame.test.mjs`, 15 tests):
+- Every bbox is contained in `inner` (margin-respected).
+- Stacked regions (title → subtitle → legend → plot → xTickBand → source/logo) do not overlap pairwise.
+- `plot.width >= canvas.width * 0.4`, `plot.height >= canvas.height * 0.25` — enforced floor even when title/subtitle/legend grow.
+- `title.x === margin.left`, `title.y === margin.top`, `source.x === margin.left`, `logo.x + logo.width === canvas.width - margin.right`.
+- `xTickBand.y === plot.y + plot.height + gapPlotToXTicks`, `yTickBand.x + yTickBand.width === plot.x`.
+
+**Outer margin (`outerMargin(canvas)`) is per-preset, pixel-fixed** — 24 (inline), 32 (share), 48 (square), 64 (poster). Never `%`-based — that was the mistake in the old `resolveCanvas` padding that scaled with height and produced 240px top padding on square. Fixed pixels are testable.
+
+**Debug overlay.** Set `AICHARTS_DEBUG_LAYOUT=1` (or pass `{ debugLayout: true }` to `render`) to get colored rects + labels on each region so the PO (or a subagent) can eyeball boundaries. This was how the remaining overlaps were caught during this iteration.
+
+**Migration status.** All 11 chart modules now route through `computeFrame`: line, bar (h+v), stacked-area, stacked-bar (h+v), grouped-bar, combo, pie, donut, bar-split, line-split, geo. Old `computePlotArea` in axes.ts is still exported but unused by ship code — left for safety during migration; will be removed after a quiet period.
+
+Guarantees for the next iteration:
+- New chart types MUST call `computeFrame` and use `frame.plot`. Hand-rolled layout is a regression.
+- If any region appears outside the margin box, that is a bug in `computeFrame`, not a feature request.
+- If you add a band X-axis chart, you MUST call `estimateBandXAxisHeight(canvas, categories, availableWidth)` and pass the result as `xTickBandHeight` to `computeFrame`, otherwise rotated labels will clip into the source.
+- Render the debug overlay and eyeball at least one square + one portrait before committing — rebuilds are fast (~140s for the full zoo across 3 aspects × 70 specs).
+
+The effect visible in the freshly regenerated 210 zoo images: subtitle + legend no longer share a row on stacked-area; horizontal-bar long labels ellipsize instead of clipping; rotated X-labels on grouped-bar do not touch source; donut legend no longer duplicates outside labels; line chart first X-tick is left-anchored at `plot.x` instead of centered; every chart has the same 48px outer margin on square preset.

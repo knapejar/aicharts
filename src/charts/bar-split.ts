@@ -1,5 +1,6 @@
 import { g, line as svgLine, rect, text } from '../core/svg.js';
-import { labelFontSize, reservedHeaderHeight } from '../core/layout.js';
+import { labelFontSize } from '../core/layout.js';
+import { computeFrame } from '../core/frame.js';
 import { pickNumberFormatter } from '../formatters/number.js';
 import { niceScale } from '../formatters/tick.js';
 import type { BarSplitConfig, SvgElement, Theme } from '../core/types.js';
@@ -16,19 +17,25 @@ export function renderBarSplit(cfg: BarSplitConfig, theme: Theme): SvgElement[] 
 
   const columns = cfg.columns ?? Math.min(series.length, series.length <= 3 ? series.length : 3);
   const rows = Math.ceil(series.length / columns);
-  const top = reservedHeaderHeight(canvas, !!cfg.title, !!cfg.subtitle, cfg.title, cfg.subtitle) + 32;
-  const footer = labelSize * 3.2;
-  const gridX = canvas.padding.left;
-  const gridW = canvas.width - canvas.padding.left - canvas.padding.right;
-  const gridY = top;
-  const gridH = canvas.height - top - footer;
-  const cellGapX = 24;
-  const cellGapY = 36;
+  const frame = computeFrame(canvas, {
+    title: cfg.title,
+    subtitle: cfg.subtitle,
+    source: cfg.source,
+    logo: cfg.logo ?? 'default',
+    hasXAxis: false,
+    hasYAxis: false,
+  });
+  const gridX = frame.plot.x;
+  const gridW = frame.plot.width;
+  const gridY = frame.plot.y;
+  const gridH = frame.plot.height;
+  const cellGapX = Math.round(labelSize * 0.9);
+  const cellGapY = Math.round(labelSize * 1.3);
   const cellW = (gridW - cellGapX * (columns - 1)) / columns;
   const cellH = (gridH - cellGapY * (rows - 1)) / rows;
-  const innerPadLeft = 52;
-  const innerPadBottom = 26;
-  const innerPadTop = 22;
+  const innerPadLeft = Math.round(labelSize * 2.0);
+  const innerPadBottom = Math.round(labelSize * 1.8);
+  const innerPadTop = Math.round(labelSize * 1.6);
 
   let allValues: number[] = [];
   if (cfg.sharedScale !== false) {

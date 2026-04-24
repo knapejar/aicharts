@@ -1,5 +1,6 @@
 import { g, line as svgLine, path, text } from '../core/svg.js';
-import { labelFontSize, reservedHeaderHeight } from '../core/layout.js';
+import { labelFontSize } from '../core/layout.js';
+import { computeFrame } from '../core/frame.js';
 import { niceScale } from '../formatters/tick.js';
 import { pickNumberFormatter, looksLikeYearSeries } from '../formatters/number.js';
 import type { LineSplitConfig, SvgElement, Theme } from '../core/types.js';
@@ -42,19 +43,25 @@ export function renderLineSplit(cfg: LineSplitConfig, theme: Theme): SvgElement[
   const labelSize = labelFontSize(canvas);
   const columns = cfg.columns ?? (series.length <= 2 ? series.length : series.length <= 4 ? 2 : 3);
   const rows = Math.ceil(series.length / columns);
-  const top = reservedHeaderHeight(canvas, !!cfg.title, !!cfg.subtitle, cfg.title, cfg.subtitle) + 32;
-  const footer = labelSize * 3.2;
-  const gridX = canvas.padding.left;
-  const gridW = canvas.width - canvas.padding.left - canvas.padding.right;
-  const gridY = top;
-  const gridH = canvas.height - top - footer;
-  const cellGapX = 32;
-  const cellGapY = 40;
+  const frame = computeFrame(canvas, {
+    title: cfg.title,
+    subtitle: cfg.subtitle,
+    source: cfg.source,
+    logo: cfg.logo ?? 'default',
+    hasXAxis: false,
+    hasYAxis: false,
+  });
+  const gridX = frame.plot.x;
+  const gridW = frame.plot.width;
+  const gridY = frame.plot.y;
+  const gridH = frame.plot.height;
+  const cellGapX = Math.round(labelSize * 1.1);
+  const cellGapY = Math.round(labelSize * 1.4);
   const cellW = (gridW - cellGapX * (columns - 1)) / columns;
   const cellH = (gridH - cellGapY * (rows - 1)) / rows;
-  const innerPadLeft = 56;
-  const innerPadBottom = 30;
-  const innerPadTop = 24;
+  const innerPadLeft = Math.round(labelSize * 2.2);
+  const innerPadBottom = Math.round(labelSize * 1.9);
+  const innerPadTop = Math.round(labelSize * 1.7);
 
   const xIsYear = looksLikeYearSeries(cfg.data.map((r) => Number(r[cfg.x])));
   const xRawNumbers = cfg.data.map((r) => Number(r[cfg.x]));

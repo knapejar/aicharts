@@ -3,6 +3,7 @@ import { dirname, resolve, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { g, path, rect, text } from '../core/svg.js';
 import { labelFontSize, reservedHeaderHeight } from '../core/layout.js';
+import { computeFrame } from '../core/frame.js';
 import { pickNumberFormatter } from '../formatters/number.js';
 import type { GeoConfig, SvgElement, Theme } from '../core/types.js';
 
@@ -219,16 +220,23 @@ export function renderGeo(cfg: GeoConfig, theme: Theme): SvgElement[] {
 
   const content = topo.content;
   const bbox = content.bbox;
-  const header = reservedHeaderHeight(canvas, !!cfg.title, !!cfg.subtitle, cfg.title, cfg.subtitle);
-  const footer = labelFontSize(canvas) * 3.2;
-  const top = header + 16;
-  const bottom = canvas.height - footer - 56;
-  const width = canvas.width - canvas.padding.left - canvas.padding.right;
-  const height = bottom - top;
+  const showLegend = cfg.showLegend !== false;
+  const legendReserve = showLegend ? labelFontSize(canvas) * 3.2 : 0;
+  const frame = computeFrame(canvas, {
+    title: cfg.title,
+    subtitle: cfg.subtitle,
+    source: cfg.source,
+    logo: cfg.logo ?? 'default',
+    hasXAxis: false,
+    hasYAxis: false,
+  });
+  const top = frame.plot.y;
+  const width = frame.plot.width;
+  const height = Math.max(120, frame.plot.height - legendReserve);
   const bboxW = bbox[2] - bbox[0];
   const bboxH = bbox[3] - bbox[1];
   const scaleFactor = Math.min(width / bboxW, height / bboxH);
-  const offsetX = canvas.padding.left + (width - bboxW * scaleFactor) / 2 - bbox[0] * scaleFactor;
+  const offsetX = frame.plot.x + (width - bboxW * scaleFactor) / 2 - bbox[0] * scaleFactor;
   const offsetY = top + (height - bboxH * scaleFactor) / 2 - bbox[1] * scaleFactor;
   const scale = (p: [number, number]): [number, number] => [
     p[0] * scaleFactor + offsetX,
@@ -309,8 +317,8 @@ export function renderGeo(cfg: GeoConfig, theme: Theme): SvgElement[] {
     const legendSize = labelFontSize(canvas);
     const legendW = Math.min(360, width * 0.3);
     const legendH = 12;
-    const legendX = canvas.padding.left;
-    const legendY = canvas.height - footer - 24;
+    const legendX = frame.plot.x;
+    const legendY = frame.plot.y + frame.plot.height - legendSize * 2.2;
     const steps2 = steps > 0 ? steps : 60;
     const gradient: SvgElement[] = [];
     for (let i = 0; i < steps2; i++) {

@@ -75,8 +75,11 @@ test('big font is always larger than small font', () => {
 
 // ---------- reservedHeaderHeight / headerBottomY ----------
 
-test('reservedHeaderHeight(false,false) is 0', () => {
-  assert.equal(reservedHeaderHeight(canvas(), false, false), 0);
+test('reservedHeaderHeight(false,false) equals the outer top margin so plot never touches y=0', () => {
+  const c = canvas();
+  const m = reservedHeaderHeight(c, false, false);
+  assert.ok(m > 0, 'header bottom must be > 0 (at least outer margin)');
+  assert.ok(m < c.height * 0.2, `no-header reserve should be small, got ${m}`);
 });
 
 test('reservedHeaderHeight grows when title and subtitle are added', () => {

@@ -1,9 +1,8 @@
 import { g, line as svgLine, path } from '../core/svg.js';
 import { labelFontSize, renderLegend } from '../core/layout.js';
+import { computeFrame } from '../core/frame.js';
 import {
-  computePlotArea,
   emptyPlotHint,
-  legendY,
   pickXAxisKind,
   renderDateXAxis,
   renderLinearXAxis,
@@ -78,13 +77,15 @@ export function renderStackedArea(cfg: StackedAreaConfig, theme: Theme): SvgElem
   const { palette, canvas } = theme;
   const series = cfg.y;
   const out: SvgElement[] = [];
-  const plot = computePlotArea(canvas, {
-    hasTitle: !!cfg.title,
-    hasSubtitle: !!cfg.subtitle,
+  const frame = computeFrame(canvas, {
     title: cfg.title,
     subtitle: cfg.subtitle,
     hasLegend: true,
+    legendLabels: series,
+    source: cfg.source,
+    logo: cfg.logo ?? 'default',
   });
+  const plot = frame.plot;
   if (!cfg.data || cfg.data.length === 0 || series.length === 0) {
     out.push(emptyPlotHint(plot, palette, 'No data'));
     return out;
@@ -179,17 +180,19 @@ export function renderStackedArea(cfg: StackedAreaConfig, theme: Theme): SvgElem
     }),
   );
 
-  out.push(
-    ...renderLegend({
-      items: series.map((key, i) => ({
-        label: key,
-        color: palette.colors[i % palette.colors.length]!,
-      })),
-      palette,
-      canvas,
-      y: legendY(canvas, !!cfg.title, !!cfg.subtitle, cfg.title, cfg.subtitle),
-    }),
-  );
+  if (frame.legend) {
+    out.push(
+      ...renderLegend({
+        items: series.map((key, i) => ({
+          label: key,
+          color: palette.colors[i % palette.colors.length]!,
+        })),
+        palette,
+        canvas,
+        y: frame.legend.y + frame.tokens.ascender,
+      }),
+    );
+  }
 
   void labelFontSize;
   return out;
