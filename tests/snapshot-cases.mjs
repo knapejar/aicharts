@@ -21,6 +21,8 @@ export function snapshotCases() {
   const election = fixture('election-results.json');
   const usaUnemployment = fixture('usa-unemployment.json');
   const northAmericaGdp = fixture('north-america-gdp.json');
+  const singlePoint = fixture('edge-single-point.json');
+  const extremeRange = fixture('edge-extreme-range.json');
 
   const cases = [];
 
@@ -129,12 +131,26 @@ export function snapshotCases() {
     name: 'line-single-point',
     config: {
       chart: 'line',
-      data: [{ year: 2024, value: 42 }],
+      data: singlePoint,
       x: 'year',
       y: 'value',
       title: 'Single data point',
       subtitle: 'Edge case',
       source: 'Test fixture',
+    },
+  });
+
+  cases.push({
+    name: 'line-extreme-range',
+    config: {
+      chart: 'line',
+      data: extremeRange,
+      x: 'label',
+      y: 'value',
+      title: 'Values across twelve orders of magnitude',
+      subtitle: '0.0001 to 1.2 trillion on a single linear scale',
+      source: 'Test fixture',
+      showValueLabels: 'all',
     },
   });
 
@@ -558,9 +574,6 @@ export function snapshotCases() {
       palette: 'earth',
     },
   });
-
-  void election;
-  void temperature;
 
   return cases;
 }

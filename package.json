@@ -22,6 +22,7 @@
     "build": "node scripts/build.mjs && tsc --emitDeclarationOnly",
     "dev": "node scripts/build.mjs --watch",
     "test": "node --test tests/unit/**/*.test.mjs",
+    "test:scenarios": "node tests/scenarios/birth-rate-report.mjs && node tests/scenarios/company-metrics.mjs",
     "snapshot": "node scripts/snapshot.mjs",
     "download-basemaps": "node scripts/download-basemaps.mjs",
     "lint": "prettier --check .",

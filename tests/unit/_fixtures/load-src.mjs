@@ -26,7 +26,10 @@ async function bundleEntry(entryCode, { external = [] } = {}) {
 async function importBundle(bundleText) {
   const outDir = resolve(here, '_out');
   mkdirSync(outDir, { recursive: true });
-  const file = resolve(outDir, `bundle-${process.pid}-${Date.now()}-${Math.random().toString(36).slice(2, 8)}.mjs`);
+  const file = resolve(
+    outDir,
+    `bundle-${process.pid}-${Date.now()}-${Math.random().toString(36).slice(2, 8)}.mjs`,
+  );
   writeFileSync(file, bundleText);
   try {
     return await import(pathToFileURL(file).href);
@@ -56,4 +59,28 @@ export async function loadMcpSchema() {
   });
   const mod = await importBundle(text);
   return mod.renderChartInputSchema;
+}
+
+export async function loadSvg() {
+  const entry = "export * from '" + repoRoot + "/src/core/svg.ts';";
+  const text = await bundleEntry(entry);
+  return importBundle(text);
+}
+
+export async function loadLayout() {
+  const entry = "export * from '" + repoRoot + "/src/core/layout.ts';";
+  const text = await bundleEntry(entry);
+  return importBundle(text);
+}
+
+export async function loadSize() {
+  const entry = "export * from '" + repoRoot + "/src/core/size.ts';";
+  const text = await bundleEntry(entry);
+  return importBundle(text);
+}
+
+export async function loadTheme() {
+  const entry = "export * from '" + repoRoot + "/src/core/theme.ts';";
+  const text = await bundleEntry(entry);
+  return importBundle(text);
 }

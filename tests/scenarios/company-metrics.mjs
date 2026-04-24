@@ -1,6 +1,7 @@
-import { mkdirSync, writeFileSync } from 'node:fs';
+import { mkdirSync, writeFileSync, readFileSync } from 'node:fs';
 import { resolve, dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
+import assert from 'node:assert/strict';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const root = resolve(__dirname, '..', '..');
@@ -9,10 +10,14 @@ mkdirSync(outDir, { recursive: true });
 
 const { render } = await import(resolve(root, 'dist/index.js'));
 
+const generated = [];
+
 async function save(name, config) {
   const png = await render(config);
-  writeFileSync(join(outDir, `${name}.png`), Buffer.from(png));
+  const outFile = join(outDir, `${name}.png`);
+  writeFileSync(outFile, Buffer.from(png));
   console.log(`[scenario/company] ${name}.png (${png.length} bytes)`);
+  generated.push(outFile);
 }
 
 const quarterlyRevenue = [
@@ -119,4 +124,10 @@ await save('6-user-growth-combo', {
   palette: 'clarity',
 });
 
-console.log('[scenario/company-metrics] done');
+const PNG_MAGIC = Buffer.from([0x89, 0x50, 0x4e, 0x47, 0x0d, 0x0a, 0x1a, 0x0a]);
+for (const path of generated) {
+  const bytes = readFileSync(path);
+  assert.ok(bytes.byteLength > 20_000, `${path} too small: ${bytes.byteLength}`);
+  assert.ok(PNG_MAGIC.equals(bytes.subarray(0, 8)), `${path} missing PNG magic`);
+}
+console.log(`[scenario/company-metrics] ${generated.length} scenario outputs verified`);

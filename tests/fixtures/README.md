@@ -6,7 +6,6 @@ Files:
 - `internet-usage.json` — World Bank internet usage by country (ISO3 + percentage)
 - `co2-emissions.json` — CO2 emissions 1870–2021 by fuel type
 - `revenue-regions.json` — sample revenue by region
-- `population-pyramid.json` — male / female by 5-year age band
 - `stock-prices.json` — four tickers, daily close for a year
 - `marketing-channels.json` — channel breakdown by quarter
 - `temperature-anomaly.json` — global land-ocean temperature anomaly 1880–2023
