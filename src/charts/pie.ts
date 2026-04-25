@@ -189,7 +189,16 @@ export function renderPieLike(
     h: frame.plot.height,
   };
   if (showLegend) {
-    const legendWidth = Math.min(350, chartArea.w * 0.35);
+    const legendSizeForFit = labelFontSize(canvas);
+    const widestLegend = legendItems.reduce(
+      (m, it) => Math.max(m, estimateTextWidth(it.label, legendSizeForFit)),
+      0,
+    );
+    const minLegendWidth = legendSizeForFit * 1.7 + widestLegend + 16;
+    const legendWidth = Math.min(
+      Math.max(Math.min(350, chartArea.w * 0.35), minLegendWidth),
+      chartArea.w * 0.5,
+    );
     chartArea.w -= legendWidth + 20;
   }
 

@@ -1,0 +1,108 @@
+{
+  "round": 5,
+  "seed": 1777106816483,
+  "images_reviewed": 17,
+  "clean": false,
+  "bugs": [
+    {
+      "image": "/home/jarda/clay-projects/mcp-charts/.claude/loops/loop_1777068531975_5e2f47/renders/round-5/adversarial/01-line-square-boardroom.png",
+      "chart_type": "line",
+      "aspect": "square",
+      "category": "truncation",
+      "severity": "HIGH",
+      "description": "Title truncated mid-word with ellipsis: spec ends '...across all supported presets and palettes' but render shows only '...clip outer m...' on line 4.",
+      "evidence": "Line 4 of title at y~330 ends with 'clip outer m...' — title text after that is dropped."
+    },
+    {
+      "image": "/home/jarda/clay-projects/mcp-charts/.claude/loops/loop_1777068531975_5e2f47/renders/round-5/adversarial/03-grouped-bar-poster-vibrant.png",
+      "chart_type": "grouped-bar",
+      "aspect": "poster",
+      "category": "truncation",
+      "severity": "HIGH",
+      "description": "Subtitle truncated with ellipsis: ends 'with com...' instead of full sentence configured in spec.",
+      "evidence": "Subtitle third line ends 'with com...' near the right margin."
+    },
+    {
+      "image": "/home/jarda/clay-projects/mcp-charts/.claude/loops/loop_1777068531975_5e2f47/renders/round-5/adversarial/03-grouped-bar-poster-vibrant.png",
+      "chart_type": "grouped-bar",
+      "aspect": "poster",
+      "category": "rotated-label-spill",
+      "severity": "MEDIUM",
+      "description": "Rotated value labels (e.g. '98.1', '52.6', '8.2') are drawn vertically inside narrow bars and visually collide with the bar tops; the '8.2' label sits on the bar top edge.",
+      "evidence": "Group 6 Revenue 2 bar at value 8.2 — value label rotated and overlapping bar boundary."
+    },
+    {
+      "image": "/home/jarda/clay-projects/mcp-charts/.claude/loops/loop_1777068531975_5e2f47/renders/round-5/adversarial/04-stacked-bar-poster-viridis.png",
+      "chart_type": "stacked-bar",
+      "aspect": "poster",
+      "category": "truncation",
+      "severity": "HIGH",
+      "description": "Source line truncated with ellipsis: 'OECD · IMF · World Bank composite, author calculat...' — last word cut.",
+      "evidence": "Footer source text trails with '...' near the aicharts logo."
+    },
+    {
+      "image": "/home/jarda/clay-projects/mcp-charts/.claude/loops/loop_1777068531975_5e2f47/renders/round-5/adversarial/05-stacked-area-share-vibrant.png",
+      "chart_type": "stacked-area",
+      "aspect": "share",
+      "category": "truncation",
+      "severity": "HIGH",
+      "description": "Subtitle truncated with ellipsis: ends 'commas, semicolons; an...' instead of full configured text.",
+      "evidence": "Subtitle line 4 ends with 'an...' at right margin."
+    },
+    {
+      "image": "/home/jarda/clay-projects/mcp-charts/.claude/loops/loop_1777068531975_5e2f47/renders/round-5/adversarial/08-donut-poster-mono-blue.png",
+      "chart_type": "donut",
+      "aspect": "poster",
+      "category": "truncation",
+      "severity": "HIGH",
+      "description": "Multiple truncations: subtitle ends 'with com...', source ends 'calculat...', AND every legend label is clipped to first 4-5 chars ('Tren...', 'Growt...', 'Inde...', 'Inflat...', 'Mean...'). Legend labels are unreadable.",
+      "evidence": "Right-side legend at center-right of donut: each row shows truncated label with ellipsis instead of full 'Trend 13', 'Growth 1', etc."
+    },
+    {
+      "image": "/home/jarda/clay-projects/mcp-charts/.claude/loops/loop_1777068531975_5e2f47/renders/round-5/adversarial/08-donut-poster-mono-blue.png",
+      "chart_type": "donut",
+      "aspect": "poster",
+      "category": "unreadable",
+      "severity": "HIGH",
+      "description": "Legend labels truncated to 'Tren...', 'Growt...', 'Inde...' make the chart unreadable — viewer cannot identify any slice.",
+      "evidence": "All 6 visible legend rows show ellipsis on labels that should fit ('Trend 13' is only 8 characters)."
+    },
+    {
+      "image": "/home/jarda/clay-projects/mcp-charts/.claude/loops/loop_1777068531975_5e2f47/renders/round-5/adversarial/10-line-split-square-carbon.png",
+      "chart_type": "line-split",
+      "aspect": "square",
+      "category": "truncation",
+      "severity": "HIGH",
+      "description": "Subtitle truncated with ellipsis: ends 'one very long sent...' instead of full configured text.",
+      "evidence": "Subtitle line 3 ends 'sent...' near right margin."
+    },
+    {
+      "image": "/home/jarda/clay-projects/mcp-charts/.claude/loops/loop_1777068531975_5e2f47/renders/round-5/adversarial/11-geo-share-twilight.png",
+      "chart_type": "geo",
+      "aspect": "share",
+      "category": "scale-wrong",
+      "severity": "HIGH",
+      "description": "Asia basemap rendered tiny in the middle of a large empty canvas — map occupies less than ~20% of the available plot area, leaving huge dead space all around. Most of the country shapes are unreadable thumbnails.",
+      "evidence": "Map polygons appear as a small cluster in the middle of the chart area; the visible plot is dominated by dark-blue background, not the map."
+    },
+    {
+      "image": "/home/jarda/clay-projects/mcp-charts/.claude/loops/loop_1777068531975_5e2f47/renders/round-5/adversarial/11-geo-share-twilight.png",
+      "chart_type": "geo",
+      "aspect": "share",
+      "category": "truncation",
+      "severity": "HIGH",
+      "description": "Subtitle ends 'commas, semicolons; an...' truncated; source ends 'methodology revi...' truncated.",
+      "evidence": "Subtitle final line and source line both terminate with '...' before the configured content ends."
+    },
+    {
+      "image": "/home/jarda/clay-projects/mcp-charts/.claude/loops/loop_1777068531975_5e2f47/renders/round-5/adversarial/11-geo-share-twilight.png",
+      "chart_type": "geo",
+      "aspect": "share",
+      "category": "unreadable",
+      "severity": "HIGH",
+      "description": "Choropleth is so small that data values cannot be visually associated with countries; the diverging legend reads '136 to 544' but no country is large enough to read.",
+      "evidence": "Map cluster centered around y~180 is roughly 120px wide on a ~470px-wide canvas with substantial empty area above and below."
+    }
+  ],
+  "summary": "11 high, 1 medium, 0 low"
+}

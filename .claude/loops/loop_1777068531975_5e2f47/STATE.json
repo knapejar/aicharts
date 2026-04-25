@@ -2,7 +2,7 @@
   "clean_rounds": 0,
   "target_clean_rounds": 3,
   "loop_started_at": "2026-04-25T00:30:00Z",
-  "last_iteration": 4,
+  "last_iteration": 5,
   "iterations": [
     {
       "iter": 1,
@@ -63,6 +63,24 @@
         "tests/unit/guardrails.test.mjs"
       ],
       "critic_report": "renders/round-4/critic-report.json"
+    },
+    {
+      "iter": 5,
+      "seed": 1777106816483,
+      "timestamp": "2026-04-25T10:50:00Z",
+      "bugs_found": 12,
+      "bugs_fixed": 6,
+      "files_changed": [
+        "src/charts/pie.ts",
+        "src/charts/stacked-area.ts",
+        "src/charts/line.ts",
+        "src/charts/grouped-bar.ts",
+        "src/charts/stacked-bar.ts",
+        "src/charts/bar.ts",
+        "src/core/frame.ts",
+        "src/core/layout.ts"
+      ],
+      "critic_report": "renders/round-5/critic-report.json"
     }
   ],
   "fixes_applied": [
@@ -225,6 +243,67 @@
       "description": "Vertical bar with showValueLabels=true silently suppressed all labels when bandWidth was narrower than label horizontal text width. Added rotated fallback: if bandWidth >= labelFontSize*1.05, draw 90° rotated labels above each bar tip.",
       "files": [
         "src/charts/bar.ts"
+      ]
+    },
+    {
+      "iter": 5,
+      "category": "data-missing",
+      "description": "Pie chart with single 100% slice rendered as blank canvas: arcPath produced an arc with start==end since cos(-pi/2)==cos(3pi/2)==0 and sin(-pi/2)==sin(3pi/2)==-1, so the SVG arc collapsed. arcPath now detects sweep>=2pi and emits a full-circle (or annulus) path explicitly.",
+      "files": [
+        "src/charts/pie.ts"
+      ]
+    },
+    {
+      "iter": 5,
+      "category": "scale-wrong",
+      "description": "Stacked-area normalize=true with curved interpolation could leave a visible dip below 100% at the right edge, due to opacity stacking and curveThroughPath endpoint behavior on the topmost layer's flat top. When normalize=true, paint the entire plot rect with the topmost layer's color first, then draw layers 0..N-2 normally — guarantees the 100% top edge is a flat solid cap.",
+      "files": [
+        "src/charts/stacked-area.ts"
+      ]
+    },
+    {
+      "iter": 5,
+      "category": "overlap",
+      "description": "Line chart with showValueLabels='all' on multi-series or dense single-series produced an unreadable label cloud. Added density check: when avgPointSpacing < widestLabel + smallFont*0.6, OR series>1 with >6 points, auto-degrade 'all' to 'first-last'. Also offset endpoint value label up/down based on local trend so it doesn't overprint the line stroke.",
+      "files": [
+        "src/charts/line.ts"
+      ]
+    },
+    {
+      "iter": 5,
+      "category": "overlap",
+      "description": "computeFrame's legendRowCount used raw series-key strings while renderLegend rendered smartLabel(key) (e.g. 'chrome' vs 'Chrome'), under-counting wrap rows and causing the legend's 2nd row to fall into the plot's 100% gridline. Now: every chart module passes smartLabel-applied labels to legendLabels; renderLegend also uses outerMargin (not canvas.padding) for wrap bounds so frame and renderer agree exactly.",
+      "files": [
+        "src/charts/stacked-area.ts",
+        "src/charts/line.ts",
+        "src/charts/grouped-bar.ts",
+        "src/charts/stacked-bar.ts",
+        "src/charts/bar.ts",
+        "src/core/layout.ts"
+      ]
+    },
+    {
+      "iter": 5,
+      "category": "truncation",
+      "description": "Donut sidebar legend allocated only min(350, w*0.35) px regardless of label width, producing 'Tren...', 'Growt...' on labels of 8-10 chars. Now sizes the sidebar to fit the widest legend label (capped at 50% of plot width) so the slice names render in full.",
+      "files": [
+        "src/charts/pie.ts"
+      ]
+    },
+    {
+      "iter": 5,
+      "category": "rotated-label-spill",
+      "description": "Grouped-bar rotated value labels at -90° read inside narrow bars and visually collided with bar fills. Removed the rotated fallback entirely: when bars are too narrow to fit horizontal labels even at 75% font, value labels are now suppressed instead of being drawn rotated inside the bars.",
+      "files": [
+        "src/charts/grouped-bar.ts"
+      ]
+    },
+    {
+      "iter": 5,
+      "category": "truncation",
+      "description": "Subtitle hard-wrapped at 3 lines + ellipsis even on portrait/square presets where vertical room is plentiful. Now wraps to 4 lines on square and 5 lines on portrait (3 lines on landscape, where header-vs-plot tradeoff is tighter); long subtitles render in full instead of being mid-sentence ellipsized.",
+      "files": [
+        "src/core/frame.ts"
       ]
     }
   ]

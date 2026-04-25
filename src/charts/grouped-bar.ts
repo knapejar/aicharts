@@ -160,8 +160,7 @@ export function renderGroupedBar(cfg: GroupedBarConfig, theme: Theme): SvgElemen
     const valueLabelSize = useSmaller ? Math.max(Math.round(labelSize * 0.75), 14) : labelSize;
     const widestSmaller = widestValueLabel * (valueLabelSize / labelSize);
     const fitsAfterShrink = widestSmaller <= barWidth * 1.1;
-    const rotatedFits = barWidth >= valueLabelSize * 1.05;
-    const useRotated = useSmaller && !fitsAfterShrink && rotatedFits;
+    const useRotated = false;
     if (labelsFitHorizontal || fitsAfterShrink || useRotated) {
       const labels: SvgElement[] = [];
       for (let i = 0; i < categories.length; i++) {

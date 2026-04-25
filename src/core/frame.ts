@@ -127,7 +127,9 @@ function wrapTitle(canvas: Canvas, margin: number, title?: string): string[] {
 
 function wrapSubtitle(canvas: Canvas, margin: number, subtitle?: string): string[] {
   if (!subtitle) return [];
-  return wrapText(subtitle, smallFont(canvas), maxHeaderTextWidth(canvas, margin), 3);
+  const aspect = canvasAspect(canvas);
+  const maxLines = aspect === 'portrait' ? 5 : aspect === 'square' ? 4 : 3;
+  return wrapText(subtitle, smallFont(canvas), maxHeaderTextWidth(canvas, margin), maxLines);
 }
 
 function legendRowCount(
