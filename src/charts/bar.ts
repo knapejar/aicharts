@@ -103,7 +103,10 @@ export function renderBar(cfg: BarConfig, theme: Theme): SvgElement[] {
     const bandW = bandWidth();
     const widestLabel = Math.max(...rows.map((r) => estimateTextWidth(fmt(r.value), labelSize)));
     const labelsFit = widestLabel <= bandW * 1.1;
-    const showLabels = cfg.showValueLabels !== false && labelsFit;
+    const rotatedFits = bandW >= labelSize * 1.05;
+    const wantLabels = cfg.showValueLabels !== false;
+    const showLabels = wantLabels && labelsFit;
+    const showRotatedLabels = wantLabels && !labelsFit && rotatedFits;
     for (let i = 0; i < rows.length; i++) {
       const row = rows[i]!;
       const bx = bandStart(i);
@@ -131,6 +134,21 @@ export function renderBar(cfg: BarConfig, theme: Theme): SvgElement[] {
             'font-family': palette.fontBody,
             fill: palette.text,
             'text-anchor': 'middle',
+          }),
+        );
+      } else if (showRotatedLabels) {
+        const cx = bx + bw / 2;
+        const ty = row.value >= 0 ? by - labelSize * 0.4 : by + bh + labelSize * 1.2;
+        labels.push(
+          text(fmt(row.value), {
+            x: cx,
+            y: ty,
+            'font-size': labelSize,
+            'font-weight': 600,
+            'font-family': palette.fontBody,
+            fill: palette.text,
+            'text-anchor': 'end',
+            transform: `rotate(-90 ${cx} ${ty})`,
           }),
         );
       }
@@ -262,7 +280,7 @@ export function renderBar(cfg: BarConfig, theme: Theme): SvgElement[] {
       title: cfg.title,
       subtitle: cfg.subtitle,
       hasLegend: true,
-      legendLabels: [valueKey],
+      legendLabels: [smartLabel(valueKey)],
       source: cfg.source,
       logo: cfg.logo ?? 'default',
     });

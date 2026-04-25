@@ -215,8 +215,9 @@ export function renderLegend(opts: LegendOptions): SvgElement[] {
 
   const widths = items.map((item) => swatchW + gap * 0.5 + estimateTextWidth(item.label, size));
 
-  const startX = canvas.padding.left;
-  const wrapAt = canvas.width - canvas.padding.right;
+  const m = outerMargin(canvas);
+  const startX = m;
+  const wrapAt = canvas.width - m;
 
   const out: SvgElement[] = [];
   let cursorX = startX;

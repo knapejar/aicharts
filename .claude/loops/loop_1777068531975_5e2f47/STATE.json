@@ -1,0 +1,231 @@
+{
+  "clean_rounds": 0,
+  "target_clean_rounds": 3,
+  "loop_started_at": "2026-04-25T00:30:00Z",
+  "last_iteration": 4,
+  "iterations": [
+    {
+      "iter": 1,
+      "seed": 1777070677185,
+      "timestamp": "2026-04-25T00:45:00Z",
+      "bugs_found": 7,
+      "bugs_fixed": 7,
+      "files_changed": [
+        "src/charts/axes.ts",
+        "src/charts/bar-split.ts",
+        "src/charts/grouped-bar.ts",
+        "src/charts/pie.ts",
+        "src/charts/geo.ts",
+        "tests/unit/_fixtures/load-src.mjs",
+        "tests/unit/axes-plan.test.mjs"
+      ],
+      "critic_report": "renders/round-1/critic-report.json"
+    },
+    {
+      "iter": 2,
+      "seed": 1777072292723,
+      "timestamp": "2026-04-25T01:30:00Z",
+      "bugs_found": 10,
+      "bugs_fixed": 6,
+      "files_changed": [
+        "src/charts/bar.ts",
+        "src/charts/stacked-area.ts",
+        "src/charts/pie.ts",
+        "src/charts/combo.ts",
+        "src/charts/line.ts"
+      ],
+      "critic_report": "renders/round-2/critic-report.json"
+    },
+    {
+      "iter": 3,
+      "seed": 1777073705581,
+      "timestamp": "2026-04-25T02:00:00Z",
+      "bugs_found": 3,
+      "bugs_fixed": 3,
+      "files_changed": [
+        "src/charts/axes.ts",
+        "src/charts/stacked-area.ts",
+        "src/charts/pie.ts"
+      ],
+      "critic_report": "renders/round-3/critic-report.json"
+    },
+    {
+      "iter": 4,
+      "seed": 1777106004375,
+      "timestamp": "2026-04-25T08:46:16.166Z",
+      "bugs_found": 13,
+      "bugs_fixed": 6,
+      "files_changed": [
+        "src/charts/pie.ts",
+        "src/charts/grouped-bar.ts",
+        "src/charts/bar.ts",
+        "src/charts/line.ts",
+        "tests/unit/guardrails.test.mjs"
+      ],
+      "critic_report": "renders/round-4/critic-report.json"
+    }
+  ],
+  "fixes_applied": [
+    {
+      "iter": 1,
+      "category": "data-missing",
+      "description": "renderBandXAxis silently dropped middle x-labels via stride. Replaced with planBandXAxis: rotates 40/55/70/90 degrees, ellipsizes when band-height capped. All categories now labeled.",
+      "files": [
+        "src/charts/axes.ts"
+      ]
+    },
+    {
+      "iter": 1,
+      "category": "inline-label-collision",
+      "description": "Grouped-bar value labels overlapped when bars too narrow. Auto-suppress all value labels when widest > barWidth * 1.05.",
+      "files": [
+        "src/charts/grouped-bar.ts"
+      ]
+    },
+    {
+      "iter": 1,
+      "category": "data-missing",
+      "description": "Pie with 2-4 slices and labelPlacement=inside showed only percentages, no slice names. Now show name + percent stacked when slice big enough.",
+      "files": [
+        "src/charts/pie.ts"
+      ]
+    },
+    {
+      "iter": 1,
+      "category": "asymmetric-margins",
+      "description": "Geo legend bar always anchored at frame.plot.x even when narrow map drew off-center. Now centered under actual map drawn area.",
+      "files": [
+        "src/charts/geo.ts"
+      ]
+    },
+    {
+      "iter": 1,
+      "category": "data-missing",
+      "description": "bar-split silently dropped categories via labelStride. Removed stride; uses planBandXAxis rotation + ellipsis like main axes.",
+      "files": [
+        "src/charts/bar-split.ts"
+      ]
+    },
+    {
+      "iter": 2,
+      "category": "overlap",
+      "description": "Vertical bar with many narrow categories drew value labels on top of each other when showValueLabels=true. Tightened gate: showLabels = cfg.showValueLabels !== false && labelsFit (no longer override fit check on explicit true).",
+      "files": [
+        "src/charts/bar.ts"
+      ]
+    },
+    {
+      "iter": 2,
+      "category": "data-missing",
+      "description": "Stacked-area stepped interpolation produced disjoint rectangles with white intra-band gaps because top/bottom step semantics were inverted in the bottom traversal. Replaced with per-band rectangle emission (one M-L-L-L-Z per band) so every band is always a clean rectangle.",
+      "files": [
+        "src/charts/stacked-area.ts"
+      ]
+    },
+    {
+      "iter": 2,
+      "category": "legend-label-duplicate",
+      "description": "Pie/donut with explicit labelPlacement='inside' or 'outside' AND >4 slices rendered both inside-percent labels AND a sidebar legend. Refactored showLegend logic: explicit placement now suppresses the sidebar unless legendPosition is also explicit.",
+      "files": [
+        "src/charts/pie.ts"
+      ]
+    },
+    {
+      "iter": 2,
+      "category": "clipping",
+      "description": "Donut outside-labels could extend past the canvas left/right edge for slices angled near horizontal. Added per-label width clamp + ellipsis based on the available margin gap on each side.",
+      "files": [
+        "src/charts/pie.ts"
+      ]
+    },
+    {
+      "iter": 2,
+      "category": "scale-wrong",
+      "description": "Combo chart's separateAxis threshold (0.2) was too strict, causing line series with values ~25% of bar magnitude to be plotted on the bar y-axis with no right-side ticks. Bumped to 0.5; also require both bars and lines to have data before kicking in.",
+      "files": [
+        "src/charts/combo.ts"
+      ]
+    },
+    {
+      "iter": 2,
+      "category": "rotated-label-spill",
+      "description": "Line chart with band-style x-axis (e.g., quarterly category labels) didn't pass xTickBandHeight to computeFrame, so rotated labels overflowed into the source footer. Now estimates the band height upfront and threads it to the frame.",
+      "files": [
+        "src/charts/line.ts"
+      ]
+    },
+    {
+      "iter": 3,
+      "category": "scale-wrong",
+      "description": "Line chart with negative data point hid the bottom-most negative tick label via skipBottomLabel rule, so users saw data extending below '0' but no '-0.5' label to read the scale. Restricted skip rule to lowestValue >= 0 (positive-padding only).",
+      "files": [
+        "src/charts/axes.ts"
+      ]
+    },
+    {
+      "iter": 3,
+      "category": "scale-wrong",
+      "description": "Stacked-area with normalize:true used max=yMax*1.05=1.05 which niceScale rounded to 1.5, drawing a phantom 150% tick. Now passes max=yMax (=1) when normalize=true so the axis caps cleanly at 100%.",
+      "files": [
+        "src/charts/stacked-area.ts"
+      ]
+    },
+    {
+      "iter": 3,
+      "category": "overlap",
+      "description": "Donut with labelPlacement='none' rendered a bottom-of-plot legend that wrapped to multiple rows on poster preset; second row overlapped the source line. Added useTopLegend mode that allocates frame.legend at the top of the chart so the renderLegend wrapping consumes header space, not source space.",
+      "files": [
+        "src/charts/pie.ts"
+      ]
+    },
+    {
+      "iter": 4,
+      "category": "scale-wrong",
+      "description": "Pie auto-group >6 slices guard-rail (CLAUDE.md) was not enforced — MAX_SLICES=8 allowed 8 distinct wedges. Tightened MAX_SLICES=6, threshold check uses MAX_SLICES, ensuring any input with >6 slices folds the smallest into Other.",
+      "files": [
+        "src/charts/pie.ts",
+        "tests/unit/guardrails.test.mjs"
+      ]
+    },
+    {
+      "iter": 4,
+      "category": "data-missing",
+      "description": "Donut sidebar legend silently dropped items when canvas height could not fit all rows at default 2× line-height. Now shrinks legend font down to a min of 12px (or 0.55× base) to fit all items, then uses a tighter 1.4× line-height.",
+      "files": [
+        "src/charts/pie.ts"
+      ]
+    },
+    {
+      "iter": 4,
+      "category": "data-missing",
+      "description": "GroupedBarConfig.orientation=\"horizontal\" was silently ignored — always rendered vertical. Implemented full horizontal renderer (categories on Y axis, value scale on X) with niceScale ticks, ellipsized category labels, and value-label reserve mirroring the bar.ts horizontal pattern.",
+      "files": [
+        "src/charts/grouped-bar.ts"
+      ]
+    },
+    {
+      "iter": 4,
+      "category": "overlap",
+      "description": "Grouped-bar rotated value labels could overprint bars when bars were narrower than label font. Added rotatedFits = barWidth >= valueLabelSize * 1.05 gate; rotation only kicks in when bar is at least font-tall.",
+      "files": [
+        "src/charts/grouped-bar.ts"
+      ]
+    },
+    {
+      "iter": 4,
+      "category": "xtick-edge-overflow",
+      "description": "Line inline series-name label could overflow when label width exceeded available margin on either side. Now suppresses the inline label entirely if it doesn’t fit on either side, and refuses meaningless single-character series names.",
+      "files": [
+        "src/charts/line.ts"
+      ]
+    },
+    {
+      "iter": 4,
+      "category": "data-missing",
+      "description": "Vertical bar with showValueLabels=true silently suppressed all labels when bandWidth was narrower than label horizontal text width. Added rotated fallback: if bandWidth >= labelFontSize*1.05, draw 90° rotated labels above each bar tip.",
+      "files": [
+        "src/charts/bar.ts"
+      ]
+    }
+  ]
+}

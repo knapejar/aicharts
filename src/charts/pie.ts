@@ -44,12 +44,12 @@ export function prepareSlices(
 
   let sorted = [...raw];
   sorted.sort((a, b) => b.value - a.value);
-  const MAX_SLICES = 8;
+  const MAX_SLICES = 6;
   if (threshold > 0) {
     const main: typeof sorted = [];
     let otherSum = 0;
     for (const s of sorted) {
-      if (s.value / total < threshold && sorted.length > 6) {
+      if (s.value / total < threshold && sorted.length > MAX_SLICES) {
         otherSum += s.value;
       } else {
         main.push(s);
@@ -105,7 +105,27 @@ export function arcPath(
   start: number,
   end: number,
 ): string {
-  const largeArc = end - start > Math.PI ? 1 : 0;
+  const sweep = end - start;
+  if (sweep >= Math.PI * 2 - 1e-6) {
+    if (rInner > 0) {
+      return [
+        `M ${cx - rOuter} ${cy}`,
+        `a ${rOuter} ${rOuter} 0 1 0 ${rOuter * 2} 0`,
+        `a ${rOuter} ${rOuter} 0 1 0 ${-rOuter * 2} 0`,
+        `M ${cx - rInner} ${cy}`,
+        `a ${rInner} ${rInner} 0 1 1 ${rInner * 2} 0`,
+        `a ${rInner} ${rInner} 0 1 1 ${-rInner * 2} 0`,
+        'Z',
+      ].join(' ');
+    }
+    return [
+      `M ${cx - rOuter} ${cy}`,
+      `a ${rOuter} ${rOuter} 0 1 0 ${rOuter * 2} 0`,
+      `a ${rOuter} ${rOuter} 0 1 0 ${-rOuter * 2} 0`,
+      'Z',
+    ].join(' ');
+  }
+  const largeArc = sweep > Math.PI ? 1 : 0;
   const x0 = cx + rOuter * Math.cos(start);
   const y0 = cy + rOuter * Math.sin(start);
   const x1 = cx + rOuter * Math.cos(end);
@@ -303,14 +323,25 @@ export function renderPieLike(
 
   if (showLegend) {
     const legendX = chartArea.x + chartArea.w + 20;
-    const legendSize = labelFontSize(canvas);
+    const baseLegendSize = labelFontSize(canvas);
     const legendRightEdge = frame.inner.x + frame.inner.width;
-    const legendWidthAvail = Math.max(80, legendRightEdge - (legendX + legendSize * 1.7));
     const legendBottomLimit = frame.plot.y + frame.plot.height;
-    const lineHeight = legendSize * 2.0;
+    const availableHeight = Math.max(40, legendBottomLimit - chartArea.y - baseLegendSize * 0.3);
+    const items = legendItems.length;
+    const lineHeightFactor = 1.4;
+    let legendSize = baseLegendSize;
+    const minLegendSize = Math.max(12, Math.round(baseLegendSize * 0.55));
+    while (
+      legendSize > minLegendSize &&
+      items * legendSize * lineHeightFactor > availableHeight
+    ) {
+      legendSize = Math.max(minLegendSize, legendSize - 1);
+    }
+    const lineHeight = legendSize * lineHeightFactor;
+    const legendWidthAvail = Math.max(80, legendRightEdge - (legendX + legendSize * 1.7));
     const visibleCount = Math.max(
       1,
-      Math.min(legendItems.length, Math.floor((legendBottomLimit - chartArea.y - legendSize * 0.3) / lineHeight)),
+      Math.min(items, Math.floor(availableHeight / lineHeight)),
     );
     const legendYBase =
       chartArea.y + Math.max(legendSize * 0.8, (chartArea.h - visibleCount * lineHeight) / 2 + legendSize);

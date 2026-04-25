@@ -97,7 +97,7 @@ export function renderLine(cfg: LineConfig, theme: Theme): SvgElement[] {
     title: cfg.title,
     subtitle: cfg.subtitle,
     hasLegend,
-    legendLabels: hasLegend ? series : undefined,
+    legendLabels: hasLegend ? series.map((s) => smartLabel(s)) : undefined,
     source: cfg.source,
     logo: cfg.logo ?? 'default',
     yTickBandWidth,
@@ -241,25 +241,50 @@ export function renderLine(cfg: LineConfig, theme: Theme): SvgElement[] {
       }
     }
 
-    const valueLabelMode = cfg.showValueLabels ?? 'none';
+    const valueLabelModeRaw = cfg.showValueLabels ?? 'none';
+    let valueLabelMode = valueLabelModeRaw;
+    if (valueLabelMode === 'all') {
+      const fmt0 = pickNumberFormatter(allYValues, cfg.yFormat);
+      let widest = 0;
+      for (const y of ys) {
+        if (!Number.isFinite(y)) continue;
+        widest = Math.max(widest, estimateTextWidth(fmt0(y!), labelSize));
+      }
+      const minSpacing = widest + labelSize * 0.6;
+      const avgPointSpacing = points.length > 1 ? plot.width / (points.length - 1) : plot.width;
+      const tooDense = avgPointSpacing < minSpacing;
+      const tooManyMultiSeries = series.length > 1 && points.length > 6;
+      if (tooDense || tooManyMultiSeries) {
+        valueLabelMode = 'first-last';
+      }
+    }
     if (valueLabelMode !== 'none') {
       const fmt = pickNumberFormatter(allYValues, cfg.yFormat);
       const showAll = valueLabelMode === 'all';
       const showLast = valueLabelMode === 'last';
       const showFL = valueLabelMode === 'first-last';
+      const finiteYs = ys.filter(Number.isFinite) as number[];
       for (let i = 0; i < points.length; i++) {
         const [px, py] = points[i]!;
         const isFirst = i === 0;
         const isLast = i === points.length - 1;
-        const realIdx = cfg.data.findIndex((_, j) => j >= i);
-        void realIdx;
         if (showAll || (showFL && (isFirst || isLast)) || (showLast && isLast)) {
-          const valueNum = ys.filter(Number.isFinite)[showAll ? i : showLast || isLast ? ys.filter(Number.isFinite).length - 1 : 0]!;
+          const valueNum = showAll
+            ? finiteYs[i]!
+            : isLast
+              ? finiteYs[finiteYs.length - 1]!
+              : finiteYs[0]!;
           const anchor = isLast ? 'end' : isFirst ? 'start' : 'middle';
+          let labelY = py - lineWidth - 6;
+          if (isLast && points.length >= 2) {
+            const prev = points[points.length - 2]!;
+            const trendUp = prev[1] > py;
+            labelY = trendUp ? py - lineWidth - labelSize * 0.6 : py + lineWidth + labelSize * 1.05;
+          }
           labelsGroup.push(
             text(fmt(valueNum), {
               x: px,
-              y: py - lineWidth - 4,
+              y: labelY,
               'font-size': labelSize,
               'font-weight': 600,
               'font-family': palette.fontBody,
@@ -278,27 +303,32 @@ export function renderLine(cfg: LineConfig, theme: Theme): SvgElement[] {
       valueLabelModeForCollision === 'first-last';
     if (!hasLegend && series.length === 1 && points.length > 1 && !valueLabelsOnEndpoint) {
       const lastPoint = points[points.length - 1]!;
+      const plotLeft = plot.x;
       const plotRight = plot.x + plot.width;
       const inlineLabel = smartLabel(key);
       const labelW = estimateTextWidth(inlineLabel, labelSize);
       const symbolMargin = Math.max(6, lineWidth + 4);
       const desiredX = lastPoint[0] + symbolMargin;
       const fitsRight = desiredX + labelW <= plotRight;
-      const labelX = fitsRight ? desiredX : lastPoint[0] - labelW - symbolMargin;
-      const anchor: 'start' | 'end' = fitsRight ? 'start' : 'end';
-      const labelY = Math.max(plot.y + labelSize, lastPoint[1] - labelSize * 0.8);
-      labelsGroup.push(
-        text(inlineLabel, {
-          x: fitsRight ? desiredX : lastPoint[0] - symbolMargin,
-          y: labelY,
-          'font-size': labelSize,
-          'font-weight': 600,
-          'font-family': palette.fontBody,
-          fill: color,
-          'text-anchor': anchor,
-        }),
-      );
-      void labelX;
+      const fitsLeft = lastPoint[0] - labelW - symbolMargin >= plotLeft;
+      const meaningful = inlineLabel.length >= 2 && inlineLabel.length <= 30;
+      if (meaningful && (fitsRight || fitsLeft)) {
+        const useRight = fitsRight;
+        const tx = useRight ? desiredX : lastPoint[0] - symbolMargin;
+        const anchor: 'start' | 'end' = useRight ? 'start' : 'end';
+        const labelY = Math.max(plot.y + labelSize, lastPoint[1] - labelSize * 0.8);
+        labelsGroup.push(
+          text(inlineLabel, {
+            x: tx,
+            y: labelY,
+            'font-size': labelSize,
+            'font-weight': 600,
+            'font-family': palette.fontBody,
+            fill: color,
+            'text-anchor': anchor,
+          }),
+        );
+      }
     }
   }
 

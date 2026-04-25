@@ -1,4 +1,4 @@
-import { estimateTextWidth, g, line as svgLine, rect, text } from '../core/svg.js';
+import { ellipsizeUniqueLabels, estimateTextWidth, g, line as svgLine, rect, text } from '../core/svg.js';
 import { labelFontSize, renderLegend } from '../core/layout.js';
 import { computeFrame } from '../core/frame.js';
 import {
@@ -8,6 +8,7 @@ import {
   renderBandXAxis,
   renderYAxis,
 } from './axes.js';
+import { niceScale } from '../formatters/tick.js';
 import { pickNumberFormatter } from '../formatters/number.js';
 import { smartLabel } from '../formatters/label.js';
 import type { GroupedBarConfig, SvgElement, Theme } from '../core/types.js';
@@ -16,6 +17,9 @@ export function renderGroupedBar(cfg: GroupedBarConfig, theme: Theme): SvgElemen
   const { palette, canvas } = theme;
   const series = Array.isArray(cfg.y) ? cfg.y : [cfg.y];
   const hasLegend = series.length > 1;
+  if (cfg.orientation === 'horizontal') {
+    return renderGroupedBarHorizontal(cfg, theme, series, hasLegend);
+  }
   const categoriesForHeight = (cfg.data ?? []).map((r) => String(r[cfg.x] ?? ''));
   const xTickBandHeight = estimateBandXAxisHeight(
     canvas,
@@ -36,7 +40,7 @@ export function renderGroupedBar(cfg: GroupedBarConfig, theme: Theme): SvgElemen
     title: cfg.title,
     subtitle: cfg.subtitle,
     hasLegend,
-    legendLabels: hasLegend ? series : undefined,
+    legendLabels: hasLegend ? series.map((s) => smartLabel(s)) : undefined,
     source: cfg.source,
     logo: cfg.logo ?? 'default',
     xTickBandHeight,
@@ -156,7 +160,8 @@ export function renderGroupedBar(cfg: GroupedBarConfig, theme: Theme): SvgElemen
     const valueLabelSize = useSmaller ? Math.max(Math.round(labelSize * 0.75), 14) : labelSize;
     const widestSmaller = widestValueLabel * (valueLabelSize / labelSize);
     const fitsAfterShrink = widestSmaller <= barWidth * 1.1;
-    const useRotated = useSmaller && !fitsAfterShrink;
+    const rotatedFits = barWidth >= valueLabelSize * 1.05;
+    const useRotated = useSmaller && !fitsAfterShrink && rotatedFits;
     if (labelsFitHorizontal || fitsAfterShrink || useRotated) {
       const labels: SvgElement[] = [];
       for (let i = 0; i < categories.length; i++) {
@@ -198,6 +203,195 @@ export function renderGroupedBar(cfg: GroupedBarConfig, theme: Theme): SvgElemen
       }
       out.push(g({}, labels));
     }
+  }
+
+  return out;
+}
+
+function renderGroupedBarHorizontal(
+  cfg: GroupedBarConfig,
+  theme: Theme,
+  series: string[],
+  hasLegend: boolean,
+): SvgElement[] {
+  const { palette, canvas } = theme;
+  const out: SvgElement[] = [];
+  const data = cfg.data ?? [];
+  const labelSize = labelFontSize(canvas);
+
+  if (data.length === 0) {
+    const frame = computeFrame(canvas, {
+      title: cfg.title,
+      subtitle: cfg.subtitle,
+      hasLegend,
+      legendLabels: hasLegend ? series.map((s) => smartLabel(s)) : undefined,
+      source: cfg.source,
+      logo: cfg.logo ?? 'default',
+      hasXAxis: false,
+      hasYAxis: false,
+    });
+    out.push(emptyPlotHint(frame.plot, palette, 'No data'));
+    return out;
+  }
+
+  const categories = data.map((r) => String(r[cfg.x] ?? ''));
+  const allValues: number[] = [];
+  for (const s of series) {
+    for (const r of data) {
+      const v = Number(r[s] ?? 0);
+      if (Number.isFinite(v)) allValues.push(v);
+    }
+  }
+  if (allValues.length === 0) {
+    const frame = computeFrame(canvas, {
+      title: cfg.title,
+      subtitle: cfg.subtitle,
+      hasLegend,
+      legendLabels: hasLegend ? series.map((s) => smartLabel(s)) : undefined,
+      source: cfg.source,
+      logo: cfg.logo ?? 'default',
+      hasXAxis: false,
+      hasYAxis: false,
+    });
+    out.push(emptyPlotHint(frame.plot, palette, 'No numeric values'));
+    return out;
+  }
+
+  const fmt = pickNumberFormatter(allValues, cfg.yFormat);
+  const widestValueLabel = Math.max(
+    ...allValues.map((v) => estimateTextWidth(fmt(v), labelSize)),
+  );
+  const widestCategory = Math.max(
+    ...categories.map((c) => estimateTextWidth(c, labelSize)),
+  );
+  const valueLabelReserve = cfg.showValueLabels
+    ? Math.ceil(widestValueLabel + labelSize * 0.8)
+    : Math.round(labelSize * 0.4);
+  const yTickWidth = Math.min(
+    Math.round(canvas.width * 0.34),
+    Math.ceil(widestCategory + labelSize * 0.8),
+  );
+
+  const frame = computeFrame(canvas, {
+    title: cfg.title,
+    subtitle: cfg.subtitle,
+    hasLegend,
+    legendLabels: hasLegend ? series.map((s) => smartLabel(s)) : undefined,
+    source: cfg.source,
+    logo: cfg.logo ?? 'default',
+    yTickBandWidth: yTickWidth,
+  });
+  const horizPlot = {
+    x: frame.plot.x,
+    y: frame.plot.y,
+    width: Math.max(60, frame.plot.width - valueLabelReserve),
+    height: frame.plot.height,
+  };
+
+  const vMin = Math.min(0, ...allValues);
+  const vMax = Math.max(0, ...allValues);
+  const xMin = vMin;
+  const xMax = vMax <= 0 ? 0 : vMax;
+  const xScale = (v: number) =>
+    horizPlot.x + ((v - xMin) / (xMax - xMin || 1)) * horizPlot.width;
+  const niceTicks = niceScale(xMin, xMax, 5).ticks.filter(
+    (t) => t >= xMin - 1e-9 && t <= xMax + xMax * 0.02 + 1e-9,
+  );
+
+  for (let ti = 0; ti < niceTicks.length; ti++) {
+    const t = niceTicks[ti]!;
+    const anchor = ti === 0 ? 'start' : ti === niceTicks.length - 1 ? 'end' : 'middle';
+    out.push(
+      svgLine(xScale(t), horizPlot.y, xScale(t), horizPlot.y + horizPlot.height, {
+        stroke: palette.grid,
+        'stroke-width': 1,
+        'shape-rendering': 'crispEdges',
+      }),
+    );
+    out.push(
+      text(fmt(t), {
+        x: xScale(t),
+        y: horizPlot.y + horizPlot.height + labelSize * 1.8,
+        'font-size': labelSize,
+        'font-family': palette.fontBody,
+        fill: palette.textMuted,
+        'text-anchor': anchor,
+      }),
+    );
+  }
+
+  const n = categories.length;
+  const groupStep = horizPlot.height / Math.max(1, n);
+  const groupPad = groupStep * 0.2;
+  const innerHeight = groupStep - groupPad;
+  const barH = Math.max(2, innerHeight / series.length);
+  const labelBudget = yTickWidth - labelSize * 0.8;
+  const ellipsizedCats = ellipsizeUniqueLabels(categories, labelSize, labelBudget);
+
+  const bars: SvgElement[] = [];
+  const labels: SvgElement[] = [];
+  for (let i = 0; i < n; i++) {
+    const groupY = horizPlot.y + i * groupStep + groupPad / 2;
+    out.push(
+      text(ellipsizedCats[i]!, {
+        x: horizPlot.x - 10,
+        y: groupY + innerHeight / 2 + labelSize * 0.35,
+        'font-size': labelSize,
+        'font-family': palette.fontBody,
+        fill: palette.text,
+        'text-anchor': 'end',
+      }),
+    );
+    for (let s = 0; s < series.length; s++) {
+      const key = series[s]!;
+      const v = Number(data[i]![key] ?? 0);
+      if (!Number.isFinite(v)) continue;
+      const cxStart = xScale(0);
+      const cx = xScale(v);
+      const bx = Math.min(cxStart, cx);
+      const bw = Math.abs(cx - cxStart);
+      const by = groupY + s * barH;
+      bars.push(
+        rect({
+          x: bx,
+          y: by,
+          width: Math.max(1, bw),
+          height: barH * 0.92,
+          fill: palette.colors[s % palette.colors.length]!,
+          rx: 1,
+        }),
+      );
+      if (cfg.showValueLabels) {
+        const labelX = v >= 0 ? cx + labelSize * 0.4 : cx - labelSize * 0.4;
+        labels.push(
+          text(fmt(v), {
+            x: labelX,
+            y: by + barH * 0.5 + labelSize * 0.35,
+            'font-size': labelSize,
+            'font-weight': 600,
+            'font-family': palette.fontBody,
+            fill: palette.text,
+            'text-anchor': v >= 0 ? 'start' : 'end',
+          }),
+        );
+      }
+    }
+  }
+  out.push(g({}, bars));
+  out.push(g({}, labels));
+
+  if (hasLegend && frame.legend) {
+    out.push(
+      ...renderLegend({
+        items: series.map((key, i) => ({
+          label: smartLabel(key),
+          color: palette.colors[i % palette.colors.length]!,
+        })),
+        palette,
+        canvas,
+        y: frame.legend.y + frame.tokens.ascender,
+      }),
+    );
   }
 
   return out;

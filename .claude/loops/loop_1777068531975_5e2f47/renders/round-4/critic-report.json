@@ -1,0 +1,180 @@
+{
+  "round": 4,
+  "seed": 1777106004375,
+  "images_reviewed": 17,
+  "clean": false,
+  "bugs": [
+    {
+      "image": "adversarial/02-bar-square-carbon.png",
+      "chart_type": "bar",
+      "aspect": "square",
+      "category": "data-missing",
+      "severity": "high",
+      "description": "Spec sets showValueLabels: true but no per-bar value labels are rendered above the 22 vertical bars.",
+      "evidence": "Bars span ~y=180..760; expected numeric labels (0.48, 0.06, 0.23, ...) above each bar tip — none visible. Only y-axis ticks (0.5, 1, 1.5) present."
+    },
+    {
+      "image": "adversarial/02-bar-square-carbon.png",
+      "chart_type": "bar",
+      "aspect": "square",
+      "category": "scale-wrong",
+      "severity": "medium",
+      "description": "Y-axis maxes at 1.5 while data max is 1.03; ~30% of vertical plot space is empty above tallest bar.",
+      "evidence": "Top tick at y~190 reads 1.5; tallest bar (Item 6 at 1.03) tops out near y~330, leaving ~140px blank above it."
+    },
+    {
+      "image": "adversarial/03-grouped-bar-square-earth.png",
+      "chart_type": "grouped-bar",
+      "aspect": "square",
+      "category": "data-missing",
+      "severity": "high",
+      "description": "Spec orientation is 'horizontal' but render is vertical (bars rise from x-axis).",
+      "evidence": "Group 1..Group 14 sit on x-axis at the bottom; bars grow upward to ~y=200. Horizontal layout would put group labels on left y-axis."
+    },
+    {
+      "image": "adversarial/03-grouped-bar-square-earth.png",
+      "chart_type": "grouped-bar",
+      "aspect": "square",
+      "category": "overlap",
+      "severity": "high",
+      "description": "Rotated value labels (82.2, 14.5, 80.6, ...) overprint the bar tops and adjacent bars.",
+      "evidence": "At Group 1 the '82.2' label sits across the orange bar around (x~80-105, y~265-290) instead of above the bar tip."
+    },
+    {
+      "image": "adversarial/03-grouped-bar-square-earth.png",
+      "chart_type": "grouped-bar",
+      "aspect": "square",
+      "category": "rotated-label-spill",
+      "severity": "medium",
+      "description": "Rotated x-tick labels 'Group 14' extend down close to source line.",
+      "evidence": "x-tick band ends at y~430, source 'BLS' at y~470. Gap is < 1.5x font height."
+    },
+    {
+      "image": "adversarial/04-stacked-bar-share-mono-blue.png",
+      "chart_type": "stacked-bar",
+      "aspect": "share",
+      "category": "legend-touches-plot",
+      "severity": "medium",
+      "description": "Legend row sits at the very top of the canvas (~y=40) flush against canvas edge; no margin above.",
+      "evidence": "Bucket 1..5 swatches at y~40; canvas top at y=0. Standard share preset margin is 32px — visually less than that here."
+    },
+    {
+      "image": "adversarial/07-pie-square-mono-blue.png",
+      "chart_type": "pie",
+      "aspect": "square",
+      "category": "data-missing",
+      "severity": "high",
+      "description": "Five slices have no name labels (slices labeled only '5.7%', '5.7%', '5.3%' and three blank wedges at top); their category names from spec are absent.",
+      "evidence": "Top wedges show only percentages or nothing; spec entries 'Very descriptive sector label 1/2/4', 'Total 7', 'Slice 3' have no visible label inside or outside the slice."
+    },
+    {
+      "image": "adversarial/07-pie-square-mono-blue.png",
+      "chart_type": "pie",
+      "aspect": "square",
+      "category": "scale-wrong",
+      "severity": "high",
+      "description": "Guard-rail violation: spec has 8 slices; CLAUDE.md states pie >6 slices auto-groups 'Other'. No grouping occurred.",
+      "evidence": "8 distinct wedges visible (counted clockwise from 12 o'clock: dark, top-tiny, light-tiny, lighter-tiny, mid-light, mid, Peak 5, Slice 6)."
+    },
+    {
+      "image": "adversarial/08-donut-share-viridis.png",
+      "chart_type": "donut",
+      "aspect": "share",
+      "category": "data-missing",
+      "severity": "high",
+      "description": "Sidebar legend lists only 3 of 7 categories (Peak 4, Share 5, Output 3); Capital 1, Adoption 2, Capital 6, Demand 7 absent though their slices are clearly drawn in the donut.",
+      "evidence": "Right-side legend at x~1100 has exactly 3 rows; donut at x~620 visibly contains 7 distinct color bands."
+    },
+    {
+      "image": "adversarial/08-donut-share-viridis.png",
+      "chart_type": "donut",
+      "aspect": "share",
+      "category": "truncation",
+      "severity": "medium",
+      "description": "Title truncated mid-clause 'collide with legends,...' and subtitle truncated 'an...'.",
+      "evidence": "Title 3rd line ends with comma + ellipsis; subtitle 4th line ends with 'an...'. Ellipsis is present so this is bordered — flagging because 3+ lines of header is itself a layout failure on share aspect."
+    },
+    {
+      "image": "adversarial/08-donut-share-viridis.png",
+      "chart_type": "donut",
+      "aspect": "share",
+      "category": "asymmetric-margins",
+      "severity": "medium",
+      "description": "Donut is tiny (~radius 100px) on a 1920x1080 canvas while legend column wastes most right side. Plot area off-balance.",
+      "evidence": "Donut center near (640, 740); legend ends near x~1500; plot painting occupies ~10% of canvas vertical real estate."
+    },
+    {
+      "image": "adversarial/12-zero-range-share-clarity.png",
+      "chart_type": "line",
+      "aspect": "share",
+      "category": "xtick-edge-overflow",
+      "severity": "medium",
+      "description": "Series name label 'v' rendered to the right of the last data point and visibly clips past the plot/canvas right edge.",
+      "evidence": "Letter 'v' at approx x~1880 of 1920px canvas, right of the last symbol at 2024; baseline above plot top, hovering free."
+    },
+    {
+      "image": "adversarial/12-zero-range-share-clarity.png",
+      "chart_type": "line",
+      "aspect": "share",
+      "category": "scale-wrong",
+      "severity": "medium",
+      "description": "Y-axis spans 0..50 for a constant value of 42; ticks 10/20/30/40/50 imply a range that doesn't reflect the constant. A symmetric pad-around-value scale would be clearer.",
+      "evidence": "Line drawn at y~330 (the '42' tick row); axis baseline at 0 leaves bottom 70% of plot empty. Acceptable but suboptimal."
+    },
+    {
+      "image": "adversarial/01-line-share-editorial.png",
+      "chart_type": "line",
+      "aspect": "share",
+      "category": "truncation",
+      "severity": "medium",
+      "description": "Subtitle truncated mid-word 'an…' on line 4. Ellipsis present but the cut point ('an…') is mid-conjunction, not a clean break.",
+      "evidence": "Line 4 reads 'and caveats in one very long sentence with commas, semicolons; an…' — the last word 'and' clipped to 'an'."
+    },
+    {
+      "image": "adversarial/05-stacked-area-square-editorial.png",
+      "chart_type": "stacked-area",
+      "aspect": "square",
+      "category": "truncation",
+      "severity": "medium",
+      "description": "Title cut to 'clip outer m…' with ellipsis at line 3; source line cut to 'author ca…'. Two simultaneous truncations on one chart.",
+      "evidence": "Header line 3 ends 'clip outer m…' near x~1700; source bottom-left ends 'author ca…' near x~1450."
+    },
+    {
+      "image": "adversarial/06-combo-poster-mono-blue.png",
+      "chart_type": "combo",
+      "aspect": "poster",
+      "category": "subjective color choice",
+      "severity": "low",
+      "description": "Bars (dark navy) and line (mid blue) sit very close in hue/luminance under mono-blue palette; line is hard to read against the bar field.",
+      "evidence": "Bar fill RGB ~ (35,55,110); line stroke ~(40,90,180); contrast ratio between them ~1.3:1."
+    },
+    {
+      "image": "adversarial/11-geo-poster-carbon.png",
+      "chart_type": "geo",
+      "aspect": "poster",
+      "category": "asymmetric-margins",
+      "severity": "medium",
+      "description": "Map painted in upper-half of poster canvas with massive blank space below the legend; subtitle hugs top-left while plot is centered.",
+      "evidence": "Map bounding box ~ y=160..700 of 2000px tall canvas; legend bar at y~770; below y=900 is empty until source at y~1900."
+    },
+    {
+      "image": "sampled/examples_charts_14-europe-renewables.png",
+      "chart_type": "geo",
+      "aspect": "share",
+      "category": "asymmetric-margins",
+      "severity": "low",
+      "description": "Europe map is offset rightward; left third of canvas blank below subtitle.",
+      "evidence": "Map left edge near x~600; canvas left margin x=80; usable left whitespace ~520px wide."
+    },
+    {
+      "image": "sampled/examples_charts-square_22-bitcoin-halving.png",
+      "chart_type": "line",
+      "aspect": "square",
+      "category": "scale-wrong",
+      "severity": "low",
+      "description": "Y-axis tops at $150k while data max is $93.4k — top ~38% of plot empty.",
+      "evidence": "Top tick '$150k' at y~280; highest data point at y~750 of ~1700px tall plot."
+    }
+  ],
+  "summary": "5 high, 8 medium, 3 low. Worst offenders: pie auto-grouping guard-rail violated (07), donut sidebar legend dropped 4 of 7 categories (08), grouped-bar ignored horizontal orientation and overprinted value labels (03), bar chart silently dropped value labels despite spec (02). Header truncation across long-title specs (02, 05, 08) is consistently mid-word with ellipsis but still ugly. Combo chart palette gives near-zero bar/line contrast on mono-blue."
+}

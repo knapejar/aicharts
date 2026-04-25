@@ -1,0 +1,778 @@
+[
+  {
+    "_slug": "01-line-share-editorial",
+    "chart": "line",
+    "title": "Short title",
+    "subtitle": "An extraordinarily verbose subtitle that describes the data provenance, methodology, statistical qualifiers, temporal coverage, and caveats in one very long sentence with commas, semicolons; and even an em-dash — to stress-test header wrapping behavior in every aspect.",
+    "source": "OECD · IMF · World Bank composite, author calculations",
+    "palette": "editorial",
+    "size": "share",
+    "x": "year",
+    "y": "value",
+    "interpolation": "linear",
+    "showSymbols": "all",
+    "showValueLabels": "all",
+    "areaFill": false,
+    "data": [
+      {
+        "year": 1998,
+        "value": 0.0001
+      },
+      {
+        "year": 1999,
+        "value": -0.0004
+      },
+      {
+        "year": 2000,
+        "value": 0.0011
+      }
+    ]
+  },
+  {
+    "_slug": "02-bar-square-carbon",
+    "chart": "bar",
+    "title": "A deliberately extremely long chart title engineered to break header wrapping, clip outer margins, collide with legends, or otherwise embarrass layout computations across all supported presets and palettes",
+    "subtitle": "An extraordinarily verbose subtitle that describes the data provenance, methodology, statistical qualifiers, temporal coverage, and caveats in one very long sentence with commas, semicolons; and even an em-dash — to stress-test header wrapping behavior in every aspect.",
+    "source": "BLS",
+    "palette": "carbon",
+    "size": "square",
+    "label": "label",
+    "value": "value",
+    "orientation": "vertical",
+    "sort": "none",
+    "showValueLabels": true,
+    "data": [
+      {
+        "label": "Item 1",
+        "value": 0.48
+      },
+      {
+        "label": "Average 2",
+        "value": 0.06
+      },
+      {
+        "label": "Output 3",
+        "value": 0.23
+      },
+      {
+        "label": "Item 4",
+        "value": 0.22
+      },
+      {
+        "label": "Item 5",
+        "value": 0.26
+      },
+      {
+        "label": "Very long category label number 6 with many words",
+        "value": 1.03
+      },
+      {
+        "label": "Very long category label number 7 with many words",
+        "value": 0.57
+      },
+      {
+        "label": "Very long category label number 8 with many words",
+        "value": 0.57
+      },
+      {
+        "label": "Volume 9",
+        "value": 0.07
+      },
+      {
+        "label": "Very long category label number 10 with many words",
+        "value": 0.84
+      },
+      {
+        "label": "Average 11",
+        "value": 0.33
+      },
+      {
+        "label": "Item 12",
+        "value": 0.89
+      },
+      {
+        "label": "café 13",
+        "value": 0.22
+      },
+      {
+        "label": "Very long category label number 14 with many words",
+        "value": 0.18
+      },
+      {
+        "label": "Item 15",
+        "value": 0.84
+      },
+      {
+        "label": "Very long category label number 16 with many words",
+        "value": 0.18
+      },
+      {
+        "label": "Very long category label number 17 with many words",
+        "value": 0.56
+      },
+      {
+        "label": "São Paulo 18",
+        "value": 0.75
+      },
+      {
+        "label": "naïve 19",
+        "value": 0.85
+      },
+      {
+        "label": "Item 20",
+        "value": 0.55
+      },
+      {
+        "label": "Very long category label number 21 with many words",
+        "value": 0.15
+      },
+      {
+        "label": "Very long category label number 22 with many words",
+        "value": 0.74
+      }
+    ]
+  },
+  {
+    "_slug": "03-grouped-bar-square-earth",
+    "chart": "grouped-bar",
+    "title": "Title with & special characters — and dashes",
+    "subtitle": "Units in billions (USD); adjusted for inflation using CPI-U; seasonally adjusted; smoothed with 4-quarter trailing average.",
+    "source": "BLS",
+    "palette": "earth",
+    "size": "square",
+    "x": "label",
+    "y": [
+      "Growth 1",
+      "Total 2"
+    ],
+    "orientation": "horizontal",
+    "showValueLabels": true,
+    "data": [
+      {
+        "label": "Group 1",
+        "Growth 1": 82.2,
+        "Total 2": 14.5
+      },
+      {
+        "label": "Group 2",
+        "Growth 1": 80.6,
+        "Total 2": 59.1
+      },
+      {
+        "label": "Group 3",
+        "Growth 1": 2.2,
+        "Total 2": 65.2
+      },
+      {
+        "label": "Group 4",
+        "Growth 1": 79.6,
+        "Total 2": 81.7
+      },
+      {
+        "label": "Group 5",
+        "Growth 1": 93.1,
+        "Total 2": 42.2
+      },
+      {
+        "label": "Group 6",
+        "Growth 1": 56.8,
+        "Total 2": 25.9
+      },
+      {
+        "label": "Group 7",
+        "Growth 1": 32.5,
+        "Total 2": 33.9
+      },
+      {
+        "label": "Group 8",
+        "Growth 1": 28.3,
+        "Total 2": 80.9
+      },
+      {
+        "label": "Group 9",
+        "Growth 1": 13.4,
+        "Total 2": 50.9
+      },
+      {
+        "label": "Group 10",
+        "Growth 1": 18,
+        "Total 2": 39.9
+      },
+      {
+        "label": "Group 11",
+        "Growth 1": 24.2,
+        "Total 2": 26.2
+      },
+      {
+        "label": "Group 12",
+        "Growth 1": 98,
+        "Total 2": 69.6
+      },
+      {
+        "label": "Group 13",
+        "Growth 1": 49.5,
+        "Total 2": 79.6
+      },
+      {
+        "label": "Group 14",
+        "Growth 1": 93.9,
+        "Total 2": 22.1
+      }
+    ]
+  },
+  {
+    "_slug": "04-stacked-bar-share-mono-blue",
+    "chart": "stacked-bar",
+    "palette": "mono-blue",
+    "size": "share",
+    "x": "x",
+    "y": [
+      "Bucket 1",
+      "Bucket 2",
+      "Bucket 3",
+      "Bucket 4",
+      "Bucket 5"
+    ],
+    "orientation": "vertical",
+    "normalize": false,
+    "showTotals": true,
+    "data": [
+      {
+        "x": "Adoption 1",
+        "Bucket 1": 30.2,
+        "Bucket 2": 31.5,
+        "Bucket 3": 35.5,
+        "Bucket 4": 2.9,
+        "Bucket 5": 10.8
+      }
+    ]
+  },
+  {
+    "_slug": "05-stacked-area-square-editorial",
+    "chart": "stacked-area",
+    "title": "A deliberately extremely long chart title engineered to break header wrapping, clip outer margins, collide with legends, or otherwise embarrass layout computations across all supported presets and palettes",
+    "subtitle": "Subtitle, brief.",
+    "source": "OECD · IMF · World Bank composite, author calculations",
+    "palette": "editorial",
+    "size": "square",
+    "x": "year",
+    "y": [
+      "Slice 1",
+      "Slice 2",
+      "Slice 3"
+    ],
+    "normalize": false,
+    "interpolation": "stepped",
+    "data": [
+      {
+        "year": 2000,
+        "Slice 1": 1.43,
+        "Slice 2": 28.25,
+        "Slice 3": 22.94
+      },
+      {
+        "year": 2001,
+        "Slice 1": 30.24,
+        "Slice 2": 14.31,
+        "Slice 3": 25.56
+      },
+      {
+        "year": 2002,
+        "Slice 1": 22.22,
+        "Slice 2": 8.4,
+        "Slice 3": 6.26
+      },
+      {
+        "year": 2003,
+        "Slice 1": 1.51,
+        "Slice 2": 8.18,
+        "Slice 3": 29.51
+      },
+      {
+        "year": 2004,
+        "Slice 1": 8.3,
+        "Slice 2": 1.65,
+        "Slice 3": 22.94
+      },
+      {
+        "year": 2005,
+        "Slice 1": 24.32,
+        "Slice 2": 26.5,
+        "Slice 3": 10.1
+      },
+      {
+        "year": 2006,
+        "Slice 1": 1.3,
+        "Slice 2": 28.14,
+        "Slice 3": 8.21
+      },
+      {
+        "year": 2007,
+        "Slice 1": 8.28,
+        "Slice 2": 25.46,
+        "Slice 3": 2.48
+      },
+      {
+        "year": 2008,
+        "Slice 1": 28.22,
+        "Slice 2": 17.88,
+        "Slice 3": 27.5
+      },
+      {
+        "year": 2009,
+        "Slice 1": 12.6,
+        "Slice 2": 22.91,
+        "Slice 3": 18.75
+      },
+      {
+        "year": 2010,
+        "Slice 1": 24.33,
+        "Slice 2": 4.66,
+        "Slice 3": 19.36
+      },
+      {
+        "year": 2011,
+        "Slice 1": 7.6,
+        "Slice 2": 28.64,
+        "Slice 3": 16.97
+      },
+      {
+        "year": 2012,
+        "Slice 1": 11.71,
+        "Slice 2": 10.08,
+        "Slice 3": 13.17
+      },
+      {
+        "year": 2013,
+        "Slice 1": 28.09,
+        "Slice 2": 9.02,
+        "Slice 3": 3.94
+      },
+      {
+        "year": 2014,
+        "Slice 1": 13.53,
+        "Slice 2": 3.25,
+        "Slice 3": 2.62
+      },
+      {
+        "year": 2015,
+        "Slice 1": 18.72,
+        "Slice 2": 18.91,
+        "Slice 3": 5.14
+      },
+      {
+        "year": 2016,
+        "Slice 1": 4.34,
+        "Slice 2": 20.65,
+        "Slice 3": 1.31
+      },
+      {
+        "year": 2017,
+        "Slice 1": 1.95,
+        "Slice 2": 18.02,
+        "Slice 3": 24.4
+      },
+      {
+        "year": 2018,
+        "Slice 1": 21.03,
+        "Slice 2": 4.06,
+        "Slice 3": 4.36
+      },
+      {
+        "year": 2019,
+        "Slice 1": 26.59,
+        "Slice 2": 17.26,
+        "Slice 3": 6.43
+      },
+      {
+        "year": 2020,
+        "Slice 1": 7.92,
+        "Slice 2": 19.5,
+        "Slice 3": 29.33
+      },
+      {
+        "year": 2021,
+        "Slice 1": 4.73,
+        "Slice 2": 9.4,
+        "Slice 3": 20.34
+      },
+      {
+        "year": 2022,
+        "Slice 1": 27.09,
+        "Slice 2": 30.24,
+        "Slice 3": 22.19
+      },
+      {
+        "year": 2023,
+        "Slice 1": 30.38,
+        "Slice 2": 21.04,
+        "Slice 3": 10.52
+      },
+      {
+        "year": 2024,
+        "Slice 1": 12.23,
+        "Slice 2": 23.62,
+        "Slice 3": 13.16
+      }
+    ]
+  },
+  {
+    "_slug": "06-combo-poster-mono-blue",
+    "chart": "combo",
+    "title": "Short title",
+    "subtitle": "Subtitle, brief.",
+    "source": "Bureau of Labor Statistics, quarterly release, methodology revised 2024-Q3, series DN-004719",
+    "palette": "mono-blue",
+    "size": "poster",
+    "x": "year",
+    "bars": "revenue",
+    "lines": "margin",
+    "interpolation": "linear",
+    "data": [
+      {
+        "year": 2010,
+        "revenue": 61.9,
+        "margin": 21.09
+      },
+      {
+        "year": 2011,
+        "revenue": 50.3,
+        "margin": 8.63
+      },
+      {
+        "year": 2012,
+        "revenue": 80.1,
+        "margin": 20.11
+      },
+      {
+        "year": 2013,
+        "revenue": 63,
+        "margin": 23.3
+      },
+      {
+        "year": 2014,
+        "revenue": 14.3,
+        "margin": 12.96
+      },
+      {
+        "year": 2015,
+        "revenue": 45.4,
+        "margin": 21.72
+      },
+      {
+        "year": 2016,
+        "revenue": 78.6,
+        "margin": 7.67
+      },
+      {
+        "year": 2017,
+        "revenue": 86.2,
+        "margin": 13.39
+      }
+    ]
+  },
+  {
+    "_slug": "07-pie-square-mono-blue",
+    "chart": "pie",
+    "subtitle": "Subtitle, brief.",
+    "palette": "mono-blue",
+    "size": "square",
+    "label": "label",
+    "value": "value",
+    "labelPlacement": "inside",
+    "data": [
+      {
+        "label": "Very descriptive sector label 1",
+        "value": 17.8
+      },
+      {
+        "label": "Very descriptive sector label 2",
+        "value": 6.9
+      },
+      {
+        "label": "Slice 3",
+        "value": 6.4
+      },
+      {
+        "label": "Very descriptive sector label 4",
+        "value": 6.8
+      },
+      {
+        "label": "Peak 5",
+        "value": 20.2
+      },
+      {
+        "label": "Slice 6",
+        "value": 25.8
+      },
+      {
+        "label": "Total 7",
+        "value": 3.2
+      },
+      {
+        "label": "Slice 8",
+        "value": 33
+      }
+    ]
+  },
+  {
+    "_slug": "08-donut-share-viridis",
+    "chart": "donut",
+    "title": "A deliberately extremely long chart title engineered to break header wrapping, clip outer margins, collide with legends, or otherwise embarrass layout computations across all supported presets and palettes",
+    "subtitle": "An extraordinarily verbose subtitle that describes the data provenance, methodology, statistical qualifiers, temporal coverage, and caveats in one very long sentence with commas, semicolons; and even an em-dash — to stress-test header wrapping behavior in every aspect.",
+    "source": "BLS",
+    "palette": "viridis",
+    "size": "share",
+    "label": "label",
+    "value": "value",
+    "labelPlacement": "none",
+    "innerRadius": "thin",
+    "centerValue": "sum",
+    "centerLabel": "total",
+    "data": [
+      {
+        "label": "Capital 1",
+        "value": 55.4
+      },
+      {
+        "label": "Adoption 2",
+        "value": 2.2
+      },
+      {
+        "label": "Output 3",
+        "value": 55.7
+      },
+      {
+        "label": "Peak 4",
+        "value": 69.6
+      },
+      {
+        "label": "Share 5",
+        "value": 56.8
+      },
+      {
+        "label": "Capital 6",
+        "value": 28.8
+      },
+      {
+        "label": "Demand 7",
+        "value": 41.6
+      }
+    ]
+  },
+  {
+    "_slug": "09-bar-split-poster-clarity",
+    "chart": "bar-split",
+    "subtitle": "Units in billions (USD); adjusted for inflation using CPI-U; seasonally adjusted; smoothed with 4-quarter trailing average.",
+    "palette": "clarity",
+    "size": "poster",
+    "x": "year",
+    "y": [
+      "Panel 1",
+      "Panel 2",
+      "Panel 3"
+    ],
+    "columns": 2,
+    "sharedScale": false,
+    "data": [
+      {
+        "year": 2015,
+        "Panel 1": 41.4,
+        "Panel 2": 24.6,
+        "Panel 3": 18.9
+      },
+      {
+        "year": 2016,
+        "Panel 1": 19.5,
+        "Panel 2": 32.8,
+        "Panel 3": 28.6
+      },
+      {
+        "year": 2017,
+        "Panel 1": 28.7,
+        "Panel 2": 8.6,
+        "Panel 3": 24.1
+      },
+      {
+        "year": 2018,
+        "Panel 1": 20.4,
+        "Panel 2": 30.4,
+        "Panel 3": 29.2
+      }
+    ]
+  },
+  {
+    "_slug": "10-line-split-poster-editorial",
+    "chart": "line-split",
+    "title": "élève in the inflation market, 2010 through 2025",
+    "subtitle": "Subtitle, brief.",
+    "source": "OECD · IMF · World Bank composite, author calculations",
+    "palette": "editorial",
+    "size": "poster",
+    "x": "year",
+    "y": [
+      "Country 1",
+      "Country 2",
+      "Country 3",
+      "Country 4",
+      "Country 5",
+      "Country 6"
+    ],
+    "columns": 2,
+    "sharedScale": true,
+    "interpolation": "curved",
+    "data": [
+      {
+        "year": 2005,
+        "Country 1": 77,
+        "Country 2": 36,
+        "Country 3": 40.1,
+        "Country 4": 69.1,
+        "Country 5": 118,
+        "Country 6": 94.7
+      },
+      {
+        "year": 2006,
+        "Country 1": 118.4,
+        "Country 2": 69.3,
+        "Country 3": 40.3,
+        "Country 4": 83.6,
+        "Country 5": 69.5,
+        "Country 6": 105.9
+      },
+      {
+        "year": 2007,
+        "Country 1": 96.1,
+        "Country 2": 36,
+        "Country 3": 120.2,
+        "Country 4": 107.6,
+        "Country 5": 57.6,
+        "Country 6": 98.1
+      },
+      {
+        "year": 2008,
+        "Country 1": 97.2,
+        "Country 2": 69,
+        "Country 3": 128,
+        "Country 4": 85.6,
+        "Country 5": 69.8,
+        "Country 6": 43.9
+      },
+      {
+        "year": 2009,
+        "Country 1": 106.1,
+        "Country 2": 93.4,
+        "Country 3": 41.9,
+        "Country 4": 110.6,
+        "Country 5": 68.5,
+        "Country 6": 57.9
+      }
+    ]
+  },
+  {
+    "_slug": "11-geo-poster-carbon",
+    "chart": "geo",
+    "subtitle": "Units in billions (USD); adjusted for inflation using CPI-U; seasonally adjusted; smoothed with 4-quarter trailing average.",
+    "source": "BLS",
+    "palette": "carbon",
+    "size": "poster",
+    "basemap": "asia",
+    "code": "code",
+    "value": "value",
+    "scale": "stepped",
+    "steps": 5,
+    "data": [
+      {
+        "code": "CHN",
+        "value": 297.9
+      },
+      {
+        "code": "IND",
+        "value": 694.7
+      },
+      {
+        "code": "JPN",
+        "value": 187.3
+      },
+      {
+        "code": "KOR",
+        "value": 638
+      },
+      {
+        "code": "IDN",
+        "value": 742.6
+      },
+      {
+        "code": "PHL",
+        "value": 233.4
+      },
+      {
+        "code": "THA",
+        "value": 184.1
+      },
+      {
+        "code": "VNM",
+        "value": 162.7
+      },
+      {
+        "code": "MYS",
+        "value": 87.8
+      }
+    ]
+  },
+  {
+    "_slug": "12-zero-range-share-clarity",
+    "chart": "line",
+    "title": "All values equal — range is zero",
+    "subtitle": "nice-scale must not divide by zero, gridlines must not collapse",
+    "source": "synthetic",
+    "palette": "clarity",
+    "size": "share",
+    "x": "year",
+    "y": "v",
+    "interpolation": "linear",
+    "showSymbols": "all",
+    "data": [
+      {
+        "year": 2015,
+        "v": 42
+      },
+      {
+        "year": 2016,
+        "v": 42
+      },
+      {
+        "year": 2017,
+        "v": 42
+      },
+      {
+        "year": 2018,
+        "v": 42
+      },
+      {
+        "year": 2019,
+        "v": 42
+      },
+      {
+        "year": 2020,
+        "v": 42
+      },
+      {
+        "year": 2021,
+        "v": 42
+      },
+      {
+        "year": 2022,
+        "v": 42
+      },
+      {
+        "year": 2023,
+        "v": 42
+      },
+      {
+        "year": 2024,
+        "v": 42
+      }
+    ]
+  }
+]

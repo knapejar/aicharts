@@ -1,0 +1,81 @@
+{
+  "round": 1,
+  "seed": 1777071788380,
+  "images_reviewed": 17,
+  "clean": false,
+  "bugs": [
+    {
+      "image": "renders/round-1/adversarial/04-stacked-bar-poster-editorial.png",
+      "chart_type": "stacked-bar",
+      "aspect": "poster",
+      "category": "rotated-label-spill",
+      "severity": "medium",
+      "description": "Rotated x-axis labels descend into the source-line vertical band — bottoms of 'Capital 1', 'Market 2', etc. touch the top of 'Source: Bureau of Labor Statistics...' text.",
+      "evidence": "Bottom of rotated labels (descender of 'p' in 'Capital 1', diagonal trail) sits at approximately same y-row as the source text baseline near the bottom-left corner; visible vertical overlap of the rotated label glyphs with 'Source:' text."
+    },
+    {
+      "image": "renders/round-1/adversarial/05-stacked-area-share-diverging-sunset.png",
+      "chart_type": "stacked-area",
+      "aspect": "share",
+      "category": "scale-wrong",
+      "severity": "high",
+      "description": "Stepped stacked-area renders constant horizontal bands across the entire 2000–2001 span — slice values clearly differ between years (Slice 2: 8.33 vs 27.5; Slice 3: 20.53 vs 7.03) but the painting shows identical heights at both years, so per-year sub-values are not represented at all.",
+      "evidence": "From x≈140 (year 2000) to x≈1860 (year 2001) the three colored bands maintain the same y-thickness — Slice 3 light band sits at ~y=520–620, Slice 2 mid band at ~y=620–740, Slice 1 dark band at ~y=740–800 across the whole width with no step. Year 2001's Slice 2=27.5 vs Slice 3=7.03 should produce a visible step inversion that does not appear."
+    },
+    {
+      "image": "renders/round-1/adversarial/05-stacked-area-share-diverging-sunset.png",
+      "chart_type": "stacked-area",
+      "aspect": "share",
+      "category": "low",
+      "severity": "low",
+      "description": "Diverging-sunset palette renders as three blue tones rather than the expected sunset (red/orange) gradient — likely a palette mapping mistake.",
+      "evidence": "All three slices are blue shades despite palette name 'diverging-sunset'."
+    },
+    {
+      "image": "renders/round-1/adversarial/07-pie-square-earth.png",
+      "chart_type": "pie",
+      "aspect": "square",
+      "category": "overlap",
+      "severity": "high",
+      "description": "Sidebar legend wraps to a second row that overlaps directly on top of the source line. 'Slice 3 · 27%' and 'Peak 1 · 10%' sit on top of 'Source: Bureau of Labor Statistics, quarterly release,...'.",
+      "evidence": "At ~y=1700–1760 in the 1900-tall image, legend entries 'Slice 3 · 27%' and 'Peak 1 · 10%' are painted across the source text — letters from 'Bureau' and 'Statistics' are visible behind/under the legend swatches and labels at x=180–800."
+    },
+    {
+      "image": "renders/round-1/adversarial/12-geo-share-boardroom.png",
+      "chart_type": "geo",
+      "aspect": "share",
+      "category": "clipping",
+      "severity": "high",
+      "description": "Asia choropleth is shrunk to roughly 100×60 px in the center because a 4-line title plus 4-line subtitle on a 1200×675 share canvas consumes nearly all vertical space. Plot floor of 25% canvas height is clearly not enforced.",
+      "evidence": "The map painting occupies roughly x=830–960, y=290–360 in a 1900×wide image — well under the documented plot.height >= canvas.height * 0.25 invariant for share preset (which would be ≥169 px at 675 px tall, scaled up here)."
+    },
+    {
+      "image": "renders/round-1/adversarial/12-geo-share-boardroom.png",
+      "chart_type": "geo",
+      "aspect": "share",
+      "category": "unreadable",
+      "severity": "high",
+      "description": "Country shading inside the tiny map is impossible to distinguish at any reasonable phone downscale; choropleth conveys no data.",
+      "evidence": "Individual country polygons in the map are <10 px wide; CHN, IND, JPN, KOR, IDN cannot be visually separated."
+    },
+    {
+      "image": "renders/round-1/adversarial/11-geo-poster-editorial.png",
+      "chart_type": "geo",
+      "aspect": "poster",
+      "category": "scale-wrong",
+      "severity": "medium",
+      "description": "Several supplied countries (DEU, NLD, SWE, POL) appear visually unshaded or indistinguishable from the no-data background despite having values in the supplied range (98.8–827).",
+      "evidence": "On the Europe basemap, Germany, Netherlands, Sweden, Poland render in the same beige tone as non-data countries while Italy, Portugal, Belgium, Austria, Spain, France show distinct red/pink shades; the legend ramp 98.8→827 should color all 10 supplied countries."
+    },
+    {
+      "image": "renders/round-1/sampled/examples_charts-square_40-social-media-usage.png",
+      "chart_type": "bar",
+      "aspect": "square",
+      "category": "data-missing",
+      "severity": "high",
+      "description": "8 vertical bars are painted but only 4 x-axis labels appear ('TikTok', 'Instagram', 'Snapchat', 'Reddit'). Every other bar has no category label, leaving 4 bars unidentified.",
+      "evidence": "Bars 2, 4, 6, 8 sit beneath blank x-axis space; visible labels appear under bars 1, 3, 5, 7. Each bar should have its own category label."
+    }
+  ],
+  "summary": "5 high, 2 medium, 1 low"
+}

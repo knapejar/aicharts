@@ -50,7 +50,7 @@ test('pie with 5 slices does NOT group into "Other"', async () => {
   assert.ok(!str.includes('Other'), 'expected 5-slice pie not to group "Other"');
 });
 
-test('pie with 7 slices of similar size does NOT group (no slice under 4%)', async () => {
+test('pie with 7 slices DOES group "Other" (PO guard-rail: >6 slices auto-groups)', async () => {
   const svg = await render(
     {
       chart: 'pie',
@@ -67,7 +67,7 @@ test('pie with 7 slices of similar size does NOT group (no slice under 4%)', asy
     { format: 'svg' },
   );
   const str = new TextDecoder().decode(svg);
-  assert.ok(!str.includes('Other'), 'expected no grouping when every slice is above 4%');
+  assert.ok(str.includes('Other'), 'expected 7-slice pie to auto-group into Other (>6 rule)');
 });
 
 // ---------- custom palette merge ----------

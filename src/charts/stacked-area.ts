@@ -86,11 +86,12 @@ export function renderStackedArea(cfg: StackedAreaConfig, theme: Theme): SvgElem
     totalsUpfront.push(t);
   }
   const yTickBandWidth = estimateYTickBandWidth(canvas, totalsUpfront);
+  const renderedLegendLabels = series.map((s) => smartLabel(s));
   const frame = computeFrame(canvas, {
     title: cfg.title,
     subtitle: cfg.subtitle,
     hasLegend: true,
-    legendLabels: series,
+    legendLabels: renderedLegendLabels,
     source: cfg.source,
     logo: cfg.logo ?? 'default',
     yTickBandWidth,
@@ -157,6 +158,22 @@ export function renderStackedArea(cfg: StackedAreaConfig, theme: Theme): SvgElem
 
   const layers: SvgElement[] = [];
   const stackBottoms: number[] = new Array(cfg.data.length).fill(0);
+  if (cfg.normalize && series.length > 0) {
+    const lastIdx = series.length - 1;
+    const topColor = palette.colors[lastIdx % palette.colors.length]!;
+    layers.push({
+      tag: 'rect',
+      attrs: {
+        x: plot.x,
+        y: plot.y,
+        width: plot.width,
+        height: plot.height,
+        fill: topColor,
+        opacity,
+      },
+    });
+  }
+  const lastSeriesIdx = series.length - 1;
   for (let s = 0; s < series.length; s++) {
     const key = series[s]!;
     const color = palette.colors[s % palette.colors.length]!;
@@ -173,6 +190,9 @@ export function renderStackedArea(cfg: StackedAreaConfig, theme: Theme): SvgElem
       top.push([xScale(i), yScale(curTop)]);
       bottom.push([xScale(i), yScale(curBot)]);
       stackBottoms[i] = curTop;
+    }
+    if (cfg.normalize && s === lastSeriesIdx) {
+      continue;
     }
     layers.push(
       path(curvedAreaPath(top, bottom, interpolation), {

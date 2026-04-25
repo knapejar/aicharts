@@ -23,7 +23,7 @@ export function renderStackedBar(cfg: StackedBarConfig, theme: Theme): SvgElemen
       title: cfg.title,
       subtitle: cfg.subtitle,
       hasLegend: true,
-      legendLabels: series,
+      legendLabels: series.map((s) => smartLabel(s)),
       source: cfg.source,
       logo: cfg.logo ?? 'default',
     });
@@ -68,7 +68,7 @@ export function renderStackedBar(cfg: StackedBarConfig, theme: Theme): SvgElemen
       title: cfg.title,
       subtitle: cfg.subtitle,
       hasLegend: true,
-      legendLabels: series,
+      legendLabels: series.map((s) => smartLabel(s)),
       source: cfg.source,
       logo: cfg.logo ?? 'default',
     });
@@ -159,7 +159,7 @@ export function renderStackedBar(cfg: StackedBarConfig, theme: Theme): SvgElemen
       title: cfg.title,
       subtitle: cfg.subtitle,
       hasLegend: true,
-      legendLabels: series,
+      legendLabels: series.map((s) => smartLabel(s)),
       source: cfg.source,
       logo: cfg.logo ?? 'default',
       yTickBandWidth: yTickWidth,
